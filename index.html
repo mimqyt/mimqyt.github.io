@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trener Polskiej Kadry Pływackiej</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏊 Trener Polskiej Kadry Pływackiej</h1>
+            <div class="header-info">
+                <div class="date-display">Data: <span id="currentDate"></span></div>
+                <div class="budget-display">Budżet: <span id="budget"></span> PLN</div>
+                <div class="wallet-display">Portfel: <span id="walletBalance">0</span> PLN</div>
+            </div>
+        </header>
+
+        <nav class="main-nav">
+            <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+            <button class="nav-btn" data-section="swimmers">Zawodnicy</button>
+            <button class="nav-btn" data-section="competitions">Zawody</button>
+            <button class="nav-btn" data-section="medals">Tabela Medali</button>
+            <button class="nav-btn" data-section="news">Wiadomości</button>
+        </nav>
+
+        <main id="mainContent">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Następne Zawody</h3>
+                        <div id="nextCompetition"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Status Kadry</h3>
+                        <div id="squadStatus"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Ostatnie Wyniki</h3>
+                        <div id="recentResults"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Portfel / Kod promocyjny</h3>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input id="promoCode" placeholder="Wpisz kod (tajny)" />
+                            <button id="redeemPromo" class="btn-primary">Wykorzystaj kod</button>
+                        </div>
+                        <div style="margin-top:8px;font-size:0.95rem;color:#495057;">Dostępne środki: <strong><span id="walletSmall">0</span> PLN</strong></div>
+                    </div>
+                </div>
+                <div class="time-controls">
+                    <button id="nextDay" class="btn-primary">Następny Dzień</button>
+                    <button id="next7Days" class="btn-primary">+7 Dni</button>
+                        <button id="next30Days" class="btn-primary">+30 Dni</button>
+                        <button id="buy15Days" class="btn-primary">+15 Dni</button>
+                        <button id="buy30Days" class="btn-primary">+30 Dni</button>
+                </div>
+            </section>
+
+            <!-- Swimmers Section -->
+            <section id="swimmers" class="content-section">
+                <h2>Zawodnicy Kadry</h2>
+                <div class="filters">
+                    <label>
+                        Styl:
+                        <select id="styleFilter">
+                            <option value="all">Wszyscy</option>
+                            <option value="freestyle">Krauliści</option>
+                            <option value="backstroke">Grzbieciści</option>
+                            <option value="breaststroke">Żabkiści</option>
+                            <option value="butterfly">Delfiniści</option>
+                            <option value="medley">Zmienniści</option>
+                        </select>
+                    </label>
+                    <label>
+                        Płeć:
+                        <select id="genderFilter">
+                            <option value="all">Wszyscy</option>
+                            <option value="M">Mężczyźni</option>
+                            <option value="K">Kobiety</option>
+                        </select>
+                    </label>
+                    <label>
+                        Status:
+                        <select id="statusFilter">
+                            <option value="all">Wszyscy</option>
+                            <option value="healthy">Zdrowi</option>
+                            <option value="injured">Kontuzjowani</option>
+                            <option value="sick">Chorzy</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="swimmersList"></div>
+            </section>
+
+            <!-- Competitions Section -->
+            <section id="competitions" class="content-section">
+                <h2>Zawody</h2>
+                <div id="competitionsList"></div>
+                <div id="competitionDetail" class="competition-detail hidden">
+                    <button id="backToCompetitions" class="btn-secondary">← Powrót</button>
+                    <h3 id="competitionTitle"></h3>
+                    <div id="competitionInfo"></div>
+                    <div id="eventSelection"></div>
+                    <div id="competitionResults"></div>
+                </div>
+            </section>
+
+            <!-- Medals Section -->
+            <section id="medals" class="content-section">
+                <h2>Tabela Medali</h2>
+                <div id="medalsTable"></div>
+            </section>
+
+            <!-- News Section -->
+            <section id="news" class="content-section">
+                <h2>Wiadomości</h2>
+                <div id="newsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
