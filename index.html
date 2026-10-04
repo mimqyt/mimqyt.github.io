@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>ClipTok — Twoja scena</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101014;
+      --panel: #19191f;
+      --panel-2: #202027;
+      --line: #303039;
+      --text: #f7f7f8;
+      --muted: #a4a4b0;
+      --pink: #ff3b70;
+      --cyan: #39e9e1;
+      --green: #71e6a0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      height: 68px;
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 0 5vw;
+      background: #101014ed;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 850; letter-spacing: -.7px; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; color: #101014; background: linear-gradient(135deg, var(--cyan), #fff 48%, var(--pink)); }
+    .brand span:last-child { color: var(--pink); }
+    .top-note { color: var(--muted); font-size: 12px; }
+    .layout {
+      width: min(1320px, 94vw);
+      margin: 16px auto 64px;
+      display: block;
+    }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; }
+    .sidebar { position: sticky; z-index: 4; top: 68px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 13px; margin-bottom: 23px; }
+    .profile { display: flex; align-items: center; gap: 11px; padding: 5px 2px 17px; border-bottom: 1px solid var(--line); }
+    .sidebar .profile { flex: 0 0 auto; padding: 0 13px 0 0; border: 0; border-right: 1px solid var(--line); }
+    .avatar { width: 43px; height: 43px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; color: #16131d; font-size: 20px; font-weight: 800; background: linear-gradient(135deg, #fa8ce5, #ffc879 56%, #75eee5); }
+    .profile strong, .profile small { display: block; }
+    .profile small { color: var(--muted); }
+    .nav { display: flex; align-items: center; justify-content: flex-end; gap: 5px; padding: 0; }
+    .nav button { padding: 9px 12px; white-space: nowrap; text-align: left; color: #d0d0d8; background: transparent; border: 0; border-radius: 10px; }
+    .nav button:hover, .nav button.active { color: white; background: var(--panel-2); }
+    .nav .nav-icon { display: inline-block; width: 27px; }
+    .side-caption { display: none; }
+    .main { min-width: 0; }
+    .tab-panel[hidden] { display: none; }
+    .tab-panel { animation: appear .22s ease both; }
+    .tab-nav { border: 0; cursor: pointer; font: inherit; }
+    .section-head { margin: 0 0 16px; }
+    .section-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .welcome { margin: 0 0 17px; }
+    h1 { margin: 0; font-size: clamp(23px, 3vw, 31px); line-height: 1.15; letter-spacing: -1px; }
+    .welcome p { margin: 6px 0 0; color: var(--muted); }
+    .stories { display: flex; gap: 13px; overflow-x: auto; padding: 15px; margin-bottom: 16px; }
+    .story { flex: 0 0 75px; display: grid; gap: 6px; justify-items: center; color: var(--muted); font-size: 11px; text-align: center; }
+    .story-ring { width: 59px; height: 59px; display: grid; place-items: center; overflow: hidden; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(135deg, var(--pink), #ffbd5a, var(--cyan)) border-box; }
+    .story-ring img { width: 51px; height: 51px; border-radius: 50%; object-fit: cover; }
+    .story-add { color: var(--pink); font-size: 25px; background: var(--panel-2); }
+    .composer { padding: 17px; margin-bottom: 18px; }
+    .create-drop { min-height: 280px; display: grid; place-items: center; border: 1px dashed #555560; border-radius: 15px; background: #141419; transition: border-color .2s, background .2s; }
+    .create-drop.dragover { border-color: var(--pink); background: #ff3b7010; }
+    .create-prompt { display: grid; justify-items: center; gap: 8px; text-align: center; color: var(--muted); }
+    .create-icon { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 18px; color: white; background: linear-gradient(135deg, #ff3b70, #b943d5); font-size: 29px; }
+    .create-prompt strong { color: var(--text); font-size: 16px; }
+    .create-preview { justify-self: stretch; padding: 12px; }
+    .create-preview .upload-preview { justify-content: center; }
+    .create-preview .preview-item { flex-basis: 95px; height: 110px; }
+    .title-field { margin-top: 14px; }
+    .title-field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+    .title-field input { padding: 12px; }
+    .composer-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+    h2 { margin: 0; font-size: 16px; letter-spacing: -.2px; }
+    .tag { padding: 3px 8px; border-radius: 99px; color: var(--cyan); background: #39e9e114; font-size: 11px; }
+    textarea, input[type="text"] { width: 100%; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); outline: none; border-radius: 11px; }
+    textarea { min-height: 72px; resize: vertical; padding: 11px 12px; }
+    textarea:focus, input[type="text"]:focus { border-color: #716079; }
+    .composer-actions { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 11px; }
+    .upload-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .button, .upload-label { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 37px; padding: 8px 12px; color: #ededf2; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; font-weight: 650; font-size: 12px; }
+    .button:hover, .upload-label:hover { border-color: #777782; }
+    .button-primary { color: #fff; background: linear-gradient(110deg, #f52e69, #ca32aa); border: 0; }
+    .button-primary:hover { filter: brightness(1.1); }
+    .button-live { background: #ff376a19; border-color: #ff376a55; color: #ff6e92; }
+    .upload-label input { display: none; }
+    .upload-preview { display: flex; gap: 8px; overflow-x: auto; margin-top: 11px; }
+    .upload-preview:empty { display: none; }
+    .preview-item { position: relative; flex: 0 0 66px; height: 66px; overflow: hidden; border-radius: 9px; background: var(--panel-2); }
+    .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; }
+    .preview-item span { position: absolute; bottom: 2px; right: 3px; padding: 0 4px; border-radius: 4px; background: #000a; font-size: 9px; }
+    .feed-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 11px; }
+    .feed-heading small { color: var(--muted); }
+    .post { overflow: hidden; margin-bottom: 15px; }
+    .post-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 11px; }
+    .post-user { display: flex; align-items: center; gap: 10px; }
+    .post-user .avatar { width: 36px; height: 36px; font-size: 17px; }
+    .post-user strong, .post-user small { display: block; }
+    .post-user small { color: var(--muted); font-size: 11px; }
+    .post-caption { margin: 0; padding: 0 16px 12px; white-space: pre-wrap; }
+    .post-media { display: grid; gap: 3px; max-height: 560px; overflow: hidden; background: #08080a; }
+    .post-media.grid-2 { grid-template-columns: 1fr 1fr; }
+    .post-media.grid-3, .post-media.grid-4 { grid-template-columns: 1fr 1fr; }
+    .post-media img, .post-media video { display: block; width: 100%; max-height: 560px; object-fit: contain; background: #09090c; }
+    .post-media.grid-2 img, .post-media.grid-3 img, .post-media.grid-4 img { height: 260px; object-fit: cover; }
+    .post-meta { display: flex; align-items: center; gap: 16px; padding: 11px 16px 14px; color: var(--muted); font-size: 12px; }
+    .like-btn { padding: 3px 0; color: inherit; background: none; border: 0; font-size: 13px; }
+    .like-btn.liked { color: var(--pink); }
+    .stats, .live-card, .wallet, .chat-card { padding: 16px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 13px; }
+    .stat { padding: 11px; border-radius: 12px; background: var(--panel-2); }
+    .stat span, .stat strong { display: block; }
+    .stat span { color: var(--muted); font-size: 10px; }
+    .stat strong { margin-top: 3px; font-size: 19px; }
+    .stat.wide { grid-column: 1 / -1; }
+    .progress { height: 5px; margin-top: 9px; overflow: hidden; border-radius: 5px; background: #35353e; }
+    .progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink), #ffba6b); transition: width .4s; }
+    .hint { margin: 11px 0 0; color: var(--muted); font-size: 11px; }
+    .sim-clock { margin-top: 7px; color: var(--cyan); font-size: 10px; }
+    .live-card { border-color: #ff3b7040; background: linear-gradient(145deg, #251820, var(--panel) 55%); }
+    .live-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .live-pill { display: flex; align-items: center; gap: 6px; padding: 3px 8px; color: #ff7493; border-radius: 99px; background: #ff3b7020; font-size: 10px; font-weight: 800; letter-spacing: .6px; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #ff416f; box-shadow: 0 0 9px #ff416f; }
+    .live-card p, .wallet p { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+    .live-card .button { width: 100%; }
+    .live-stage { position: relative; display: grid; min-height: 290px; overflow: hidden; place-items: center; margin: 15px 0; border: 1px solid var(--line); border-radius: 15px; background: radial-gradient(ellipse at 50% 30%, #34313a, #111115 70%); }
+    .live-stage video { width: 100%; height: 100%; max-height: 480px; position: absolute; inset: 0; object-fit: cover; transform: scaleX(-1); }
+    .live-placeholder { position: relative; display: grid; justify-items: center; gap: 8px; padding: 28px; text-align: center; color: var(--muted); }
+    .live-placeholder strong { color: var(--text); font-size: 16px; }
+    .live-controls { display: flex; flex-wrap: wrap; gap: 9px; }
+    .profile-hero { display: flex; align-items: center; gap: 18px; padding: 22px; margin-bottom: 16px; }
+    .profile-hero .avatar { width: 72px; height: 72px; font-size: 30px; }
+    .profile-hero p { margin: 4px 0 0; color: var(--muted); }
+    .profile-numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .profile-number { padding: 18px; text-align: center; }
+    .profile-number strong { display: block; font-size: 25px; }
+    .profile-number span { color: var(--muted); font-size: 12px; }
+    .wallet-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .wallet-locked { margin-top: 12px; padding: 11px; border-radius: 10px; color: #ffc5d1; background: #ff3b7015; font-size: 12px; }
+    .wallet-total { margin: 7px 0 1px; font-size: 29px; font-weight: 800; letter-spacing: -1px; }
+    .wallet-total small { color: var(--muted); font-size: 13px; font-weight: 500; }
+    .chat-card { padding-bottom: 10px; }
+    .chat-feed { display: flex; flex-direction: column; gap: 9px; min-height: 120px; max-height: 300px; overflow-y: auto; padding: 12px 1px 3px; scrollbar-width: thin; }
+    .chat-line { animation: appear .28s ease both; font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+    .chat-line strong { color: #e6a8ff; }
+    .chat-line.donation { color: #ffe09a; }
+    .chat-line.system { color: var(--cyan); }
+    .donation-toast { position: fixed; z-index: 10; left: 50%; top: 82px; transform: translate(-50%, -12px); opacity: 0; pointer-events: none; padding: 11px 18px; border: 1px solid #e7be6670; border-radius: 13px; color: #ffe09a; background: #292219f5; box-shadow: 0 12px 45px #0008; font-weight: 750; transition: .25s; }
+    .donation-toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .modal-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 18px; background: #000b; backdrop-filter: blur(8px); }
+    .modal-backdrop[hidden] { display: none; }
+    .modal { width: min(440px, 100%); padding: 27px; text-align: center; background: #21191d; border: 1px solid #ff3b7070; border-radius: 20px; box-shadow: 0 25px 100px #000b; }
+    .ban-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 50%; color: white; background: var(--pink); font-size: 25px; }
+    .modal h2 { margin-bottom: 9px; font-size: 20px; }
+    .modal p { margin: 0; color: #d5c9cd; }
+    .modal .button { margin-top: 20px; min-width: 120px; }
+    .empty-feed { padding: 28px; text-align: center; color: var(--muted); }
+    .toast-error { margin-top: 9px; color: #ff8ca5; font-size: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+    @keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    @media (max-width: 1050px) {
+      .sidebar { flex-wrap: wrap; }
+      .nav { flex: 1 1 auto; justify-content: flex-start; }
+    }
+    @media (max-width: 700px) {
+      .topbar { height: 58px; padding: 0 4vw; }
+      .top-note { display: none; }
+      .layout { width: 92vw; margin-top: 12px; }
+      .sidebar { position: sticky; top: 58px; gap: 8px; padding: 8px; margin-bottom: 18px; }
+      .profile { padding: 0; border: 0; }
+      .sidebar .profile { display: none; }
+      .nav { display: flex; flex: 1 1 100%; flex-wrap: wrap; justify-content: center; gap: 3px; overflow: visible; }
+      .nav button { flex: 1 1 auto; justify-content: center; padding: 8px 6px; font-size: 11px; text-align: center; }
+      .nav .nav-icon { width: auto; margin-right: 4px; }
+      .side-caption { display: none; }
+      .stats, .live-card, .wallet, .chat-card { padding: 13px; }
+      .composer-actions { align-items: flex-end; }
+      .upload-actions { max-width: 74%; }
+      .button, .upload-label { padding: 8px 9px; font-size: 11px; }
+    }
+    @media (max-width: 410px) {
+      .nav button { padding: 7px 4px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">▶</span><span>clip<span>tok</span></span></div>
+    <div class="top-note">Twoja społeczność, twoja scena ✨</div>
+    <button class="button" id="resetButton" type="button" title="Zacznij symulację od nowa">↻ Od nowa</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar panel">
+      <div class="profile">
+        <div class="avatar">M</div>
+        <div><strong id="profileName">m1lo</strong><small>Twój profil</small></div>
+      </div>
+      <nav class="nav" aria-label="Menu główne">
+        <button class="active tab-nav" data-tab="home"><span class="nav-icon">⌂</span>Dla Ciebie</button>
+        <button class="tab-nav" data-tab="live"><span class="nav-icon">◉</span>LIVE</button>
+        <button class="tab-nav" data-tab="profile"><span class="nav-icon">☺</span>Profil</button>
+        <button class="tab-nav" data-tab="wallet"><span class="nav-icon">▤</span>Portfel</button>
+        <button class="tab-nav" data-tab="stories"><span class="nav-icon">◎</span>Relacje</button>
+        <button class="tab-nav" data-tab="create"><span class="nav-icon">＋</span>Utwórz</button>
+      </nav>
+      <p class="side-caption">Popularność rośnie stopniowo w przyspieszonej symulacji.</p>
+    </aside>
+
+    <main class="main">
+      <section class="tab-panel" data-panel="home">
+      <section class="welcome">
+        <h1>Hej, m1lo 👋</h1>
+        <p>Wrzuć coś fajnego i zobacz, jak rośnie Twoja społeczność.</p>
+      </section>
+
+      <div class="feed-heading"><h2>🎬 Dla Ciebie</h2><small>Nowe klipy i chwile</small></div>
+      <section id="feed" aria-live="polite"></section>
+      </section>
+
+      <section class="tab-panel" data-panel="create" hidden>
+        <div class="section-head"><h1>Utwórz post</h1><p>Dodaj film, zdjęcie albo cały zestaw zdjęć.</p></div>
+        <section class="composer panel">
+          <div class="create-drop" id="createDrop">
+            <div class="create-prompt" id="createPrompt">
+              <span class="create-icon">＋</span><strong>Dodaj film lub zdjęcia</strong>
+              <span>Wybierz plik z urządzenia lub przeciągnij go tutaj.</span>
+              <div class="upload-actions">
+                <label class="upload-label">▧ Wybierz zdjęcia<input id="photoInput" type="file" accept="image/*" multiple></label>
+                <label class="upload-label">▷ Wybierz film<input id="videoInput" type="file" accept="video/*"></label>
+              </div>
+            </div>
+            <div class="create-preview" id="createPreview" hidden><div class="upload-preview" id="uploadPreview" aria-live="polite"></div></div>
+          </div>
+          <div class="title-field"><label for="caption">Tytuł</label><input id="caption" type="text" maxlength="120" placeholder="Dodaj tytuł swojego posta..."></div>
+          <div class="composer-actions">
+            <div class="toast-error" id="uploadError" role="status"></div>
+            <button class="button button-primary" id="publishButton" type="button">Opublikuj ↗</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-panel="stories" hidden>
+        <div class="section-head"><h1>Twoje relacje</h1><p>Dodaj zdjęcie do swojej relacji.</p></div>
+        <section class="stories panel" id="stories" aria-label="Relacje">
+          <button class="story" id="addStoryButton" type="button" style="background:none;border:0;padding:0;font:inherit">
+            <span class="story-ring story-add">＋</span><span>Dodaj relację</span>
+          </button>
+          <input class="sr-only" id="storyInput" type="file" accept="image/*">
+          <div id="storyList" style="display:contents"></div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-panel="live" hidden>
+        <div class="section-head"><h1>Transmisja LIVE</h1><p>Włącz kamerę, sprawdź podgląd i rozpocznij transmisję.</p></div>
+        <section class="live-card panel" id="liveCard">
+          <div class="live-title"><h2>🔴 Twój LIVE</h2><span class="live-pill"><i class="live-dot"></i><span id="liveStatus">OFFLINE</span></span></div>
+          <p id="liveMessage">Zdobądź 1000 obserwujących, żeby włączyć transmisję na żywo.</p>
+          <p>To lokalna symulacja: kamera pokazuje podgląd na tym urządzeniu, a transmisja nie jest wysyłana do internetu.</p>
+          <div class="live-stage">
+            <video id="cameraPreview" autoplay muted playsinline hidden></video>
+            <div class="live-placeholder" id="cameraPlaceholder"><span style="font-size:36px">📷</span><strong>Podgląd kamery</strong><span>Włącz kamerę, aby zobaczyć obraz przed LIVE.</span></div>
+          </div>
+          <div class="toast-error" id="cameraError" role="status"></div>
+          <div class="live-controls">
+            <button class="button" id="cameraButton" type="button">📷 Uruchom kamerę</button>
+            <button class="button button-live" id="liveButton" type="button" disabled>🔒 LIVE od 1000 obserwujących</button>
+          </div>
+          <section class="chat-card panel" style="margin-top:18px">
+            <div class="live-title"><h2>💬 Czat na żywo</h2><span class="tag" id="chatStatus">oczekuje na LIVE</span></div>
+            <div class="chat-feed" id="chatFeed" aria-live="polite" aria-label="Komentarze widzów"></div>
+          </section>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-panel="profile" hidden>
+        <div class="section-head"><h1>Profil</h1><p>Twoje konto i statystyki twórcy.</p></div>
+        <section class="profile-hero panel">
+          <div class="avatar">M</div>
+          <div><h2>m1lo</h2><p>Twórca · dołączono dzisiaj</p></div>
+        </section>
+        <div class="profile-numbers">
+          <div class="profile-number panel"><strong id="profileFollowers">0</strong><span>Obserwujący</span></div>
+          <div class="profile-number panel"><strong id="profileLikes">0</strong><span>Polubienia</span></div>
+          <div class="profile-number panel"><strong id="profileViews">0</strong><span>Wyświetlenia</span></div>
+        </div>
+        <section class="stats panel" style="margin-top:14px">
+          <h2>📈 Statystyki</h2>
+          <div class="stats-grid">
+            <div class="stat wide"><span>Do odblokowania LIVE · <b id="liveProgressText">1000 do celu</b></span><div class="progress"><span id="liveProgress"></span></div></div>
+          </div>
+          <p class="hint" id="growthHint">Obserwujący zaczną przybywać po opublikowaniu filmu.</p>
+          <div class="sim-clock" id="simClock">⌛ Dzień symulacji 1 · 1 min = 1 dzień</div>
+        </section>
+        <div class="section-head" style="margin-top:24px"><h2>Twoje posty</h2></div>
+        <section id="profileFeed" aria-live="polite"></section>
+      </section>
+
+      <section class="tab-panel" data-panel="wallet" hidden>
+        <div class="section-head"><h1>Portfel</h1><p>Saldo z symulowanych wpłat podczas transmisji LIVE.</p></div>
+        <section class="wallet panel" id="walletCard">
+          <h2>💰 Saldo konta</h2>
+          <div class="wallet-total"><span id="balance">0,00</span> <small>zł</small></div>
+          <p>Wpłaty LIVE w tej stronie są tylko symulacją — nie są prawdziwymi płatnościami.</p>
+          <div class="wallet-actions"><span>Minimalna kwota wypłaty: <strong>300 zł</strong></span><button class="button" id="withdrawButton" type="button" disabled>Wypłać</button></div>
+        </section>
+      </section>
+    </main>
+
+  </div>
+
+  <div class="donation-toast" id="donationToast" aria-live="assertive"></div>
+  <div class="modal-backdrop" id="banModal" hidden>
+    <section class="modal" role="alertdialog" aria-modal="true" aria-labelledby="banTitle">
+      <div class="ban-icon">!</div>
+      <h2 id="banTitle">Konto zablokowane</h2>
+      <p>twoje konto zostało zbanowane za nieodpowiednie treści.</p>
+      <button class="button button-primary" id="closeBan" type="button">Rozumiem</button>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+      const state = {
+        followers: 0,
+        views: 0,
+        balance: 0,
+        live: false,
+        banned: false,
+        posts: [],
+        stories: [],
+        selectedFiles: [],
+        liked: new Set(),
+        chatHistory: [],
+        chatTimer: null,
+        growthTimer: null,
+        clockTimer: null,
+        donateTimer: null,
+        cameraStream: null,
+        clockStarted: Date.now()
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const formatNumber = (number) => new Intl.NumberFormat("pl-PL").format(number);
+      const formatMoney = (number) => number.toFixed(2).replace(".", ",");
+      const commentPool = [
+        ["Maja", "ale vibe ✨"], ["kacper.exe", "siema, z jakiego to miejsca?"], ["Ola", "kiedy kolejny film??"],
+        ["patryk_77", "kto ogląda w 2026 👀"], ["Zuza", "ten montaż jest mega"], ["Mati", "pozdrawiam z Gdańska!"],
+        ["natalia", "haha nie spodziewałam się tego 😂"], ["ziomal2009", "pokaż setup pls"], ["Kinga", "ale sztos 🔥"],
+        ["Borys", "jaką masz kamerę?"], ["lunaa", "wpadam z polecanych 💗"], ["tomek", "pierwszy!"],
+        ["oliwka", "to jest znak żeby spróbować"], ["Kuba", "daj część drugą"], ["Misia", "kocham ten klimat"],
+        ["wiktor", "u mnie też dzisiaj taka pogoda"], ["ania_ania", "miłego dnia wszystkim ☀️"], ["Dawid", "czy to serio działa?"],
+        ["pati", "czekam na następny live"], ["michal", "ktoś jeszcze nie śpi? 🌙"], ["Lena", "przesyłam serduszko 💕"],
+        ["krystian", "aż mi się przypomniały wakacje"], ["niko", "skąd bluza?"], ["Werka", "fajne zdjęcie!"],
+        ["Bartek", "włącz muzykę 🎶"], ["Maja", "O MATKO 😭"], ["hubert", "wpadajcie do mnie też"],
+        ["emilka", "ale pysznie wygląda"], ["Rafal", "subik leci"], ["Klaudia", "to jest tak relaksujące"],
+        ["maks", "dawaj challenge"], ["ola.m", "jest tu ktoś z Krakowa?"], ["nobody", "czat żyje?"],
+        ["filip", "mega pozytywna energia"], ["Gabrysia", "załapałam się na live 💫"], ["sandra", "przypadek? nie sądzę"],
+        ["bartek_12", "ile czasu zajmuje montaż?"], ["Mikołaj", "zrób Q&A!"], ["Nina", "udostępniam znajomym"],
+        ["antoni", "najlepszy film dzisiaj"], ["Zuzia", "ale sztosik"], ["Kacper", "siemka wszystkim"],
+        ["ola", "jak minął dzień?"], ["królowa", "kocham was chat 💖"], ["Marcel", "skąd pomysł na kanał?"],
+        ["tiktak", "to powinno mieć więcej wyświetleń"], ["igaa", "polecajki nie zawodzą"], ["Tymek", "kiedy następny odcinek?"],
+        ["wiki", "zostawiam followa"], ["koko", "dobre dobre 😂"], ["Szymon", "przybij piątkę!"],
+        ["aśka", "czy tylko ja oglądam to trzeci raz?"], ["leo", "muzyka z czego?"], ["julka", "ale słodkie 🥹"],
+        ["młody", "czy nagrywasz telefonem?"], ["pixel", "jakość sztos"], ["basia", "zostańcie na dłużej!"],
+        ["dominik", "co dziś na obiad?"], ["Roksi", "wpadło na fyp ✨"], ["seba", "daj serduszko"],
+        ["Marysia", "pozdrawiam całą ekipę"], ["ada", "aż chce się oglądać"], ["Kamil", "ile masz lat?"],
+        ["karo", "uwielbiam takie treści"], ["rafi", "🔥🔥🔥"], ["monia", "dzień dobry czat"],
+        ["Olek", "kto wpada jutro?"], ["dżony", "powiedz coś po angielsku"], ["Agata", "wyglądasz super"],
+        ["nowy_widz", "hej, dopiero tu trafiłem"], ["Michałek", "można pozdrowienia?"], ["lilaa", "to jest genialne"],
+        ["staszek", "ile obserwujących do live?"], ["kasiula", "pytanie: kawa czy herbata?"], ["Wojtek", "szanuję za regularność"],
+        ["meme_master", "ja po tym jak mówię tylko jeden odcinek 😂"], ["nela", "zrób tutorial"],
+        ["Kuba_krk", "siema mordeczki"], ["oliwia", "czemu to takie wciągające"]
+      ];
+      const donationNames = ["Ania", "Mati", "Klaudia", "ziomal", "Olek", "Maja", "Bartek", "Lena", "Kuba", "Zuza"];
+      let objectUrls = [];
+
+      function safeUrl(file) {
+        const url = URL.createObjectURL(file);
+        objectUrls.push(url);
+        return url;
+      }
+
+      function addChat(name, text, kind) {
+        const line = document.createElement("div");
+        line.className = "chat-line" + (kind ? " " + kind : "");
+        const who = document.createElement("strong");
+        who.textContent = name;
+        line.append(who, document.createTextNode(" " + text));
+        $("chatFeed").append(line);
+        state.chatHistory.push({ name, text });
+        while ($("chatFeed").children.length > 32) $("chatFeed").firstElementChild.remove();
+        $("chatFeed").scrollTop = $("chatFeed").scrollHeight;
+      }
+
+      function addGeneratedComment() {
+        if (state.banned || !state.live) return;
+        let candidates = commentPool.filter((entry) => !state.chatHistory.slice(-17).some((old) => old.name === entry[0] && old.text === entry[1]));
+        if (!candidates.length) candidates = commentPool;
+        const [name, message] = candidates[Math.floor(Math.random() * candidates.length)];
+        addChat(name, message);
+      }
+
+      function updateStats() {
+        const formattedViews = state.views >= 1000000
+          ? (state.views / 1000000).toFixed(1).replace(".", ",") + " mln"
+          : state.views >= 10000
+            ? (state.views / 1000).toFixed(1).replace(".", ",") + " tys."
+            : formatNumber(state.views);
+        $("balance").textContent = formatMoney(state.balance);
+        $("profileFollowers").textContent = formatNumber(state.followers);
+        $("profileViews").textContent = formattedViews;
+        const totalLikes = state.posts.reduce((total, post) => total + post.likes, 0) + state.liked.size;
+        $("profileLikes").textContent = formatNumber(totalLikes);
+        const progress = Math.min(100, state.followers / 1000 * 100);
+        $("liveProgress").style.width = progress + "%";
+        $("liveProgressText").textContent = state.followers >= 1000 ? "LIVE odblokowany!" : formatNumber(1000 - state.followers) + " do celu";
+        $("liveButton").disabled = state.followers < 1000 || state.banned;
+        $("liveButton").textContent = state.followers < 1000 ? "🔒 LIVE od 1000 obserwujących" : state.live ? "⏹ Zakończ LIVE" : "🔴 Rozpocznij LIVE";
+        $("liveMessage").textContent = state.followers < 1000
+          ? "Zdobądź 1000 obserwujących, żeby włączyć transmisję na żywo."
+          : state.live ? "Jesteś na żywo! Przywitaj się z widzami 👋" : "Masz 1000 obserwujących — możesz rozpocząć transmisję.";
+        $("liveStatus").textContent = state.live ? "NA ŻYWO" : "OFFLINE";
+        $("chatStatus").textContent = state.live ? "na żywo" : "oczekuje na LIVE";
+        const hasPublishedVideo = state.posts.some((post) => post.files.some((file) => file.type.startsWith("video/")));
+        $("growthHint").textContent = hasPublishedVideo
+          ? "Film jest opublikowany — obserwujący przybywają stopniowo."
+          : "Obserwujący zaczną przybywać po opublikowaniu filmu.";
+        $("withdrawButton").disabled = state.balance < 300 || state.banned;
+      }
+
+      function updateClock() {
+        const day = Math.floor((Date.now() - state.clockStarted) / 60000) + 1;
+        $("simClock").textContent = "⌛ Dzień symulacji " + formatNumber(day) + " · 1 min = 1 dzień";
+      }
+
+      function checkBan() {
+        if (state.banned || (state.balance < 300 && state.followers < 100000)) return;
+        state.banned = true;
+        state.live = false;
+        clearInterval(state.growthTimer);
+        clearInterval(state.clockTimer);
+        clearTimeout(state.donateTimer);
+        stopCamera();
+        $("banModal").hidden = false;
+        updateStats();
+      }
+
+      function growCommunity() {
+        if (state.banned || !state.posts.some((post) => post.files.some((file) => file.type.startsWith("video/")))) return;
+        const baseRate = Math.max(1, Math.floor(Math.pow(state.followers, 0.72) * 0.01));
+        const gain = Math.max(1, Math.min(25, Math.round(baseRate * (0.72 + Math.random() * 0.56))));
+        state.followers += gain;
+        state.views += Math.floor(gain * (12 + Math.random() * 23));
+        updateStats();
+        checkBan();
+      }
+
+      function showDonation(amount, name, message) {
+        if (state.banned) return;
+        state.balance = Math.round((state.balance + amount) * 100) / 100;
+        const donationText = amount === 0.01 ? "wpłacił(a) 0,01 zł" : "wpłacił(a) " + formatMoney(amount) + " zł";
+        addChat(name, "💸 " + donationText + (message ? " — " + message : ""), "donation");
+        $("donationToast").textContent = "💸 " + name + (message ? " — „" + message + "”" : "") + "  +" + formatMoney(amount) + " zł";
+        $("donationToast").classList.add("show");
+        clearTimeout(showDonation.toastTimer);
+        showDonation.toastTimer = setTimeout(() => $("donationToast").classList.remove("show"), 3500);
+        updateStats();
+        checkBan();
+      }
+
+      function scheduleDonation() {
+        clearTimeout(state.donateTimer);
+        if (!state.live || state.banned) return;
+        const delay = 9000 + Math.random() * 16000;
+        state.donateTimer = setTimeout(() => {
+          if (!state.live || state.banned) return;
+          const roll = Math.random();
+          if (roll < 0.035) {
+            showDonation(67, donationNames[Math.floor(Math.random() * donationNames.length)], "ale sztos!");
+          } else if (roll < 0.17) {
+            showDonation(5, "ziomuś", "ziomuś");
+          } else if (roll < 0.19) {
+            showDonation(0.01, "napakowany kretyn", "napakowany kretyn");
+          } else {
+            const amount = [10, 15, 20][Math.floor(Math.random() * 3)];
+            showDonation(amount, donationNames[Math.floor(Math.random() * donationNames.length)], ["super!", "dzięki za live ❤️", "trzymaj!"][Math.floor(Math.random() * 3)]);
+          }
+          scheduleDonation();
+        }, delay);
+      }
+
+      function renderStories() {
+        $("storyList").replaceChildren();
+        state.stories.forEach((story) => {
+          const item = document.createElement("div");
+          item.className = "story";
+          const ring = document.createElement("span");
+          ring.className = "story-ring";
+          const image = document.createElement("img");
+          image.src = story.url;
+          image.alt = "Twoja relacja";
+          ring.append(image);
+          const label = document.createElement("span");
+          label.textContent = "Twoja relacja";
+          item.append(ring, label);
+          $("storyList").append(item);
+        });
+      }
+
+      function renderPostsInto(feed) {
+        feed.replaceChildren();
+        if (!state.posts.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-feed panel";
+          empty.textContent = "Twój pierwszy film lub zestaw zdjęć pojawi się tutaj. 📸";
+          feed.append(empty);
+          return;
+        }
+        state.posts.forEach((post) => {
+          const card = document.createElement("article");
+          card.className = "post panel";
+          const header = document.createElement("div");
+          header.className = "post-top";
+          const user = document.createElement("div");
+          user.className = "post-user";
+          const avatar = document.createElement("div");
+          avatar.className = "avatar";
+          avatar.textContent = "M";
+          const who = document.createElement("div");
+          const username = document.createElement("strong");
+          username.textContent = "m1lo";
+          const time = document.createElement("small");
+          time.textContent = post.files.length > 1 ? "Zestaw zdjęć · przed chwilą" : "Przed chwilą";
+          who.append(username, time);
+          user.append(avatar, who);
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = "oryginalny dźwięk";
+          header.append(user, tag);
+          card.append(header);
+          if (post.caption) {
+            const caption = document.createElement("p");
+            caption.className = "post-caption";
+            caption.textContent = post.caption;
+            card.append(caption);
+          }
+          const media = document.createElement("div");
+          media.className = "post-media" + (post.files.length > 1 ? " grid-" + Math.min(post.files.length, 4) : "");
+          post.files.forEach(({ url, type, name }) => {
+            const element = type.startsWith("video/") ? document.createElement("video") : document.createElement("img");
+            element.src = url;
+            element.setAttribute("aria-label", name);
+            if (element.tagName === "VIDEO") {
+              element.controls = true;
+              element.playsInline = true;
+            } else {
+              element.alt = name;
+              element.loading = "lazy";
+            }
+            media.append(element);
+          });
+          card.append(media);
+          const footer = document.createElement("div");
+          footer.className = "post-meta";
+          const like = document.createElement("button");
+          like.className = "like-btn" + (state.liked.has(post.id) ? " liked" : "");
+          like.type = "button";
+          like.textContent = (state.liked.has(post.id) ? "♥" : "♡") + " " + formatNumber(post.likes + (state.liked.has(post.id) ? 1 : 0));
+          like.addEventListener("click", () => {
+            if (state.liked.has(post.id)) state.liked.delete(post.id);
+            else state.liked.add(post.id);
+            renderPosts();
+          });
+          const views = document.createElement("span");
+          views.textContent = "▶ " + formatNumber(post.views) + " wyświetleń";
+          footer.append(like, views);
+          card.append(footer);
+          feed.append(card);
+        });
+      }
+
+      function renderPosts() {
+        renderPostsInto($("feed"));
+        renderPostsInto($("profileFeed"));
+        updateStats();
+      }
+
+      function clearPreviews() {
+        state.selectedFiles = [];
+        $("uploadPreview").replaceChildren();
+        $("photoInput").value = "";
+        $("videoInput").value = "";
+      }
+
+      function showPreviews(files) {
+        $("uploadError").textContent = "";
+        $("uploadPreview").replaceChildren();
+        state.selectedFiles = files;
+        $("createPrompt").hidden = files.length > 0;
+        $("createPreview").hidden = files.length === 0;
+        files.forEach((file) => {
+          const item = document.createElement("div");
+          item.className = "preview-item";
+          const url = safeUrl(file);
+          const element = file.type.startsWith("video/") ? document.createElement("video") : document.createElement("img");
+          element.src = url;
+          element.alt = file.name;
+          item.append(element);
+          if (file.type.startsWith("video/")) {
+            const badge = document.createElement("span");
+            badge.textContent = "FILM";
+            item.append(badge);
+          }
+          $("uploadPreview").append(item);
+        });
+      }
+
+      $("photoInput").addEventListener("change", (event) => {
+        const files = Array.from(event.target.files || []);
+        if (files.some((file) => !file.type.startsWith("image/"))) {
+          $("uploadError").textContent = "Wybierz pliki graficzne w polu zdjęć.";
+          return;
+        }
+        const other = state.selectedFiles.filter((file) => !file.type.startsWith("image/"));
+        showPreviews([...other, ...files].slice(0, 10));
+      });
+      $("videoInput").addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("video/")) {
+          $("uploadError").textContent = "Wybierz plik wideo.";
+          return;
+        }
+        showPreviews([file]);
+        $("photoInput").value = "";
+      });
+
+      $("publishButton").addEventListener("click", () => {
+        if (state.banned) return;
+        const caption = $("caption").value.trim();
+        if (!state.selectedFiles.length) {
+          $("uploadError").textContent = "Najpierw dodaj zdjęcie lub film.";
+          return;
+        }
+        const files = state.selectedFiles.map((file) => ({ name: file.name, type: file.type, url: safeUrl(file) }));
+        const post = { id: Date.now() + Math.random(), caption, files, likes: Math.floor(8 + Math.random() * 39), views: Math.floor(180 + Math.random() * 820) };
+        state.posts.unshift(post);
+        state.views += post.views;
+        $("caption").value = "";
+        clearPreviews();
+        renderPosts();
+        updateStats();
+        switchTab("home");
+        $("uploadError").textContent = "Opublikowano! Twoja społeczność może już to zobaczyć ✨";
+        $("uploadError").style.color = "var(--green)";
+        setTimeout(() => {
+          $("uploadError").textContent = "";
+          $("uploadError").style.color = "";
+        }, 2800);
+      });
+
+      $("addStoryButton").addEventListener("click", () => $("storyInput").click());
+      $("storyInput").addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          addChat("System", "Relacja przyjmuje pliki ze zdjęciami.", "system");
+          return;
+        }
+        state.stories.unshift({ url: safeUrl(file) });
+        state.stories = state.stories.slice(0, 12);
+        renderStories();
+        event.target.value = "";
+      });
+
+      function stopCamera() {
+        if (state.cameraStream) {
+          state.cameraStream.getTracks().forEach((track) => track.stop());
+          state.cameraStream = null;
+        }
+        $("cameraPreview").srcObject = null;
+        $("cameraPreview").hidden = true;
+        $("cameraPlaceholder").hidden = false;
+        $("cameraButton").textContent = "📷 Uruchom kamerę";
+      }
+
+      $("cameraButton").addEventListener("click", async () => {
+        $("cameraError").textContent = "";
+        if (state.cameraStream) {
+          stopCamera();
+          return;
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          $("cameraError").textContent = "Ta przeglądarka nie udostępnia kamery. Otwórz stronę przez HTTPS lub localhost.";
+          return;
+        }
+        try {
+          state.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          $("cameraPreview").srcObject = state.cameraStream;
+          $("cameraPreview").hidden = false;
+          $("cameraPlaceholder").hidden = true;
+          $("cameraButton").textContent = "⏹ Wyłącz kamerę";
+        } catch (error) {
+          const messages = {
+            NotAllowedError: "Brak zgody na dostęp do kamery lub mikrofonu. Zezwól na dostęp w ustawieniach przeglądarki.",
+            NotFoundError: "Nie znaleziono kamery ani mikrofonu podłączonego do urządzenia.",
+            NotReadableError: "Kamera jest zajęta przez inną aplikację."
+          };
+          $("cameraError").textContent = messages[error.name] || "Nie udało się uruchomić kamery. Sprawdź urządzenie i uprawnienia przeglądarki.";
+        }
+      });
+
+      $("liveButton").addEventListener("click", () => {
+        if (state.banned || state.followers < 1000) return;
+        if (!state.live && !state.cameraStream) {
+          $("cameraError").textContent = "Najpierw uruchom kamerę, żeby rozpocząć LIVE.";
+          return;
+        }
+        state.live = !state.live;
+        updateStats();
+        if (state.live) {
+          addChat("System", "Transmisja rozpoczęta — przywitaj nowych widzów! 🔴", "system");
+          addGeneratedComment();
+          scheduleDonation();
+        } else {
+          clearTimeout(state.donateTimer);
+          addChat("System", "Transmisja zakończona. Dzięki za wspólny czas!", "system");
+        }
+      });
+      $("closeBan").addEventListener("click", () => { $("banModal").hidden = true; });
+      $("resetButton").addEventListener("click", () => {
+        stopCamera();
+        state.followers = 0;
+        state.views = 0;
+        state.balance = 0;
+        state.live = false;
+        state.banned = false;
+        state.posts = [];
+        state.stories = [];
+        state.liked.clear();
+        state.chatHistory = [];
+        clearInterval(state.growthTimer);
+        clearInterval(state.clockTimer);
+        clearTimeout(state.donateTimer);
+        clearTimeout(showDonation.toastTimer);
+        objectUrls.forEach((url) => URL.revokeObjectURL(url));
+        objectUrls = [];
+        $("banModal").hidden = true;
+        $("donationToast").classList.remove("show");
+        $("caption").value = "";
+        clearPreviews();
+        $("createPrompt").hidden = false;
+        $("createPreview").hidden = true;
+        $("cameraError").textContent = "";
+        renderStories();
+        renderPosts();
+        $("chatFeed").replaceChildren();
+        updateStats();
+        addChat("System", "Nowa symulacja wystartowała. Cześć! 👋", "system");
+        startTimers();
+      });
+      function switchTab(tab) {
+        document.querySelectorAll("[data-panel]").forEach((panel) => {
+          panel.hidden = panel.dataset.panel !== tab;
+        });
+        document.querySelectorAll(".tab-nav").forEach((button) => {
+          button.classList.toggle("active", button.dataset.tab === tab);
+        });
+        if (tab === "profile") renderPostsInto($("profileFeed"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      document.querySelectorAll(".tab-nav").forEach((button) => {
+        button.addEventListener("click", () => switchTab(button.dataset.tab));
+      });
+      $("createDrop").addEventListener("dragover", (event) => {
+        event.preventDefault();
+        $("createDrop").classList.add("dragover");
+      });
+      $("createDrop").addEventListener("dragleave", (event) => {
+        if (!$("createDrop").contains(event.relatedTarget)) $("createDrop").classList.remove("dragover");
+      });
+      $("createDrop").addEventListener("drop", (event) => {
+        event.preventDefault();
+        $("createDrop").classList.remove("dragover");
+        const files = Array.from(event.dataTransfer.files || []);
+        const media = files.filter((file) => file.type.startsWith("image/") || file.type.startsWith("video/"));
+        if (!media.length) {
+          $("uploadError").textContent = "Przeciągnij tutaj zdjęcie lub film.";
+          return;
+        }
+        const containsVideo = media.some((file) => file.type.startsWith("video/"));
+        if (containsVideo && media.length > 1) {
+          $("uploadError").textContent = "Film dodaj osobno — zestawy mogą zawierać kilka zdjęć.";
+          return;
+        }
+        if (containsVideo) {
+          $("videoInput").value = "";
+          $("photoInput").value = "";
+          showPreviews([media[0]]);
+        } else {
+          $("videoInput").value = "";
+          showPreviews(media.slice(0, 10));
+        }
+      });
+
+      function startTimers() {
+        state.clockStarted = Date.now();
+        state.growthTimer = setInterval(growCommunity, 3000);
+        updateClock();
+        state.clockTimer = setInterval(updateClock, 5000);
+        clearInterval(state.chatTimer);
+        state.chatTimer = setInterval(addGeneratedComment, 2100 + Math.random() * 1300);
+      }
+
+      renderPosts();
+      updateStats();
+      addChat("System", "Czat pojawi się po rozpoczęciu transmisji LIVE.", "system");
+      startTimers();
+    })();
+  </script>
+</body>
+</html>
