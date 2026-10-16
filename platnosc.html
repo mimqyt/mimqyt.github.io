@@ -29,6 +29,8 @@
     .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
     .back-link { color: var(--muted); text-decoration: none; font-size: 12px; }
     .back-link:hover { color: var(--blue); }
+    .claim-link { color: var(--blue); text-decoration: none; font-size: 12px; font-weight: 700; }
+    .claim-link:hover { text-decoration: underline; }
     .intro { padding: 43px 0 27px; }
     .eyebrow { margin: 0 0 10px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: 1.5px; text-transform: uppercase; }
     h1 { max-width: 760px; margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: 1.02; letter-spacing: -.07em; }
@@ -197,8 +199,9 @@
 </head>
 <body>
   <header class="topbar wrap">
-    <a class="brand" href="ubezpieczenia.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
-    <a class="back-link" href="ubezpieczenia.html">← Wróć do konfiguratora</a>
+    <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+    <a class="claim-link" href="szkoda.html">Zgłoś szkodę</a>
+    <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
   </header>
 
   <main class="wrap">
@@ -329,7 +332,7 @@
 
   <footer class="footer wrap">
     <span>© 2026 forma · Projekt demonstracyjny</span>
-    <a class="back-link" href="ubezpieczenia.html">← Wróć do konfiguratora</a>
+    <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
