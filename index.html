@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f1eb">
+  <meta name="description" content="Wybierz zakres ubezpieczenia i sprawdź orientacyjną składkę.">
+  <title>forma — ubezpieczenia po Twojemu</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3f1eb;
+      --ink: #171916;
+      --muted: #72766e;
+      --line: #d8d8cf;
+      --panel: #fbfaf6;
+      --blue: #344ce0;
+      --blue-dark: #2638b5;
+      --lime: #d8f45a;
+      --orange: #f0744c;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.55 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(1260px, calc(100% - 64px)); margin-inline: auto; }
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
+    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .top-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 13px; }
+    .top-links a { color: inherit; text-decoration: none; }
+    .top-links a:hover { color: var(--blue); }
+    .help-link { padding: 9px 14px; border: 1px solid var(--line); border-radius: 99px; color: var(--ink) !important; }
+    .hero { display: grid; grid-template-columns: 1fr 310px; align-items: end; gap: 48px; padding: 58px 0 43px; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 15px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: 1.5px; text-transform: uppercase; }
+    .eyebrow::before { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); content: ""; }
+    h1 { max-width: 780px; margin: 0; font-size: clamp(44px, 7vw, 86px); line-height: .98; letter-spacing: -.075em; font-weight: 650; }
+    h1 em { color: var(--blue); font-family: var(--serif); font-weight: 400; }
+    .hero-aside { padding: 2px 0 4px 20px; border-left: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    .hero-aside strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 16px; }
+    .hero-aside p { margin: 0; }
+    .stepbar { display: flex; align-items: center; gap: 13px; padding: 15px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    .step { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .step-number { display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); font-size: 11px; }
+    .step.active { color: var(--ink); font-weight: 700; }
+    .step.active .step-number { color: white; background: var(--blue); border-color: var(--blue); }
+    .step-line { width: 42px; height: 1px; background: var(--line); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 46px; align-items: start; padding: 34px 0 82px; }
+    .section-title { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 17px; }
+    h2 { margin: 0; font-size: 22px; letter-spacing: -.8px; }
+    .section-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .selection-count { color: var(--muted); font-size: 12px; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+    .product {
+      position: relative;
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      transition: border-color .18s, background .18s, transform .18s;
+    }
+    .product:hover { transform: translateY(-2px); border-color: var(--blue); }
+    .product[aria-pressed="true"] { border-color: var(--blue); background: var(--blue); color: white; }
+    .product-icon { font-size: 21px; line-height: 1; }
+    .product-name { font-size: 13px; font-weight: 700; letter-spacing: -.2px; }
+    .product-description { display: block; margin-top: 1px; opacity: .7; font-size: 10px; font-weight: 400; }
+    .options-section { margin-top: 39px; }
+    .options-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .option {
+      position: relative;
+      min-height: 78px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--panel);
+      cursor: pointer;
+      transition: border-color .16s, background .16s;
+    }
+    .option:hover { border-color: #9b9e93; }
+    .option:has(input:checked) { border-color: var(--blue); background: #f0f1ff; }
+    .option input { width: 17px; height: 17px; flex: 0 0 auto; margin: 2px 0 0; accent-color: var(--blue); }
+    .option-copy { min-width: 0; flex: 1; }
+    .option-copy strong { display: block; font-size: 13px; line-height: 1.35; }
+    .option-copy small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .option-price { flex: 0 0 auto; margin-left: auto; color: var(--blue); font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .field label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; }
+    .field input {
+      width: 100%;
+      min-height: 45px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      outline: 0;
+      background: var(--panel);
+      color: var(--ink);
+    }
+    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px #344ce01a; }
+    .field-hint { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .quote-card { position: sticky; top: 24px; overflow: hidden; border: 1px solid var(--ink); background: var(--panel); }
+    .quote-top { padding: 21px 21px 17px; color: white; background: var(--ink); }
+    .quote-label { color: #c1c3bc; font-size: 11px; letter-spacing: .5px; }
+    .quote-amount { display: flex; align-items: baseline; gap: 6px; margin-top: 5px; }
+    .quote-amount strong { font-size: 44px; line-height: 1; letter-spacing: -2.5px; }
+    .quote-amount span { color: #d2d3cc; font-size: 13px; }
+    .quote-footnote { margin: 8px 0 0; color: #b6b8b0; font-size: 10px; }
+    .quote-body { padding: 18px 21px 20px; }
+    .quote-product { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-bottom: 13px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 700; }
+    .quote-product small { color: var(--muted); font-size: 11px; font-weight: 400; }
+    .summary-title { margin: 16px 0 7px; color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: 1px; text-transform: uppercase; }
+    .summary-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .summary-list li { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; }
+    .summary-list li span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .summary-list .empty { color: var(--muted); }
+    .summary-list li span:last-child { color: var(--muted); white-space: nowrap; }
+    .cta {
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding: 0 15px;
+      border: 0;
+      border-radius: 2px;
+      background: var(--blue);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .16s;
+    }
+    .cta:hover { background: var(--blue-dark); }
+    .cta:focus-visible, .product:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+    .notice { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .notice strong { color: var(--ink); }
+    .why { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 27px; padding-top: 19px; border-top: 1px solid var(--line); }
+    .why-item { color: var(--muted); font-size: 11px; }
+    .why-item b { display: block; margin-bottom: 4px; color: var(--ink); font-size: 12px; }
+    .footer { display: flex; justify-content: space-between; gap: 20px; padding: 17px 0 25px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+    .footer a { color: inherit; text-decoration: none; }
+    .toast { position: fixed; right: 24px; bottom: 24px; z-index: 3; max-width: min(420px, calc(100vw - 36px)); padding: 15px 18px; border: 1px solid var(--ink); background: var(--lime); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); font-size: 13px; font-weight: 650; animation: rise .22s ease both; }
+    .toast[hidden] { display: none; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 950px) {
+      .workspace { grid-template-columns: minmax(0, 1fr) 300px; gap: 26px; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero { grid-template-columns: 1fr 250px; gap: 28px; }
+    }
+    @media (max-width: 700px) {
+      .wrap { width: min(100% - 36px, 560px); }
+      .topbar { height: 64px; }
+      .top-links { gap: 12px; }
+      .top-links a:not(.help-link) { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 20px; padding: 39px 0 29px; }
+      h1 { font-size: clamp(46px, 12vw, 70px); }
+      .hero-aside { max-width: 410px; padding-left: 14px; }
+      .stepbar { gap: 8px; overflow-x: auto; }
+      .step-line { width: 18px; flex: 0 0 18px; }
+      .step { font-size: 10px; }
+      .workspace { grid-template-columns: 1fr; gap: 27px; padding-top: 25px; }
+      .quote-card { position: static; grid-row: 1; }
+      .product { min-height: 98px; }
+      .options-list { grid-template-columns: 1fr; }
+      .details { grid-template-columns: 1fr 1fr; }
+      .why { gap: 10px; }
+      .why-item { font-size: 10px; }
+      .footer { flex-direction: column; gap: 7px; }
+    }
+    @media (max-width: 390px) {
+      .product-grid { gap: 7px; }
+      .product { padding: 10px; }
+      .details { grid-template-columns: 1fr; }
+      .selection-count { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="#" aria-label="forma — strona główna"><span class="brand-mark">f</span>forma</a>
+    <nav class="top-links" aria-label="Nawigacja">
+      <a href="#rodzaje">Rodzaje ochrony</a>
+      <a href="#jak-to-dziala">Jak to działa</a>
+      <a class="help-link" href="mailto:kontakt@forma.example">Masz pytanie? ↗</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="main-title">
+      <div>
+        <p class="eyebrow">Ubezpieczenia, bez komplikacji</p>
+        <h1 id="main-title">Spokój ma<br>swoją <em>formę.</em></h1>
+      </div>
+      <aside class="hero-aside">
+        <strong>Ochrona na Twoich zasadach.</strong>
+        <p>Wybierz to, czego potrzebujesz. Zobacz przejrzyste podsumowanie i orientacyjną składkę — bez zobowiązań.</p>
+      </aside>
+    </section>
+
+    <div class="stepbar" aria-label="Etapy kalkulacji">
+      <span class="step active"><span class="step-number">01</span>Wybierz ochronę</span>
+      <span class="step-line" aria-hidden="true"></span>
+      <span class="step"><span class="step-number">02</span>Dopasuj zakres</span>
+      <span class="step-line" aria-hidden="true"></span>
+      <span class="step"><span class="step-number">03</span>Sprawdź wycenę</span>
+    </div>
+
+    <div class="workspace">
+      <div class="configuration">
+        <section id="rodzaje" aria-labelledby="products-heading">
+          <div class="section-title">
+            <div><h2 id="products-heading">Co chcesz ubezpieczyć?</h2><p>Wybierz kategorię, którą chcesz skonfigurować.</p></div>
+            <span class="selection-count">01 / 08 rodzajów</span>
+          </div>
+          <div class="product-grid" id="productGrid" role="group" aria-label="Rodzaj ubezpieczenia"></div>
+        </section>
+
+        <section class="options-section" aria-labelledby="options-heading">
+          <div class="section-title">
+            <div><h2 id="options-heading">Zbuduj swój zakres</h2><p id="optionsDescription">Zaznacz elementy, które chcesz objąć ochroną.</p></div>
+          </div>
+          <div class="options-list" id="optionsList"></div>
+          <div class="details" id="details" aria-label="Parametry kalkulacji"></div>
+          <div class="why" id="jak-to-dziala">
+            <div class="why-item"><b>Ty decydujesz</b>Dodaj tylko te elementy, których naprawdę potrzebujesz.</div>
+            <div class="why-item"><b>Bez drobnego druku</b>Widzisz zakres i składniki szacunkowej ceny.</div>
+            <div class="why-item"><b>Bez zobowiązań</b>Kalkulator ma charakter orientacyjny.</div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="quote-card" aria-label="Podsumowanie ubezpieczenia">
+        <div class="quote-top">
+          <span class="quote-label">TWOJA ORIENTACYJNA SKŁADKA</span>
+          <div class="quote-amount"><strong id="price">—</strong><span>zł / mies.</span></div>
+          <p class="quote-footnote" id="priceNote">Wybierz zakres, aby obliczyć szacunkową cenę.</p>
+        </div>
+        <div class="quote-body">
+          <div class="quote-product"><span id="summaryProduct">Ubezpieczenie</span><small id="summaryCount">0 opcji</small></div>
+          <p class="summary-title">Wybrany zakres</p>
+          <ul class="summary-list" id="summaryList" aria-live="polite"><li class="empty">Wybierz ochronę, aby zobaczyć podsumowanie.</li></ul>
+          <button class="cta" id="summaryButton" type="button"><span>Przygotuj podsumowanie</span><span aria-hidden="true">↗</span></button>
+          <p class="notice"><strong>Ważne:</strong> prezentowana składka jest wyłącznie przykładową symulacją, a zakres i cena wymagają potwierdzenia przez ubezpieczyciela. Nie stanowi oferty ani rekomendacji.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer wrap">
+    <span>© 2026 forma · Projekt demonstracyjny</span>
+    <span>To narzędzie pokazuje przykładowy zakres i nie sprzedaje polis.</span>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    (() => {
+      const products = [
+        { id: "auto", icon: "↗", name: "Samochód", description: "OC, AC i dodatki", base: 42,
+          options: [
+            ["oc", "OC komunikacyjne", "Obowiązkowa odpowiedzialność cywilna posiadacza pojazdu.", 0, true],
+            ["ac", "Autocasco (AC)", "Ochrona pojazdu m.in. od kradzieży i uszkodzeń.", 58],
+            ["nnw", "NNW kierowcy i pasażerów", "Świadczenie w razie następstw nieszczęśliwego wypadku.", 9],
+            ["assistance", "Assistance 24/7", "Pomoc na drodze, holowanie i wsparcie po awarii.", 14],
+            ["szyby", "Ubezpieczenie szyb", "Naprawa lub wymiana szyby po jej uszkodzeniu.", 8],
+            ["prawna", "Ochrona prawna", "Wsparcie w sporach związanych z użytkowaniem pojazdu.", 6],
+            ["zastepcze", "Auto zastępcze", "Pokrycie kosztów pojazdu zastępczego po zdarzeniu.", 11]
+          ], fields: [["Wartość pojazdu (zł)", "value", "number", 60000, 10000, 1000000, 1000], ["Wiek kierowcy", "age", "number", 35, 18, 100, 1]] },
+        { id: "dom", icon: "⌂", name: "Dom i mieszkanie", description: "Mury, rzeczy i OC", base: 18,
+          options: [
+            ["nieruchomosc", "Mury i elementy stałe", "Ochrona budynku lub lokalu m.in. od ognia i zalania.", 0, true],
+            ["ruchomosci", "Ruchomości domowe", "Wyposażenie, meble i sprzęt w miejscu ubezpieczenia.", 8],
+            ["oc", "OC w życiu prywatnym", "Szkody wyrządzone nieumyślnie innym osobom.", 6],
+            ["assistance", "Home Assistance", "Pomoc fachowca w nagłych awariach domowych.", 5],
+            ["powodz", "Powódź i podtopienie", "Rozszerzenie ochrony o ryzyko powodziowe.", 7],
+            ["przepiecia", "Przepięcia elektryczne", "Uszkodzenia sprzętu wskutek przepięcia.", 4],
+            ["stluczenie", "Stłuczenie przedmiotów", "Szyby, lustra i płyty kuchenne.", 3]
+          ], fields: [["Wartość nieruchomości (zł)", "value", "number", 500000, 50000, 10000000, 10000], ["Powierzchnia (m²)", "area", "number", 60, 10, 2000, 1]] },
+        { id: "podroz", icon: "✳", name: "Podróż", description: "Wyjazd w Polsce i za granicą", base: 12,
+          options: [
+            ["koszty", "Koszty leczenia i assistance", "Pomoc medyczna i organizacyjna podczas podróży.", 0, true],
+            ["nnw", "NNW", "Świadczenie w razie uszczerbku na zdrowiu.", 4],
+            ["bagaz", "Bagaż podróżny", "Ochrona bagażu w razie utraty lub uszkodzenia.", 4],
+            ["rezygnacja", "Koszty rezygnacji", "Zwrot kosztów w określonych sytuacjach losowych.", 8],
+            ["oc", "OC w życiu prywatnym", "Odpowiedzialność za szkody wyrządzone innym.", 3],
+            ["sport", "Sporty podwyższonego ryzyka", "Rozszerzenie ochrony dla wybranych aktywności.", 7],
+            ["praca", "Praca fizyczna za granicą", "Rozszerzenie dla wyjazdów zarobkowych.", 9]
+          ], fields: [["Liczba dni", "days", "number", 7, 1, 365, 1], ["Liczba podróżujących", "people", "number", 1, 1, 20, 1]] },
+        { id: "zycie", icon: "◉", name: "Życie", description: "Wsparcie dla bliskich", base: 35,
+          options: [
+            ["zycie", "Ubezpieczenie na życie", "Podstawowa ochrona finansowa bliskich.", 0, true],
+            ["wypadek", "Trwały uszczerbek po wypadku", "Świadczenie za następstwa nieszczęśliwego wypadku.", 12],
+            ["choroby", "Poważne zachorowanie", "Wsparcie po diagnozie choroby objętej zakresem.", 24],
+            ["szpital", "Pobyt w szpitalu", "Świadczenie za hospitalizację zgodnie z warunkami.", 11],
+            ["niezdolnosc", "Niezdolność do pracy", "Ochrona na wypadek niezdolności do pracy.", 19],
+            ["dziecko", "Ochrona dziecka", "Rozszerzenie ochrony o wybrane zdarzenia dotyczące dziecka.", 14]
+          ], fields: [["Suma ubezpieczenia (zł)", "value", "number", 100000, 10000, 5000000, 10000], ["Wiek osoby ubezpieczonej", "age", "number", 35, 18, 80, 1]] },
+        { id: "zdrowie", icon: "＋", name: "Zdrowie", description: "Prywatna opieka medyczna", base: 69,
+          options: [
+            ["telemedycyna", "Konsultacje internistyczne", "Dostęp do konsultacji i podstawowej opieki.", 0, true],
+            ["specjalisci", "Lekarze specjaliści", "Konsultacje u wybranych specjalistów.", 39],
+            ["badania", "Badania diagnostyczne", "Dostęp do określonych badań laboratoryjnych i obrazowych.", 24],
+            ["stomatologia", "Stomatologia", "Podstawowy zakres usług stomatologicznych.", 29],
+            ["rehabilitacja", "Rehabilitacja", "Wybrane zabiegi fizjoterapeutyczne.", 18],
+            ["psycholog", "Wsparcie psychologiczne", "Konsultacje psychologiczne w określonym limicie.", 16]
+          ], fields: [["Liczba osób", "people", "number", 1, 1, 20, 1], ["Wiek głównej osoby", "age", "number", 35, 0, 100, 1]] },
+        { id: "firma", icon: "▦", name: "Firma", description: "Majątek i odpowiedzialność", base: 55,
+          options: [
+            ["mienie", "Mienie firmowe", "Ochrona wyposażenia i majątku przedsiębiorstwa.", 0, true],
+            ["oc", "OC działalności", "Odpowiedzialność cywilna związana z prowadzoną działalnością.", 32],
+            ["cyber", "Ryzyka cybernetyczne", "Wsparcie przy wybranych incydentach cybernetycznych.", 28],
+            ["prawna", "Ochrona prawna", "Pomoc prawna w sprawach związanych z działalnością.", 18],
+            ["przerwa", "Przerwa w działalności", "Ochrona finansowa po objętym zdarzeniu.", 25],
+            ["sprzet", "Sprzęt elektroniczny", "Ochrona wybranego sprzętu firmowego.", 14]
+          ], fields: [["Liczba pracowników", "people", "number", 5, 0, 10000, 1], ["Wartość mienia (zł)", "value", "number", 100000, 1000, 100000000, 1000]] },
+        { id: "nnw", icon: "✳", name: "NNW", description: "Ochrona od następstw wypadków", base: 13,
+          options: [
+            ["uszczerbek", "Trwały uszczerbek na zdrowiu", "Świadczenie zależne od ustalonego uszczerbku.", 0, true],
+            ["smierc", "Śmierć w następstwie wypadku", "Świadczenie dla uposażonych zgodnie z umową.", 6],
+            ["szpital", "Pobyt w szpitalu", "Świadczenie za hospitalizację po wypadku.", 7],
+            ["rehabilitacja", "Koszty rehabilitacji", "Wsparcie finansowe leczenia usprawniającego.", 8],
+            ["sport", "Sport amatorski", "Rozszerzenie ochrony na amatorską aktywność sportową.", 5],
+            ["dziecko", "Ochrona dziecka", "Wariant NNW dostosowany do potrzeb dziecka.", 9]
+          ], fields: [["Suma ubezpieczenia (zł)", "value", "number", 50000, 5000, 1000000, 5000], ["Wiek osoby ubezpieczonej", "age", "number", 30, 0, 100, 1]] },
+        { id: "zwierze", icon: "♡", name: "Pupil", description: "Zdrowie i bezpieczeństwo pupila", base: 25,
+          options: [
+            ["weterynarz", "Koszty leczenia weterynaryjnego", "Zwrot kosztów leczenia w zakresie umowy.", 0, true],
+            ["operacja", "Operacje i zabiegi", "Ochrona kosztów wybranych zabiegów chirurgicznych.", 18],
+            ["oc", "OC właściciela", "Szkody wyrządzone przez zwierzę osobom trzecim.", 9],
+            ["poszukiwanie", "Zaginięcie i poszukiwanie", "Wsparcie w razie zaginięcia ubezpieczonego pupila.", 4],
+            ["assistance", "Pet Assistance", "Organizacyjna pomoc w wybranych sytuacjach.", 5],
+            ["profilaktyka", "Profilaktyka", "Wybrane świadczenia profilaktyczne.", 12]
+          ], fields: [["Wiek pupila (lata)", "age", "number", 3, 0, 30, 1], ["Roczny limit leczenia (zł)", "value", "number", 5000, 500, 100000, 500]] }
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const state = { product: products[0], selected: new Set(["oc"]), toastTimer: null };
+      const PRICE_MULTIPLIER = 3;
+      const formatPrice = (value) => new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 }).format(value);
+      const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+
+      function renderProducts() {
+        $("productGrid").innerHTML = products.map((product) => `
+          <button class="product" type="button" data-product="${product.id}" aria-pressed="${product.id === state.product.id}">
+            <span class="product-icon" aria-hidden="true">${product.icon}</span>
+            <span class="product-name">${product.name}<span class="product-description">${product.description}</span></span>
+          </button>
+        `).join("");
+      }
+
+      function renderOptions() {
+        $("optionsDescription").textContent = `Zaznacz elementy, które chcesz objąć ochroną dla: ${state.product.name.toLowerCase()}.`;
+        $("optionsList").innerHTML = state.product.options.map(([id, name, description, price, required]) => `
+          <label class="option">
+            <input type="checkbox" data-option="${id}" ${state.selected.has(id) ? "checked" : ""} ${required ? "disabled checked" : ""}>
+            <span class="option-copy"><strong>${name}${required ? " · podstawowa" : ""}</strong><small>${description}</small></span>
+            <span class="option-price">${price ? `+ ${formatPrice(price * PRICE_MULTIPLIER)} zł` : "w cenie"}</span>
+          </label>
+        `).join("");
+        $("details").innerHTML = state.product.fields.map(([label, id, type, initial, min, max, step]) => `
+          <div class="field">
+            <label for="field-${id}">${label}</label>
+            <input id="field-${id}" type="${type}" inputmode="numeric" data-field="${id}" value="${initial}" min="${min}" max="${max}" step="${step}">
+            <span class="field-hint">Parametr używany wyłącznie do orientacyjnej kalkulacji.</span>
+          </div>
+        `).join("");
+        renderProducts();
+        updateQuote();
+      }
+
+      function calculatePrice() {
+        const inputs = Array.from($("details").querySelectorAll("input"));
+        const values = Object.fromEntries(inputs.map((input) => [input.dataset.field, Number(input.value) || Number(input.min) || 0]));
+        let price = state.product.base;
+        for (const [id, , , optionPrice] of state.product.options) {
+          if (state.selected.has(id)) price += optionPrice;
+        }
+        if (state.product.id === "auto") {
+          price += Math.max(0, (values.value - 30000) / 30000) * 8;
+          if (values.age < 25) price *= 1.35;
+        } else if (state.product.id === "dom") {
+          price += Math.max(0, (values.value - 250000) / 100000) * 3;
+        } else if (state.product.id === "podroz") {
+          price *= Math.max(1, values.days / 7) * Math.max(1, values.people);
+        } else if (state.product.id === "zycie") {
+          price *= Math.max(.7, values.value / 100000);
+          if (values.age > 45) price *= 1 + (values.age - 45) * .018;
+        } else if (state.product.id === "zdrowie") {
+          price *= Math.max(1, values.people);
+          if (values.age > 50) price *= 1.15;
+        } else if (state.product.id === "firma") {
+          price += Math.max(0, values.people) * 2 + Math.max(0, (values.value - 50000) / 100000) * 4;
+        } else if (state.product.id === "nnw") {
+          price *= Math.max(.7, values.value / 50000);
+        } else if (state.product.id === "zwierze") {
+          price *= 1 + Math.max(0, values.age - 5) * .08;
+          price += Math.max(0, (values.value - 5000) / 2000);
+        }
+        return Math.max(9, Math.round(price * PRICE_MULTIPLIER));
+      }
+
+      function updateQuote() {
+        const chosen = state.product.options.filter(([id]) => state.selected.has(id));
+        const price = calculatePrice();
+        $("price").textContent = formatPrice(price);
+        $("priceNote").textContent = `Orientacyjna składka miesięczna · około ${formatPrice(price * 12)} zł rocznie`;
+        $("summaryProduct").textContent = state.product.name;
+        $("summaryCount").textContent = `${chosen.length} ${chosen.length === 1 ? "opcja" : chosen.length > 1 && chosen.length < 5 ? "opcje" : "opcji"}`;
+        $("summaryList").innerHTML = chosen.length
+          ? chosen.map(([, name, , amount]) => `<li><span>${escapeHtml(name)}</span><span>${amount ? `+${amount} zł` : "podst."}</span></li>`).join("")
+          : '<li class="empty">Nie wybrano dodatkowych opcji.</li>';
+      }
+
+      function showToast(message) {
+        const toast = $("toast");
+        toast.textContent = message;
+        toast.hidden = false;
+        clearTimeout(state.toastTimer);
+        state.toastTimer = setTimeout(() => { toast.hidden = true; }, 4500);
+      }
+
+      $("productGrid").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-product]");
+        if (!button) return;
+        state.product = products.find((product) => product.id === button.dataset.product);
+        const required = state.product.options.find((option) => option[4]);
+        state.selected = new Set(required ? [required[0]] : []);
+        renderOptions();
+      });
+
+      $("optionsList").addEventListener("change", (event) => {
+        const input = event.target.closest("[data-option]");
+        if (!input) return;
+        if (input.checked) state.selected.add(input.dataset.option);
+        else state.selected.delete(input.dataset.option);
+        updateQuote();
+      });
+
+      $("details").addEventListener("input", (event) => {
+        if (!event.target.matches("[data-field]")) return;
+        const input = event.target;
+        const value = Number(input.value);
+        if (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max)) {
+          input.setCustomValidity(`Wpisz wartość od ${input.min} do ${input.max}.`);
+          input.reportValidity();
+          return;
+        }
+        input.setCustomValidity("");
+        updateQuote();
+      });
+
+      $("summaryButton").addEventListener("click", () => {
+        const summary = {
+          product: state.product.name,
+          monthly: calculatePrice(),
+          options: state.product.options
+            .filter(([id]) => state.selected.has(id))
+            .map(([, name]) => name)
+        };
+        try {
+          sessionStorage.setItem("forma:checkout", JSON.stringify(summary));
+          window.location.assign("platnosc.html");
+        } catch (error) {
+          showToast("Nie udało się przygotować podsumowania w tej przeglądarce. Spróbuj ponownie.");
+          console.error("Nie udało się zapisać podsumowania ubezpieczenia.", error);
+        }
+      });
+
+      renderOptions();
+    })();
+  </script>
+</body>
+</html>
