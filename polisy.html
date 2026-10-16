@@ -72,6 +72,8 @@
     .policy-card h3, .pending-card h3 { margin: 0; font-size: 15px; }
     .policy-meta { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
     .policy-status { flex: 0 0 auto; padding: 5px 10px; border: 1px solid #c3e96455; border-radius: 99px; background: #d4ff7212; color: #edffc2; font-size: 10px; font-weight: 750; }
+    .policy-status.pending { border-color: #a296ff55; background: #a296ff12; color: #d6cfff; }
+    .policy-status.cancelled { border-color: #ff9c7b55; background: #ff9c7b12; color: #ffb39d; }
     .policy-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 18px; margin: 17px 0 0; padding-top: 14px; border-top: 1px solid #ffffff17; }
     .policy-details div { min-width: 0; }
     .policy-details dt { color: var(--muted); font-size: 10px; }
@@ -82,8 +84,29 @@
     .empty-state p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
     .pending-list { display: grid; gap: 10px; }
     .pending-status { color: #d6cfff; font-size: 10px; font-weight: 750; }
+    .policy-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; padding-top: 13px; border-top: 1px solid #ffffff17; }
+    .policy-action { min-height: 36px; padding: 0 12px; border: 1px solid #ffffff25; border-radius: 10px; background: #ffffff08; color: white; font: inherit; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .policy-action:hover { border-color: #a296ff88; background: #a296ff15; }
+    .policy-action.cancel { color: #ffb39d; }
+    .policy-action.cancel:hover { border-color: #ff9c7b88; background: #ff9c7b12; }
     .error { margin-top: 18px; padding: 12px 14px; border: 1px solid #ff9c7b55; border-radius: 12px; color: #ffb39d; font-size: 12px; }
     .error[hidden] { display: none; }
+    .terms-dialog { width: min(480px, calc(100% - 28px)); padding: 0; border: 1px solid #ffffff28; border-radius: 19px; background: #151827; color: var(--ink); box-shadow: 0 28px 90px #0009; }
+    .terms-dialog::backdrop { background: #050610bd; backdrop-filter: blur(8px); }
+    .terms-form { padding: 22px; }
+    .terms-form h2 { font-size: 19px; }
+    .terms-form p { color: var(--muted); font-size: 11px; }
+    .terms-form label { display: block; margin: 15px 0 6px; font-size: 11px; font-weight: 700; }
+    .terms-options { display: grid; max-height: 300px; gap: 7px; overflow: auto; margin-top: 12px; }
+    .terms-option { display: flex; align-items: flex-start; gap: 10px; padding: 11px; border: 1px solid #ffffff1c; border-radius: 10px; background: #ffffff06; cursor: pointer; }
+    .terms-option:has(input:checked) { border-color: #a296ff88; background: #a296ff12; }
+    .terms-option input { width: 16px; height: 16px; flex: 0 0 auto; margin: 2px 0 0; accent-color: #a296ff; }
+    .terms-option-copy { min-width: 0; flex: 1; }
+    .terms-option-copy strong { display: block; font-size: 11px; }
+    .terms-option-copy small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .terms-option-price { color: #d6cfff; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .terms-price-preview { margin: 14px 0 0 !important; padding: 11px; border: 1px solid #ffffff20; border-radius: 10px; background: #ffffff07; color: white !important; font-size: 12px !important; }
+    .terms-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
     .footer { display: flex; justify-content: space-between; gap: 18px; padding: 17px 0 25px; border-top: 1px solid #ffffff15; color: #9298ac; font-size: 10px; }
     .footer a { color: #c1baff; text-decoration: none; }
     [hidden] { display: none !important; }
@@ -115,14 +138,14 @@
     <section class="intro">
       <p class="eyebrow">Twoja ochrona</p>
       <h1>Moje <em>polisy.</em></h1>
-      <p class="intro-copy">Sprawdź status aktywnych polis oraz zapisane potwierdzenia zaliczek.</p>
+      <p class="intro-copy">Sprawdź status lokalnych polis, zapisane zaliczki i ustawienia zakresu.</p>
     </section>
 
     <section class="policy-section" aria-labelledby="activePoliciesHeading">
       <div class="section-heading">
         <div>
           <h2 id="activePoliciesHeading">Aktywne polisy</h2>
-          <p>Umowy potwierdzone przez ubezpieczyciela.</p>
+          <p>Statusy i dane zapisane w tej aplikacji.</p>
         </div>
       </div>
       <div class="policy-list" id="activePolicies" aria-live="polite">
@@ -145,6 +168,20 @@
     <p class="error" id="policiesError" role="alert" hidden></p>
   </main>
 
+  <dialog class="terms-dialog" id="termsDialog" aria-labelledby="termsHeading">
+    <form class="terms-form" id="termsForm">
+      <h2 id="termsHeading">Zmień warunki</h2>
+      <p>Wybierz zakres. Składka przeliczy się automatycznie; zmiana jest zapisywana lokalnie w aplikacji.</p>
+      <div class="terms-options" id="termsOptions" aria-label="Dostępne rozszerzenia"></div>
+      <p class="terms-price-preview" id="termsPricePreview" aria-live="polite"></p>
+      <p id="termsEditorMessage" role="status"></p>
+      <div class="terms-actions">
+        <button class="policy-action" id="cancelTerms" type="button">Wróć</button>
+        <button class="policy-action" id="saveTerms" type="submit">Zapisz warunki</button>
+      </div>
+    </form>
+  </dialog>
+
   <footer class="footer wrap">
     <span>© 2026 forma</span>
     <a href="szkoda.html">Zgłoś szkodę</a>
@@ -156,7 +193,26 @@
       const activeList = document.getElementById("activePolicies");
       const pendingList = document.getElementById("pendingPolicies");
       const error = document.getElementById("policiesError");
+      const termsDialog = document.getElementById("termsDialog");
+      const termsForm = document.getElementById("termsForm");
+      const termsOptions = document.getElementById("termsOptions");
+      const termsPricePreview = document.getElementById("termsPricePreview");
+      const termsEditorMessage = document.getElementById("termsEditorMessage");
+      const saveTerms = document.getElementById("saveTerms");
       const money = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const legacyCatalogs = {
+        "Samochód": [["oc", "OC komunikacyjne", 0, true], ["ac", "Autocasco (AC)", 174], ["nnw", "NNW kierowcy i pasażerów", 27], ["assistance", "Assistance 24/7", 42], ["szyby", "Ubezpieczenie szyb", 24], ["prawna", "Ochrona prawna", 18], ["zastepcze", "Auto zastępcze", 33]],
+        "Dom i mieszkanie": [["nieruchomosc", "Mury i elementy stałe", 0, true], ["ruchomosci", "Ruchomości domowe", 24], ["oc", "OC w życiu prywatnym", 18], ["assistance", "Home Assistance", 15], ["powodz", "Powódź i podtopienie", 21], ["przepiecia", "Przepięcia elektryczne", 12], ["stluczenie", "Stłuczenie przedmiotów", 9]],
+        "Podróż": [["koszty", "Koszty leczenia i assistance", 0, true], ["nnw", "NNW", 12], ["bagaz", "Bagaż podróżny", 12], ["rezygnacja", "Koszty rezygnacji", 24], ["oc", "OC w życiu prywatnym", 9], ["sport", "Sporty podwyższonego ryzyka", 21], ["praca", "Praca fizyczna za granicą", 27]],
+        "Życie": [["zycie", "Ubezpieczenie na życie", 0, true], ["wypadek", "Trwały uszczerbek po wypadku", 36], ["choroby", "Poważne zachorowanie", 72], ["szpital", "Pobyt w szpitalu", 33], ["niezdolnosc", "Niezdolność do pracy", 57], ["dziecko", "Ochrona dziecka", 42]],
+        "Zdrowie": [["telemedycyna", "Konsultacje internistyczne", 0, true], ["specjalisci", "Lekarze specjaliści", 117], ["badania", "Badania diagnostyczne", 72], ["stomatologia", "Stomatologia", 87], ["rehabilitacja", "Rehabilitacja", 54], ["psycholog", "Wsparcie psychologiczne", 48]],
+        "Firma": [["mienie", "Mienie firmowe", 0, true], ["oc", "OC działalności", 96], ["cyber", "Ryzyka cybernetyczne", 84], ["prawna", "Ochrona prawna", 54], ["przerwa", "Przerwa w działalności", 75], ["sprzet", "Sprzęt elektroniczny", 42]],
+        "NNW": [["uszczerbek", "Trwały uszczerbek na zdrowiu", 0, true], ["smierc", "Śmierć w następstwie wypadku", 18], ["szpital", "Pobyt w szpitalu", 21], ["rehabilitacja", "Koszty rehabilitacji", 24], ["sport", "Sport amatorski", 15], ["dziecko", "Ochrona dziecka", 27]],
+        "Pupil": [["weterynarz", "Koszty leczenia weterynaryjnego", 0, true], ["operacja", "Operacje i zabiegi", 54], ["oc", "OC właściciela", 27], ["poszukiwanie", "Zaginięcie i poszukiwanie", 12], ["assistance", "Pet Assistance", 15], ["profilaktyka", "Profilaktyka", 36]]
+      };
+      const activationTimers = new Map();
+      let policyBeingEdited = null;
+      let editingOptionIds = new Set();
 
       function formatDate(value) {
         if (!value) return "—";
@@ -207,7 +263,7 @@
         copy.append(title, number);
         const status = document.createElement("span");
         status.className = "policy-status";
-        status.textContent = "Aktywna";
+        status.textContent = "Aktywna · lokalny status";
         top.append(copy, status);
 
         const details = document.createElement("dl");
@@ -215,8 +271,24 @@
         addDetail(details, "Początek ochrony", formatDate(policy.startDate));
         addDetail(details, "Koniec ochrony", formatDate(policy.endDate));
         addDetail(details, "Zakres", Array.isArray(policy.options) && policy.options.length ? policy.options.join(", ") : "—");
-        addDetail(details, "Składka", typeof policy.premium === "number" ? `${money.format(policy.premium)} zł` : "—");
+        addDetail(details, "Składka roczna", typeof policy.premium === "number" ? `${money.format(policy.premium)} zł` : "—");
         card.append(top, details);
+        if (policy.status === "active") {
+          const actions = document.createElement("div");
+          actions.className = "policy-actions";
+          const edit = document.createElement("button");
+          edit.className = "policy-action";
+          edit.type = "button";
+          edit.dataset.editPolicy = policy.id;
+          edit.textContent = "Zmień warunki";
+          const cancel = document.createElement("button");
+          cancel.className = "policy-action cancel";
+          cancel.type = "button";
+          cancel.dataset.cancelPolicy = policy.id;
+          cancel.textContent = "Anuluj polisę";
+          actions.append(edit, cancel);
+          card.append(actions);
+        }
         return card;
       }
 
@@ -228,8 +300,8 @@
         const title = document.createElement("h3");
         title.textContent = payment.product || "Ubezpieczenie";
         const status = document.createElement("span");
-        status.className = "pending-status";
-        status.textContent = "Oczekuje na zawarcie umowy";
+        status.className = `pending-status${payment.status === "cancelled" ? " policy-status cancelled" : ""}`;
+        status.textContent = payment.status === "pending_activation" ? "Akceptacja za chwilę" : payment.status === "cancelled" ? "Anulowana" : "Oczekuje";
         top.append(title, status);
         const meta = document.createElement("p");
         meta.className = "policy-meta";
@@ -239,13 +311,130 @@
         return card;
       }
 
+      function updateTermsPrice() {
+        if (!policyBeingEdited || !Array.isArray(policyBeingEdited.optionCatalog)) return;
+        const monthly = Math.round(policyBeingEdited.baseMonthly + policyBeingEdited.optionCatalog
+          .filter((option) => editingOptionIds.has(option.id))
+          .reduce((total, option) => total + option.monthlyPrice, 0));
+        termsPricePreview.textContent = `Nowa składka: ${money.format(monthly)} zł / mies. · ${money.format(monthly * 12)} zł / rok`;
+      }
+
+      function prepareTermsEditor(policy) {
+        const checkout = (() => {
+          try {
+            return JSON.parse(sessionStorage.getItem("forma:checkout") || "null");
+          } catch (storageError) {
+            console.error("Nie udało się odczytać zapisanej konfiguracji.", storageError);
+            return null;
+          }
+        })();
+        const checkoutMatches = checkout && checkout.product === policy.product && Array.isArray(checkout.optionCatalog);
+        const catalog = Array.isArray(policy.optionCatalog) && policy.optionCatalog.length
+          ? policy.optionCatalog
+          : checkoutMatches ? checkout.optionCatalog : (legacyCatalogs[policy.product] || []).map(([id, name, monthlyPrice, required]) => ({
+              id,
+              name,
+              description: "",
+              monthlyPrice,
+              required: Boolean(required)
+            }));
+        if (!catalog.length) {
+          termsOptions.replaceChildren();
+          termsEditorMessage.textContent = "Nie znaleziono listy rozszerzeń dla tej konfiguracji.";
+          termsPricePreview.textContent = `Obecna składka roczna: ${money.format(policy.premium || 0)} zł`;
+          saveTerms.disabled = true;
+          return;
+        }
+        policyBeingEdited.optionCatalog = catalog
+          .filter((option) => option && typeof option.id === "string" && typeof option.name === "string" && Number.isFinite(option.monthlyPrice) && option.monthlyPrice >= 0)
+          .map((option) => ({ ...option, required: Boolean(option.required) }));
+        const currentNames = new Set(Array.isArray(policy.options) ? policy.options : []);
+        editingOptionIds = new Set(Array.isArray(policy.optionIds)
+          ? policy.optionIds
+          : policyBeingEdited.optionCatalog.filter((option) => currentNames.has(option.name)).map((option) => option.id));
+        policyBeingEdited.optionCatalog.forEach((option) => {
+          if (option.required) editingOptionIds.add(option.id);
+        });
+        const selectedAddons = policyBeingEdited.optionCatalog
+          .filter((option) => editingOptionIds.has(option.id))
+          .reduce((total, option) => total + option.monthlyPrice, 0);
+        if (!Number.isFinite(policyBeingEdited.baseMonthly)) {
+          policyBeingEdited.baseMonthly = Math.max(0, (policy.premium || 0) / 12 - selectedAddons);
+        }
+        termsEditorMessage.textContent = "";
+        saveTerms.disabled = false;
+        termsOptions.replaceChildren();
+        for (const option of policyBeingEdited.optionCatalog) {
+          const label = document.createElement("label");
+          label.className = "terms-option";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.dataset.option = option.id;
+          checkbox.checked = editingOptionIds.has(option.id);
+          checkbox.disabled = option.required;
+          const copy = document.createElement("span");
+          copy.className = "terms-option-copy";
+          const name = document.createElement("strong");
+          name.textContent = option.name;
+          const description = document.createElement("small");
+          description.textContent = option.required ? "Element podstawowy" : option.description || "Dodatkowe rozszerzenie zakresu";
+          copy.append(name, description);
+          const price = document.createElement("span");
+          price.className = "terms-option-price";
+          price.textContent = option.monthlyPrice ? `+ ${money.format(option.monthlyPrice)} zł/mies.` : "w cenie";
+          label.append(checkbox, copy, price);
+          termsOptions.append(label);
+        }
+        updateTermsPrice();
+      }
+
       async function renderPolicies() {
         try {
-          const [policies, payments] = await Promise.all([
+          for (const timer of activationTimers.values()) window.clearTimeout(timer);
+          activationTimers.clear();
+          let policies = await window.FormaStore.getAll("policies");
+          const now = Date.now();
+          for (const policy of policies.filter((item) => item.status === "pending_activation")) {
+            const activationAt = new Date(policy.activationAt).getTime();
+            if (Number.isFinite(activationAt) && activationAt <= now) {
+              policy.status = "active";
+              policy.activatedAt = new Date(now).toISOString();
+              await window.FormaStore.put("policies", policy);
+              continue;
+            }
+            if (!Number.isFinite(activationAt)) {
+              error.hidden = false;
+              error.textContent = `Nieprawidłowa data aktywacji dla wpisu ${policy.policyNumber || policy.id}.`;
+              continue;
+            }
+            const timer = window.setTimeout(async () => {
+              try {
+                const latest = await window.FormaStore.get("policies", policy.id);
+                if (!latest || latest.status !== "pending_activation") return;
+                if (new Date(latest.activationAt).getTime() > Date.now()) {
+                  await renderPolicies();
+                  return;
+                }
+                latest.status = "active";
+                latest.activatedAt = new Date().toISOString();
+                await window.FormaStore.put("policies", latest);
+                await renderPolicies();
+              } catch (activationError) {
+                console.error("Nie udało się zaktualizować lokalnego statusu polisy.", activationError);
+                error.hidden = false;
+                error.textContent = `Nie udało się zaktualizować statusu polisy: ${activationError.message}`;
+              }
+            }, Math.min(activationAt - now, 2147483647));
+            activationTimers.set(policy.id, timer);
+          }
+          const [refreshedPolicies, payments] = await Promise.all([
             window.FormaStore.getAll("policies"),
             window.FormaStore.getAll("payments")
           ]);
+          policies = refreshedPolicies;
           const active = policies.filter((policy) => policy.status === "active");
+          const waiting = policies.filter((policy) => policy.status === "pending_activation");
+          const cancelled = policies.filter((policy) => policy.status === "cancelled");
           activeList.replaceChildren();
           if (active.length) {
             active.sort((first, second) => String(second.startDate || "").localeCompare(String(first.startDate || "")));
@@ -253,17 +442,39 @@
           } else {
             activeList.append(emptyState(
               "Brak aktywnych polis",
-              "Aktywna polisa pojawi się tutaj po potwierdzeniu zawarcia umowy przez ubezpieczyciela."
+              "Po zapisaniu konfiguracji jej status pojawi się tutaj."
             ));
           }
 
-          const confirmedPayments = payments
-            .filter((payment) => payment.method === "Symulacja" && payment.status === "Symulacja zaliczki zaakceptowana")
-            .sort((first, second) => String(second.paidAt || "").localeCompare(String(first.paidAt || "")));
           pendingList.replaceChildren();
-          if (confirmedPayments.length) {
-            confirmedPayments.forEach((payment) => pendingList.append(renderPendingPayment(payment)));
-          } else {
+          waiting.sort((first, second) => String(first.activationAt || "").localeCompare(String(second.activationAt || "")));
+          waiting.forEach((policy) => {
+            const item = renderPendingPayment({
+              product: policy.product,
+              amount: policy.deposit,
+              paidAt: policy.createdAt,
+              status: policy.status
+            });
+            const countdown = document.createElement("p");
+            countdown.className = "policy-meta";
+            const seconds = Math.max(0, Math.ceil((new Date(policy.activationAt).getTime() - Date.now()) / 1000));
+            countdown.textContent = `Numer polisy: ${policy.policyNumber} · Akceptacja za ${seconds} s`;
+            item.append(countdown);
+            pendingList.append(item);
+          });
+          cancelled.forEach((policy) => pendingList.append(renderPendingPayment({
+            product: policy.product,
+            amount: policy.deposit,
+            paidAt: policy.cancelledAt || policy.createdAt,
+            status: "cancelled"
+          })));
+          const paymentsWithoutPolicy = payments.filter((payment) =>
+            payment.method === "Symulacja" &&
+            payment.status === "Symulacja zaliczki zaakceptowana" &&
+            !policies.some((policy) => policy.id === payment.id)
+          );
+          paymentsWithoutPolicy.forEach((payment) => pendingList.append(renderPendingPayment(payment)));
+          if (!waiting.length && !cancelled.length && !paymentsWithoutPolicy.length) {
             pendingList.append(emptyState(
               "Brak zapisanych zaliczek",
               "Potwierdzone zaliczki i powiązane konfiguracje będą widoczne w tym miejscu."
@@ -277,6 +488,72 @@
           pendingList.replaceChildren();
         }
       }
+
+      activeList.addEventListener("click", async (event) => {
+        const editButton = event.target.closest("[data-edit-policy]");
+        const cancelButton = event.target.closest("[data-cancel-policy]");
+        try {
+          if (editButton) {
+            policyBeingEdited = await window.FormaStore.get("policies", editButton.dataset.editPolicy);
+            if (!policyBeingEdited || policyBeingEdited.status !== "active") return;
+            prepareTermsEditor(policyBeingEdited);
+            termsDialog.showModal();
+          } else if (cancelButton && window.confirm("Czy na pewno anulować ten lokalny wpis polisy?")) {
+            const policy = await window.FormaStore.get("policies", cancelButton.dataset.cancelPolicy);
+            if (!policy || policy.status !== "active") return;
+            policy.status = "cancelled";
+            policy.cancelledAt = new Date().toISOString();
+            await window.FormaStore.put("policies", policy);
+            await renderPolicies();
+          }
+        } catch (actionError) {
+          console.error("Nie udało się wykonać operacji na polisie.", actionError);
+          error.hidden = false;
+          error.textContent = `Nie udało się zaktualizować polisy: ${actionError.message}`;
+        }
+      });
+
+      document.getElementById("cancelTerms").addEventListener("click", () => {
+        termsDialog.close();
+        policyBeingEdited = null;
+      });
+      termsForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!policyBeingEdited) return;
+        if (!policyBeingEdited.optionCatalog?.length) return;
+        try {
+          const latest = await window.FormaStore.get("policies", policyBeingEdited.id);
+          if (!latest || latest.status !== "active") {
+            termsDialog.close();
+            policyBeingEdited = null;
+            await renderPolicies();
+            return;
+          }
+          const selected = policyBeingEdited.optionCatalog.filter((option) => editingOptionIds.has(option.id));
+          latest.optionCatalog = policyBeingEdited.optionCatalog;
+          latest.optionIds = selected.map((option) => option.id);
+          latest.options = selected.map((option) => option.name);
+          latest.baseMonthly = policyBeingEdited.baseMonthly;
+          latest.premium = Math.round(policyBeingEdited.baseMonthly + selected.reduce((total, option) => total + option.monthlyPrice, 0)) * 12;
+          latest.termsChangedAt = new Date().toISOString();
+          await window.FormaStore.put("policies", latest);
+          termsDialog.close();
+          policyBeingEdited = null;
+          await renderPolicies();
+        } catch (actionError) {
+          console.error("Nie udało się zapisać warunków lokalnej polisy.", actionError);
+          error.hidden = false;
+          error.textContent = `Nie udało się zapisać zmian: ${actionError.message}`;
+        }
+      });
+
+      termsOptions.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("[data-option]");
+        if (!checkbox || !policyBeingEdited) return;
+        if (checkbox.checked) editingOptionIds.add(checkbox.dataset.option);
+        else editingOptionIds.delete(checkbox.dataset.option);
+        updateTermsPrice();
+      });
 
       renderPolicies();
     })();

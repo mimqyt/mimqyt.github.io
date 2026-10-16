@@ -307,7 +307,7 @@
   <header class="topbar wrap">
     <div class="brand-group">
       <a class="brand" href="#" aria-label="forma — strona główna"><span class="brand-mark">f</span>forma</a>
-      <span class="demo-badge">WERSJA OFICIALNA</span>
+      <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
     </div>
     <nav class="top-links" aria-label="Nawigacja">
       <a href="#rodzaje">Rodzaje ochrony</a>
@@ -583,11 +583,25 @@
       $("summaryButton").addEventListener("click", () => {
         const summary = {
           id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+          productId: state.product.id,
           product: state.product.name,
           monthly: calculatePrice(),
+          baseMonthly: calculatePrice() - state.product.options
+            .filter(([id]) => state.selected.has(id))
+            .reduce((total, [, , , optionPrice]) => total + optionPrice * PRICE_MULTIPLIER, 0),
+          optionIds: state.product.options
+            .filter(([id]) => state.selected.has(id))
+            .map(([id]) => id),
           options: state.product.options
             .filter(([id]) => state.selected.has(id))
-            .map(([, name]) => name)
+            .map(([, name]) => name),
+          optionCatalog: state.product.options.map(([id, name, description, price, required]) => ({
+            id,
+            name,
+            description,
+            monthlyPrice: price * PRICE_MULTIPLIER,
+            required: Boolean(required)
+          }))
         };
         try {
           sessionStorage.setItem("forma:checkout", JSON.stringify(summary));

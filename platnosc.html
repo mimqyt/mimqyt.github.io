@@ -19,6 +19,7 @@
       --lime: #d8f45a;
       --orange: #f0744c;
     }
+
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 "Helvetica Neue", Helvetica, Arial, sans-serif; }
     button, input { font: inherit; }
@@ -492,6 +493,35 @@
         return;
       }
 
+      async function ensurePolicyActivation(payment) {
+        const existingPolicy = await window.FormaStore.get("policies", payment.id);
+        if (existingPolicy) return;
+        const paidAt = new Date(payment.paidAt);
+        if (Number.isNaN(paidAt.getTime())) throw new Error("Nieprawidłowa data potwierdzenia.");
+        const activationAt = new Date(paidAt.getTime() + 10000);
+        const endDate = new Date(activationAt);
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        const policy = {
+          id: payment.id,
+          paymentId: payment.id,
+          policyNumber: `FORMA-${paidAt.getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+          product: payment.product,
+          productId: summary.productId,
+          options: summary.options,
+          optionIds: Array.isArray(summary.optionIds) ? summary.optionIds : [],
+          optionCatalog: Array.isArray(summary.optionCatalog) ? summary.optionCatalog : [],
+          baseMonthly: Number.isFinite(summary.baseMonthly) ? summary.baseMonthly : summary.monthly,
+          premium: summary.monthly * 12,
+          deposit: payment.amount,
+          status: "pending_activation",
+          createdAt: payment.paidAt,
+          activationAt: activationAt.toISOString(),
+          startDate: activationAt.toISOString(),
+          endDate: endDate.toISOString()
+        };
+        await window.FormaStore.add("policies", policy);
+      }
+
       if (typeof summary.id !== "string" || !summary.id) {
         summary.id = `order-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
         try {
@@ -759,7 +789,10 @@
 
       try {
         const existingPayment = await window.FormaStore.get("payments", summary.id);
-        if (existingPayment) renderPaymentConfirmation(existingPayment);
+        if (existingPayment) {
+          await ensurePolicyActivation(existingPayment);
+          renderPaymentConfirmation(existingPayment);
+        }
       } catch (error) {
         console.error("Nie udało się wczytać statusu płatności demonstracyjnej.", error);
         $("paymentError").textContent = "Nie udało się wczytać statusu płatności. Odśwież stronę i spróbuj ponownie.";
@@ -767,7 +800,7 @@
       }
 
       function renderPaymentConfirmation(payment) {
-        $("paymentConfirmationText").textContent = `Symulacja zaliczki ${formatMoney(payment.amount)} zł zaakceptowana. Żadne środki nie zostały pobrane. Numer: ${payment.reference}. `;
+        $("paymentConfirmationText").textContent = `Potwierdzenie zaliczki ${formatMoney(payment.amount)} zł zapisano. Ochrona w statusie lokalnym pojawi się na stronie „Moje polisy” za 10 sekund. Żadne środki nie zostały pobrane. Numer: ${payment.reference}. `;
         $("paymentEmail").href = window.FormaMail.href(
           `Forma — potwierdzenie zaliczki ${payment.reference}`,
           `Potwierdzenie symulowanej wpłaty zaliczki — środki nie zostały pobrane.\n\nUbezpieczenie: ${payment.product}\nKwota: ${formatMoney(payment.amount)} zł\nNumer potwierdzenia: ${payment.reference}`
@@ -887,6 +920,7 @@
             reference: `DEMO-${Math.random().toString(36).slice(2, 9).toUpperCase()}`
           };
           await window.FormaStore.add("payments", payment);
+          await ensurePolicyActivation(payment);
           authorization.className = "authorization approved";
           $("authorizationIcon").textContent = "✓";
           $("authorizationTitle").textContent = "Transakcja zaakceptowana";
