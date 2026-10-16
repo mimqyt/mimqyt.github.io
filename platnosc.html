@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3f1eb">
-  <meta name="description" content="Podsumuj ubezpieczenie i zobacz demonstracyjny ekran zaliczki.">
+  <meta name="description" content="Podsumuj wybrany zakres ubezpieczenia i sprawdź wysokość zaliczki.">
   <title>Podsumowanie i zaliczka — forma</title>
   <style>
     :root {
@@ -27,6 +27,8 @@
     .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
     .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
+    .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
     .back-link { color: var(--muted); text-decoration: none; font-size: 12px; }
     .back-link:hover { color: var(--blue); }
     .claim-link { color: var(--blue); text-decoration: none; font-size: 12px; font-weight: 700; }
@@ -169,7 +171,10 @@
     }
     @media (max-width: 680px) {
       .wrap { width: min(100% - 36px, 540px); }
-      .topbar { height: 64px; }
+      .topbar { height: auto; min-height: 64px; flex-wrap: wrap; gap: 8px; padding-block: 9px; }
+      .brand-group { gap: 7px; }
+      .demo-badge { padding: 5px 7px; font-size: 8px; }
+      .topbar > a:nth-child(3) { display: none; }
       .intro { padding-top: 34px; }
       .layout { grid-template-columns: 1fr; gap: 28px; padding-top: 7px; }
       .order-card { position: static; grid-row: 1; }
@@ -301,7 +306,11 @@
 </head>
 <body>
   <header class="topbar wrap">
-    <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+    <div class="brand-group">
+      <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+      <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
+    </div>
+    <a class="back-link" href="polisy.html">Moje polisy</a>
     <a class="claim-link" href="szkoda.html">Zgłoś szkodę</a>
     <a class="back-link" href="szkoda.html#claimsHeading">Moje zgłoszenia</a>
     <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
@@ -318,14 +327,14 @@
       <section class="form-column" aria-labelledby="payment-heading">
         <div class="section-head">
           <h2 id="payment-heading">Twoja zaliczka</h2>
-          <small>Prosty, lokalny tryb demonstracyjny</small>
+          <small>Twoja wpłata</small>
         </div>
         <div class="payment-panel">
-          <h2>Symulacja płatności zaliczki</h2>
-          <p>Kwota wynosi <strong id="paymentAmount">—</strong>. Potwierdź, aby zapisać demonstracyjny status płatności na tym urządzeniu.</p>
+          <h2>Wpłać zaliczkę</h2>
+          <p>Kwota wynosi <strong id="paymentAmount">—</strong>. Potwierdzenie zapisuje status tylko w tej przeglądarce.</p>
           <div class="demo-payment">
             <span class="demo-payment-mark" aria-hidden="true">20%</span>
-            <span class="demo-payment-copy"><strong>Płatność demonstracyjna</strong><small>Bez danych karty i bez połączenia z bankiem.</small></span>
+            <span class="demo-payment-copy"><strong>Potwierdzenie zaliczki</strong><small>Bez połączenia z bankiem — żadne środki nie zostaną pobrane.</small></span>
           </div>
           <button class="pay-button" id="confirmPayment" type="button" style="margin-top:16px"><span>Potwierdź wpłatę zaliczki</span><span aria-hidden="true">↗</span></button>
           <p class="payment-error" id="paymentError" role="alert"></p>
@@ -338,13 +347,12 @@
             <span id="paymentConfirmationText"></span>
             <a class="email-action" id="paymentEmail" href="#">Przygotuj wiadomość e-mail</a>
           </div>
-          <p class="local-note">Status wpłaty jest zapisywany lokalnie w tej przeglądarce. To nie jest rzeczywista transakcja bankowa.</p>
         </div>
 
         <section class="consultants" aria-labelledby="consultants-heading">
           <div class="section-head">
             <h2 id="consultants-heading">Wybierz konsultanta</h2>
-            <small>Wybierz do symulacji</small>
+            <small>Wybierz osobę do rozmowy</small>
           </div>
           <div class="consultant-list" id="consultantList" role="group" aria-label="Wybierz konsultanta">
             <button class="consultant" type="button" data-consultant="Milo Henderson" aria-pressed="true">
@@ -360,7 +368,7 @@
               <span class="consultant-copy"><strong>Floyd Kaczmarek</strong><small>Dom i firma</small></span>
             </button>
           </div>
-          <p class="consultant-note">Terminy i status są zapisywane lokalnie, aby można było przetestować cały przepływ.</p>
+          <p class="consultant-note">Wybrany termin zapisuje się w tej przeglądarce.</p>
         </section>
 
       </section>
@@ -384,7 +392,6 @@
             <span id="appointmentConfirmationText"></span>
             <a class="email-action" id="appointmentEmail" href="#">Przygotuj wiadomość e-mail</a>
           </p>
-          <p class="disclaimer">Podgląd składki i status płatności są demonstracyjne. Rzeczywiste zawarcie polisy wymaga potwierdzenia warunków przez ubezpieczyciela.</p>
         </div>
       </aside>
     </div>
@@ -423,7 +430,7 @@
   </dialog>
 
   <footer class="footer wrap">
-    <span>© 2026 forma · Projekt demonstracyjny</span>
+    <span>© 2026 forma</span>
     <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -760,10 +767,10 @@
       }
 
       function renderPaymentConfirmation(payment) {
-        $("paymentConfirmationText").textContent = `Zaliczka ${formatMoney(payment.amount)} zł została oznaczona jako opłacona w tej demonstracji. Numer potwierdzenia: ${payment.reference}. `;
+        $("paymentConfirmationText").textContent = `Symulacja zaliczki ${formatMoney(payment.amount)} zł zaakceptowana. Żadne środki nie zostały pobrane. Numer: ${payment.reference}. `;
         $("paymentEmail").href = window.FormaMail.href(
           `Forma — potwierdzenie zaliczki ${payment.reference}`,
-          `Potwierdzenie demonstracyjnej wpłaty zaliczki.\n\nUbezpieczenie: ${payment.product}\nKwota: ${formatMoney(payment.amount)} zł\nNumer potwierdzenia: ${payment.reference}`
+          `Potwierdzenie symulowanej wpłaty zaliczki — środki nie zostały pobrane.\n\nUbezpieczenie: ${payment.product}\nKwota: ${formatMoney(payment.amount)} zł\nNumer potwierdzenia: ${payment.reference}`
         );
         $("paymentConfirmation").hidden = false;
         $("confirmPayment").disabled = true;
@@ -874,7 +881,7 @@
             orderId: summary.id,
             product: summary.product,
             amount: deposit,
-            status: "Zaliczkę potwierdzono lokalnie",
+            status: "Symulacja zaliczki zaakceptowana",
             method: "Symulacja",
             paidAt: new Date().toISOString(),
             reference: `DEMO-${Math.random().toString(36).slice(2, 9).toUpperCase()}`

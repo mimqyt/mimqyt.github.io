@@ -40,6 +40,8 @@
     }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
     .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
+    .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
     .top-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 13px; }
     .top-links a { color: inherit; text-decoration: none; }
     .top-links a:hover { color: var(--blue); }
@@ -173,8 +175,10 @@
     }
     @media (max-width: 700px) {
       .wrap { width: min(100% - 36px, 560px); }
-      .topbar { height: 64px; }
-      .top-links { gap: 12px; }
+      .topbar { height: auto; min-height: 64px; flex-wrap: wrap; gap: 8px; padding-block: 9px; }
+      .brand-group { gap: 7px; }
+      .demo-badge { padding: 5px 7px; font-size: 8px; }
+      .top-links { flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
       .top-links a:not(.help-link):not(.claim-link) { display: none; }
       .hero { grid-template-columns: 1fr; gap: 20px; padding: 39px 0 29px; }
       h1 { font-size: clamp(46px, 12vw, 70px); }
@@ -301,10 +305,14 @@
 </head>
 <body>
   <header class="topbar wrap">
-    <a class="brand" href="#" aria-label="forma — strona główna"><span class="brand-mark">f</span>forma</a>
+    <div class="brand-group">
+      <a class="brand" href="#" aria-label="forma — strona główna"><span class="brand-mark">f</span>forma</a>
+      <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
+    </div>
     <nav class="top-links" aria-label="Nawigacja">
       <a href="#rodzaje">Rodzaje ochrony</a>
       <a href="#jak-to-dziala">Jak to działa</a>
+      <a class="help-link" href="polisy.html">Moje polisy ↗</a>
       <a class="claim-link" href="szkoda.html">Zgłoś szkodę ↗</a>
       <a class="help-link" href="szkoda.html#claimsHeading">Moje zgłoszenia ↗</a>
     </nav>
@@ -365,15 +373,14 @@
           <p class="summary-title">Wybrany zakres</p>
           <ul class="summary-list" id="summaryList" aria-live="polite"><li class="empty">Wybierz ochronę, aby zobaczyć podsumowanie.</li></ul>
           <button class="cta" id="summaryButton" type="button"><span>Przygotuj podsumowanie</span><span aria-hidden="true">↗</span></button>
-          <p class="notice"><strong>Ważne:</strong> prezentowana składka jest wyłącznie przykładową symulacją, a zakres i cena wymagają potwierdzenia przez ubezpieczyciela. Nie stanowi oferty ani rekomendacji.</p>
         </div>
       </aside>
     </div>
   </main>
 
   <footer class="footer wrap">
-    <span>© 2026 forma · Projekt demonstracyjny</span>
-    <span>To narzędzie pokazuje przykładowy zakres i nie sprzedaje polis. · <a href="szkoda.html">Zgłoś szkodę</a></span>
+    <span>© 2026 forma</span>
+    <a href="szkoda.html">Zgłoś szkodę</a>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 

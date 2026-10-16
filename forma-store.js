@@ -1,7 +1,7 @@
 (() => {
   const DATABASE_NAME = "forma-demo";
-  const DATABASE_VERSION = 1;
-  const STORES = ["claims", "appointments", "payments"];
+  const DATABASE_VERSION = 2;
+  const STORES = ["claims", "appointments", "payments", "policies"];
   let databasePromise;
 
   function openDatabase() {

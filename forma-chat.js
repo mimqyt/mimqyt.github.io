@@ -2,88 +2,88 @@
   "use strict";
 
   const openers = [
-    "Jasne —",
+    "Chętnie pomogę —",
     "Już wyjaśniam:",
-    "Dobre pytanie.",
-    "W skrócie:",
-    "Oczywiście.",
-    "W tej demonstracji",
-    "Najważniejsze jest to, że",
-    "Spokojnie,",
-    "Tutaj",
-    "Dla jasności:"
+    "Dziękuję za pytanie —",
+    "Oczywiście —",
+    "Najważniejsze informacje:",
+    "W tej sprawie:",
+    "Proszę pamiętać, że",
+    "Warto wiedzieć:",
+    "Już sprawdzam:",
+    "Z przyjemnością wyjaśnię —"
   ];
 
   const intents = [
     {
       keywords: ["ubezpieczenie", "ochrona", "ubezpieczyciel"],
-      answer: "konfigurator pozwala wybrać zakres ochrony i zobaczyć orientacyjną składkę. To demonstracja — nie zawiera prawdziwej polisy.",
+      answer: "w naszym konfiguratorze możesz dopasować zakres ochrony i sprawdzić orientacyjną składkę. Ostateczne warunki oraz cena wymagają potwierdzenia przez ubezpieczyciela.",
       endings: ["Możesz wybrać zakres na stronie głównej.", "Wybierz rodzaj ochrony w konfiguratorze.", "Składka jest orientacyjna i nie stanowi oferty.", "Żeby przejść dalej, użyj przycisku podsumowania.", "Jeśli podasz rodzaj ochrony, dopowiem więcej."]
     },
     {
       keywords: ["oc", "ac", "samochod", "auto", "pojazd"],
-      answer: "sekcja samochodowa pozwala zaznaczyć OC i AC. Wyświetlona cena jest orientacyjna, a zakres nie tworzy rzeczywistej umowy.",
-      endings: ["Zakres ustawisz w konfiguratorze samochodowym.", "Możesz zaznaczyć OC, AC lub oba warianty.", "Zobacz podsumowanie, aby sprawdzić wybrane opcje.", "Końcowe warunki wymagałyby potwierdzenia u ubezpieczyciela.", "W razie potrzeby opisz, jakiej ochrony auta szukasz."]
+      answer: "w sekcji samochodowej możesz wybrać OC, AC lub oba zakresy. Składka jest orientacyjna, a ostateczne warunki potwierdza ubezpieczyciel.",
+      endings: ["Zakres ustawisz w konfiguratorze samochodowym.", "Możesz zaznaczyć OC, AC lub oba warianty.", "Swoje wybory sprawdzisz w podsumowaniu.", "Końcowe warunki potwierdzisz z ubezpieczycielem.", "Jeśli potrzebujesz, pomogę dobrać zakres ochrony auta."]
     },
     {
       keywords: ["podroz", "wyjazd", "wakacje", "turystyczn"],
-      answer: "ochronę podróżną możesz wybrać w konfiguratorze. Ta strona pokazuje tylko orientacyjny zakres i składkę.",
-      endings: ["Podaj kierunek i rodzaj wyjazdu, a podpowiem, czego szukać.", "Wybierz podróż w sekcji rodzajów ochrony.", "Pamiętaj, że to nie jest zawarta polisa.", "Sprawdź dostępne opcje w konfiguratorze.", "Zakres ostatecznej ochrony wymagałby potwierdzenia."]
+      answer: "ochronę podróżną możesz dopasować w naszym konfiguratorze. Składka i zakres wymagają potwierdzenia przy zawarciu umowy.",
+      endings: ["Podaj kierunek i rodzaj wyjazdu, a podpowiem, na co zwrócić uwagę.", "Wybierz podróż w sekcji rodzajów ochrony.", "Ochrona zaczyna obowiązywać po zawarciu umowy.", "Sprawdź dostępne opcje w konfiguratorze.", "Szczegóły ochrony potwierdzisz przy zawieraniu umowy."]
     },
     {
       keywords: ["dom", "mieszkan", "nieruchom", "mienie"],
-      answer: "ochronę domu lub mieszkania wybiera się w konfiguratorze. Widoczna składka ma charakter orientacyjny.",
-      endings: ["Wybierz kategorię domu lub mieszkania, aby zobaczyć opcje.", "Zakres możesz dopasować przed podsumowaniem.", "To demonstracja, a nie aktywna umowa ubezpieczenia.", "Szczegóły prawdziwej polisy należałoby potwierdzić z ubezpieczycielem.", "Możesz sprawdzić opcje na stronie głównej."]
+      answer: "ochronę domu lub mieszkania dopasujesz w naszym konfiguratorze. Widoczna składka jest orientacyjna.",
+      endings: ["Wybierz kategorię domu lub mieszkania, aby zobaczyć opcje.", "Zakres możesz dopasować przed podsumowaniem.", "Aktywną ochronę uzyskasz dopiero po zawarciu umowy.", "Szczegóły polisy potwierdź z ubezpieczycielem.", "Możesz sprawdzić opcje na stronie głównej."]
     },
     {
       keywords: ["zdrow", "nnw", "zycie", "medyczn"],
-      answer: "ochronę zdrowia, NNW lub życia możesz przejrzeć w konfiguratorze. Przedstawione informacje i ceny są przykładowe.",
-      endings: ["Wybierz odpowiednią kategorię ochrony.", "Zakres dobierzesz na stronie głównej.", "Pamiętaj, że demonstracja nie zawiera prawdziwej polisy.", "Warunki konkretnej umowy należałoby potwierdzić u ubezpieczyciela.", "Możesz rozpocząć od wyboru rodzaju ochrony."]
+      answer: "ochronę zdrowia, NNW lub życia możesz sprawdzić w naszym konfiguratorze. Ostateczne informacje i cena wymagają potwierdzenia przez ubezpieczyciela.",
+      endings: ["Wybierz odpowiednią kategorię ochrony.", "Zakres dobierzesz na stronie głównej.", "Aktywna ochrona wymaga zawarcia umowy.", "Warunki konkretnej polisy potwierdź z ubezpieczycielem.", "Możesz rozpocząć od wyboru rodzaju ochrony."]
     },
     {
       keywords: ["zwierze", "pies", "kot", "pupil"],
-      answer: "kategorię ochrony zwierzęcia znajdziesz w konfiguratorze. Składka i opcje są poglądowe.",
-      endings: ["Przejdź do kategorii zwierząt na stronie głównej.", "Możesz dopasować zaznaczone opcje przed podsumowaniem.", "To nie stanowi aktywnej polisy dla pupila.", "Szczegóły prawdziwej ochrony wymagają potwierdzenia.", "Wybierz tę kategorię, aby zobaczyć dostępne opcje."]
+      answer: "kategorię ochrony zwierzęcia znajdziesz w naszym konfiguratorze. Składka jest orientacyjna.",
+      endings: ["Przejdź do kategorii zwierząt na stronie głównej.", "Możesz dopasować zaznaczone opcje przed podsumowaniem.", "Ochrona pupila zaczyna obowiązywać po zawarciu umowy.", "Szczegóły ochrony potwierdzisz przy zawarciu polisy.", "Wybierz tę kategorię, aby zobaczyć dostępne opcje."]
     },
     {
       keywords: ["firma", "biznes", "dzialaln", "przedsiebior"],
-      answer: "opcje dla firmy są dostępne w konfiguratorze, a ich cena jest jedynie szacunkiem na potrzeby demonstracji.",
-      endings: ["Wybierz kategorię firmową na stronie głównej.", "Zakres możesz sprawdzić przed przejściem do podsumowania.", "Ta demonstracja nie zawiera zawartej umowy.", "Warunki firmowej polisy należałoby potwierdzić indywidualnie.", "Doprecyzuj, jakiej ochrony firmy szukasz."]
+      answer: "opcje ubezpieczenia firmy znajdziesz w naszym konfiguratorze. Wyświetlona cena ma charakter orientacyjny.",
+      endings: ["Wybierz kategorię firmową na stronie głównej.", "Zakres możesz sprawdzić przed przejściem do podsumowania.", "Podsumowanie nie jest zawartą umową.", "Warunki firmowej polisy potwierdź indywidualnie.", "Doprecyzuj, jakiej ochrony firmy szukasz."]
     },
     {
       keywords: ["cena", "koszt", "skladk", "drogo", "kwota"],
-      answer: "kwota w konfiguratorze jest orientacyjna i zależy od zaznaczonych opcji. Nie jest wiążącą ofertą ubezpieczenia.",
-      endings: ["Zmień zakres i zobacz, jak aktualizuje się podsumowanie.", "Szczegółową składkę należałoby potwierdzić u ubezpieczyciela.", "Cena pojawi się w podsumowaniu wybranych opcji.", "Zaliczka demonstracyjna jest wyliczana od szacowanej składki rocznej.", "Możesz wrócić do konfiguratora i zmienić wybór."]
+      answer: "składka zależy od wybranego zakresu i ma charakter orientacyjny. Ostateczną cenę potwierdza ubezpieczyciel.",
+      endings: ["Zmień zakres i zobacz, jak aktualizuje się podsumowanie.", "Szczegółową składkę potwierdź u ubezpieczyciela.", "Cena pojawi się w podsumowaniu wybranych opcji.", "Zaliczka jest wyliczana od szacowanej składki rocznej.", "Możesz wrócić do konfiguratora i zmienić wybór."]
     },
     {
       keywords: ["zaliczk", "wplac", "przedplat"],
-      answer: "strona zaliczki pokazuje 20% szacowanej składki rocznej. Jej potwierdzenie jest wyłącznie lokalną symulacją.",
-      endings: ["Nie są pobierane prawdziwe pieniądze.", "Użyj przycisku potwierdzenia, aby przetestować demonstrację.", "Kwotę zaliczki znajdziesz też w podsumowaniu.", "Potwierdzenie zapisuje się w tej przeglądarce.", "Nie wpisuj danych karty — formularz ich nie potrzebuje."]
+      answer: "zaliczka wynosi 20% szacowanej składki rocznej. Obecnie jej potwierdzenie nie inicjuje pobrania pieniędzy.",
+      endings: ["Aktualnie potwierdzenie nie pobiera pieniędzy.", "Status sprawdzisz przy przycisku potwierdzenia.", "Kwotę zaliczki znajdziesz też w podsumowaniu.", "Status potwierdzenia zapisuje się w tej przeglądarce.", "Nie wpisuj danych karty — formularz ich nie potrzebuje."]
     },
     {
       keywords: ["platn", "karta", "bank", "przelew", "autoryzac", "transakcj"],
-      answer: "płatność działa jako demonstracja bez karty, banku ani zewnętrznego operatora. Animacja może pokazać akceptację albo odrzucenie.",
-      endings: ["Nie podawaj danych karty — nie są potrzebne.", "Status symulacji zapisuje się lokalnie w przeglądarce.", "Odrzucenie można ponowić przyciskiem na stronie płatności.", "Nie jest to rzeczywista transakcja bankowa.", "Potwierdzenie nie powoduje obciążenia rachunku."]
+      answer: "płatności online nie są jeszcze podłączone — obecne potwierdzenie nie łączy się z bankiem ani operatorem i nie pobiera środków.",
+      endings: ["Nie podawaj danych karty — nie są potrzebne.", "Status potwierdzenia zapisuje się w przeglądarce.", "Odrzucone potwierdzenie możesz ponowić na stronie płatności.", "To potwierdzenie nie jest transakcją bankową.", "Środki nie zostaną pobrane."]
     },
     {
       keywords: ["termin", "kalendarz", "spotkan", "godzin", "data", "woln"],
-      answer: "kalendarz proponuje losowo ustalane dostępne terminy. Wybrane spotkanie jest zapisywane lokalnie w tej przeglądarce.",
-      endings: ["Szare dni są niedostępne.", "Możesz wskazać wolny dzień i godzinę.", "Dostępność zależy od wybranego konsultanta.", "Rezerwacja jest demonstracyjna i lokalna.", "Zmień miesiąc lub wybierz inny dostępny dzień."]
+      answer: "kalendarz pokazuje dostępne propozycje terminów. Po wybraniu konsultanta możesz wskazać pasujący dzień i godzinę.",
+      endings: ["Szare dni są niedostępne.", "Możesz wskazać wolny dzień i godzinę.", "Dostępność zależy od wybranego konsultanta.", "Wybrany termin zobaczysz po zapisaniu rezerwacji.", "Zmień miesiąc lub wybierz inny dostępny dzień."]
     },
     {
       keywords: ["milo", "marcel", "floyd", "konsultant"],
-      answer: "do wyboru są konsultanci Milo Henderson, Marcel Pająk i Floyd Kaczmarek.",
-      endings: ["Wybierz osobę na stronie zaliczki.", "Dostępne terminy zależą od wybranego konsultanta.", "Imię konsultanta zobaczysz też przy rezerwacji.", "Spotkanie jest zapisywane tylko lokalnie.", "Możesz zmienić wybór przed potwierdzeniem terminu."]
+      answer: "możesz wybrać konsultanta: Milo Hendersona, Marcela Pająka lub Floyda Kaczmarka.",
+      endings: ["Wybierz osobę na stronie podsumowania.", "Dostępne terminy zależą od wybranego konsultanta.", "Wybrana osoba będzie widoczna przy rezerwacji.", "Termin możesz zmienić przed potwierdzeniem.", "Chętnie pomogę znaleźć dogodny termin."]
     },
     {
       keywords: ["szkod", "odszkod", "roszczen"],
-      answer: "formularz zgłoszenia szkody zapisuje dane lokalnie i przygotowuje wiadomość e-mail do wysłania.",
-      endings: ["Zgłoszenie nie trafia automatycznie do ubezpieczyciela.", "Otworzy się szkic, który trzeba wysłać samodzielnie.", "Numer sprawy zobaczysz po zapisaniu formularza.", "Załączniki można dodać opcjonalnie w formularzu.", "Status demonstracyjny możesz sprawdzić w historii zgłoszeń."]
+      answer: "formularz zgłoszenia szkody przygotowuje wiadomość z opisem zdarzenia i danymi kontaktowymi.",
+      endings: ["Aby przekazać zgłoszenie, otwórz przygotowaną wiadomość w Gmailu i kliknij „Wyślij”.", "Wiadomość wymaga wysłania z Twojego Gmaila.", "Numer zgłoszenia zobaczysz po zapisaniu formularza.", "Załączniki możesz dodać w formularzu.", "Status zgłoszenia sprawdzisz w historii na tej stronie."]
     },
     {
       keywords: ["zglos", "formularz", "histori"],
-      answer: "formularz szkody znajduje się na stronie „Zgłoś szkodę”, a zapisane wpisy możesz przeglądać w lokalnej historii.",
-      endings: ["Dane pozostają w tej przeglądarce.", "Wypełnij wymagane pola, aby zapisać zgłoszenie.", "Po zapisie możesz utworzyć szkic wiadomości e-mail.", "Historia zgłoszeń jest dostępna na stronie szkody.", "To lokalna demonstracja, a nie zgłoszenie do ubezpieczyciela."]
+      answer: "formularz znajdziesz na stronie „Zgłoś szkodę”, a zapisane zgłoszenia — w historii na tej stronie.",
+      endings: ["Dane pozostają w tej przeglądarce.", "Wypełnij wymagane pola, aby zapisać zgłoszenie.", "Po zapisie możesz utworzyć szkic wiadomości e-mail.", "Historia zgłoszeń jest dostępna na stronie szkody.", "Zgłoszenie trzeba wysłać w Gmailu, by dotarło do odbiorcy."]
     },
     {
       keywords: ["email", "mail", "wiadom", "wyslac", "wyslij"],
@@ -97,28 +97,28 @@
     },
     {
       keywords: ["dane", "prywat", "bezpiecz", "lokal", "przeglad"],
-      answer: "zgłoszenia, terminy i potwierdzenia tej demonstracji są przechowywane lokalnie w przeglądarce na tym urządzeniu.",
-      endings: ["Strona nie ma podłączonego systemu ubezpieczyciela.", "Nie wpisuj danych karty płatniczej.", "Wyczyszczenie danych przeglądarki może usunąć lokalną historię.", "Dane nie są automatycznie przesyłane na serwer.", "E-mail otwiera jedynie szkic w Twojej aplikacji pocztowej."]
+      answer: "zgłoszenia, terminy i potwierdzenia są obecnie przechowywane w przeglądarce na tym urządzeniu.",
+      endings: ["Nie wpisuj danych karty płatniczej — płatności online nie są jeszcze podłączone.", "Wyczyszczenie danych przeglądarki może usunąć lokalną historię.", "Formularz zgłoszenia należy wysłać przez Gmail.", "Zapisane zgłoszenia znajdziesz w historii na stronie.", "Dane formularza nie są jeszcze przekazywane do systemu obsługi szkód."]
     },
     {
       keywords: ["polis", "umowa", "zawar", "ubezpieczon"],
-      answer: "strona nie zawiera prawdziwej umowy ani polisy. Pokazuje demonstracyjny wybór ochrony i podsumowanie.",
-      endings: ["Nie uzyskujesz tu aktywnej ochrony ubezpieczeniowej.", "Rzeczywista umowa wymagałaby potwierdzenia u ubezpieczyciela.", "Nie traktuj podsumowania jako wiążącej oferty.", "Potwierdzenie płatności jest tylko symulacją.", "Zakres w tej witrynie ma charakter demonstracyjny."]
+      answer: "możesz sprawdzić i dopasować zakres ochrony na stronie. Aktywna polisa wymaga potwierdzenia warunków i zawarcia umowy z ubezpieczycielem.",
+      endings: ["Ostateczne warunki potwierdzi ubezpieczyciel.", "Wycena na stronie jest orientacyjna.", "Podsumowanie pomaga przygotować się do rozmowy z konsultantem.", "Obecne potwierdzenie zaliczki nie pobiera środków.", "Chętnie pomogę znaleźć właściwą kategorię ubezpieczenia."]
     },
     {
       keywords: ["zmien", "wroc", "cofn", "opcj", "wybor"],
       answer: "możesz wrócić do konfiguratora i zmienić zaznaczone opcje przed obejrzeniem podsumowania.",
-      endings: ["Użyj linku „Wróć do konfiguratora”.", "Podsumowanie odzwierciedla zapisany wybór.", "Po zmianie opcji możesz przejść dalej ponownie.", "Nie musisz podawać danych karty.", "Wybór ochrony jest demonstracyjny."]
+      endings: ["Użyj linku „Wróć do konfiguratora”.", "Podsumowanie odzwierciedla zapisany wybór.", "Po zmianie opcji możesz przejść dalej ponownie.", "Nie musisz podawać danych karty.", "Końcowe warunki ochrony potwierdź z ubezpieczycielem."]
     },
     {
       keywords: ["blad", "problem", "nie dziala", "awaria", "pomoc"],
-      answer: "jeśli element strony nie działa, odśwież widok i spróbuj ponownie. Dane demonstracyjne są zapisywane lokalnie.",
+      answer: "jeśli element strony nie działa, odśwież widok i spróbuj ponownie. Zgłoszenia zapisane formularzem znajdziesz w historii na tej stronie.",
       endings: ["Sprawdź, czy przeglądarka nie blokuje pamięci lokalnej.", "Możesz opisać, na której stronie pojawił się problem.", "W razie błędu płatności użyj przycisku ponowienia.", "Nie podawaj danych karty w celu rozwiązania problemu.", "Odświeżenie może pomóc wczytać lokalny stan."]
     },
     {
       keywords: ["czesc", "hej", "witaj", "dzien dobry", "kim jestes"],
-      answer: "jestem wirtualnym asystentem demonstracyjnej strony forma. Mogę wyjaśnić ochronę, terminy, płatność i zgłoszenia.",
-      endings: ["Napisz, co chcesz sprawdzić.", "Możesz zapytać o składkę albo zaliczkę.", "Pomogę znaleźć informacje o zgłoszeniu szkody.", "Zapytaj o dostępne terminy konsultacji.", "Chętnie wyjaśnię, jak działa ta demonstracja."]
+      answer: "jestem asystentem forma. Pomogę Ci znaleźć informacje o ochronie, składce, konsultantach i zgłoszeniu szkody.",
+      endings: ["Napisz, co chcesz sprawdzić.", "Możesz zapytać o składkę albo zaliczkę.", "Pomogę przygotować zgłoszenie szkody.", "Zapytaj o dostępne terminy konsultacji.", "Z przyjemnością odpowiem na pytania."]
     }
   ];
 
@@ -132,6 +132,7 @@
 
   const normalize = (text) => text
     .toLocaleLowerCase("pl")
+    .replace(/ł/g, "l")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, " ")
@@ -224,7 +225,7 @@
       <button class="forma-chat-close" type="button" aria-label="Zamknij czat">×</button>
     </header>
     <div class="forma-chat-feed" id="formaChatFeed" role="log" aria-live="polite" aria-relevant="additions text"></div>
-    <p class="forma-chat-disclaimer">Asystent demonstracyjny — nie zastępuje konsultanta.</p>
+    <p class="forma-chat-disclaimer">Asystent forma — nie zastępuje konsultanta.</p>
     <form class="forma-chat-input-row" id="formaChatForm">
       <input class="forma-chat-input" id="formaChatInput" type="text" maxlength="400" autocomplete="off" placeholder="Napisz wiadomość…" aria-label="Wiadomość do asystenta" required>
       <button class="forma-chat-send" type="submit" aria-label="Wyślij wiadomość">↑</button>
@@ -250,7 +251,7 @@
     else launcher.focus();
   }
 
-  addMessage("Cześć! Zapytaj mnie o ubezpieczenie, składkę, termin, płatność lub zgłoszenie szkody.", "bot");
+  addMessage("Dzień dobry! W czym mogę pomóc? Mogę odpowiedzieć na pytania o ubezpieczenie, składkę, terminy lub zgłoszenie szkody.", "bot");
 
   launcher.addEventListener("click", () => setOpen(panel.hidden));
   panel.querySelector(".forma-chat-close").addEventListener("click", () => setOpen(false));
