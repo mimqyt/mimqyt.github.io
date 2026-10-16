@@ -42,42 +42,33 @@
     .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     h2 { margin: 0; font-size: 20px; letter-spacing: -.7px; }
     .section-head small { color: var(--muted); font-size: 11px; }
-    .card-preview {
-      position: relative;
-      width: min(100%, 420px);
-      aspect-ratio: 1.586;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-      margin: 0 auto 24px;
-      padding: clamp(19px, 5vw, 29px);
-      border-radius: 13px;
-      background: linear-gradient(135deg, #2539bd, #4358e6 58%, #8192ff);
-      color: white;
-      box-shadow: 0 20px 45px #202e7550;
-      isolation: isolate;
-    }
-    .card-preview::before, .card-preview::after { position: absolute; z-index: -1; border: 1px solid #ffffff25; border-radius: 50%; content: ""; }
-    .card-preview::before { width: 310px; height: 310px; right: -118px; top: -144px; }
-    .card-preview::after { width: 270px; height: 270px; right: -70px; top: -103px; }
-    .card-top, .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-    .card-logo { font-size: 15px; font-weight: 850; letter-spacing: .6px; }
-    .card-chip { width: 40px; height: 29px; display: block; border: 1px solid #ffffff90; border-radius: 5px; background: linear-gradient(90deg, transparent 31%, #ffffff80 32% 34%, transparent 35% 65%, #ffffff80 66% 68%, transparent 69%), linear-gradient(0deg, transparent 45%, #ffffff80 46% 49%, transparent 50%); }
-    .card-number { min-height: 28px; margin: auto 0 9px; font-size: clamp(17px, 4vw, 23px); font-variant-numeric: tabular-nums; letter-spacing: 2px; white-space: nowrap; }
-    .card-bottom { align-items: end; }
-    .card-data-label { display: block; margin-bottom: 3px; color: #ffffffb8; font-size: 8px; letter-spacing: 1.1px; text-transform: uppercase; }
-    .card-holder { max-width: 230px; overflow: hidden; font-size: 12px; letter-spacing: .8px; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-    .card-expiry { font-size: 12px; font-variant-numeric: tabular-nums; letter-spacing: .8px; white-space: nowrap; }
-    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; }
-    .field input { width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 3px; outline: 0; background: var(--panel); color: var(--ink); font-variant-numeric: tabular-nums; }
-    .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px #344ce01a; }
-    .field-hint { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
-    .safe-note { display: flex; gap: 10px; margin-top: 16px; padding: 13px; border: 1px solid var(--line); background: #eeede7; color: var(--muted); font-size: 11px; }
-    .safe-note strong { color: var(--ink); }
-    .safe-icon { flex: 0 0 auto; color: var(--blue); font-size: 17px; }
+    .payment-panel { padding: 22px; border: 1px solid var(--line); background: var(--panel); }
+    .payment-panel h2 { font-size: 19px; }
+    .payment-panel > p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .demo-payment { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 16px; border: 1px solid var(--line); background: #f0f1ff; }
+    .demo-payment-mark { width: 43px; height: 43px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 16px; font-weight: 800; }
+    .demo-payment-copy strong, .demo-payment-copy small { display: block; }
+    .demo-payment-copy strong { font-size: 13px; }
+    .demo-payment-copy small { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .payment-confirmation { margin-top: 14px; padding: 14px; border: 1px solid #bdcf73; background: #f3f8d8; color: #354016; font-size: 12px; }
+    .payment-confirmation[hidden] { display: none; }
+    .payment-error { margin-top: 12px; color: #a33225; font-size: 11px; }
+    .payment-error:empty { display: none; }
+    .authorization { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 15px; padding: 14px; border: 1px solid #ffffff20; border-radius: 14px; background: #ffffff08; }
+    .authorization[hidden] { display: none; }
+    .authorization-icon { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #ffffff28; border-radius: 50%; background: #ffffff0a; color: #d4ceff; font-size: 17px; }
+    .authorization.pending .authorization-icon { border-color: #a296ff66; color: #c8bfff; animation: auth-pulse 1s ease-in-out infinite alternate; }
+    .authorization.approved { border-color: #c3e96455; background: #d4ff7210; }
+    .authorization.approved .authorization-icon { border-color: #c3e96466; background: #d4ff7217; color: #d4ff72; }
+    .authorization.rejected { border-color: #ff9c7b66; background: #ff9c7b0d; }
+    .authorization.rejected .authorization-icon { border-color: #ff9c7b66; background: #ff9c7b12; color: #ffad91; }
+    .authorization-copy strong { display: block; font-size: 12px; }
+    .authorization-copy p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+    .authorization-track { grid-column: 1 / -1; height: 5px; overflow: hidden; border-radius: 99px; background: #ffffff12; }
+    .authorization-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #897bff, #d4ff72); }
+    .authorization.rejected .authorization-track span { background: linear-gradient(90deg, #897bff, #ff9c7b); }
+    @keyframes auth-pulse { to { transform: scale(1.08); box-shadow: 0 0 24px #a296ff55; } }
+    .local-note { margin: 13px 0 0 !important; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted) !important; font-size: 10px !important; }
     .consultants { margin-top: 32px; }
     .consultant-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .consultant {
@@ -189,18 +180,130 @@
     }
     @media (max-width: 400px) {
       .wrap { width: calc(100% - 28px); }
-      .fields { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
       .consultant-list { grid-template-columns: 1fr; }
       .consultant { align-items: center; flex-direction: row; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    :root {
+      color-scheme: dark;
+      --paper: #090b12;
+      --ink: #f5f6ff;
+      --muted: #a0a5ba;
+      --line: #282d40;
+      --panel: #111522;
+      --blue: #8b7cff;
+      --blue-dark: #7364f3;
+      --lime: #d4ff72;
+      --orange: #ff9c7b;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 8% 0%, #5348a427, transparent 36rem),
+        radial-gradient(ellipse at 94% 44%, #38798018, transparent 34rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      isolation: isolate;
+    }
+    body::before, body::after {
+      position: fixed;
+      z-index: -1;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: .15;
+      pointer-events: none;
+      content: "";
+      animation: liquid-drift 18s ease-in-out infinite alternate;
+    }
+    body::before { top: 8%; left: -16rem; background: #7967ff; }
+    body::after { right: -15rem; bottom: 5%; background: #42d7ce; animation-delay: -8s; }
+    @keyframes liquid-drift {
+      from { transform: translate3d(0, -15px, 0) scale(.92); }
+      to { transform: translate3d(35px, 35px, 0) scale(1.12); }
+    }
+    .topbar { border-color: #ffffff12; background: #10132172; backdrop-filter: saturate(160%) blur(28px); }
+    .brand { color: white; }
+    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .back-link, .claim-link { color: #c1baff; }
+    .intro { padding-top: 65px; }
+    .eyebrow { color: #c0b8ff; }
+    .intro::before { content: ""; display: block; width: 8px; height: 8px; margin-bottom: 12px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 16px #d4ff72a0; }
+    h1 { font-size: clamp(44px, 7vw, 78px); }
+    h1 em { color: #b5aaff; }
+    .intro-copy { color: var(--muted); }
+    .intro-copy strong { color: white; }
+    .layout { gap: 30px; }
+    .section-head small { color: var(--muted); }
+    .payment-panel, .consultant { border-color: #ffffff22; border-radius: 19px; background: linear-gradient(145deg, #ffffff12, #ffffff04); box-shadow: inset 0 1px #ffffff15, 0 18px 45px #0003; backdrop-filter: blur(20px) saturate(140%); }
+    .payment-panel h2 { color: white; }
+    .payment-panel > p { color: var(--muted); }
+    .demo-payment { border-color: #ffffff25; border-radius: 15px; background: linear-gradient(135deg, #a296ff21, #ffffff06); box-shadow: inset 0 1px #ffffff14; backdrop-filter: blur(18px); }
+    .demo-payment-mark { background: linear-gradient(145deg, #a69aff, #6757ee); box-shadow: 0 7px 20px #7564f055; }
+    .demo-payment-copy small { color: #b7bbce; }
+    .pay-button, .date-action.primary { border: 1px solid #ffffff45; border-radius: 13px; background: linear-gradient(135deg, #9e92ff, #7060ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #7462ff45; transition: transform .25s, filter .25s, box-shadow .25s; }
+    .pay-button:hover, .date-action.primary:hover { transform: translateY(-2px); filter: brightness(1.1); background: linear-gradient(135deg, #a89eff, #8072fa); box-shadow: inset 0 1px #ffffffaa, 0 17px 40px #7462ff55; }
+    .pay-button:disabled { transform: none; filter: grayscale(.5); }
+    .local-note { border-color: #ffffff15; color: #a0a5ba !important; }
+    .consultants { margin-top: 36px; }
+    .consultant { transition: transform .2s, border-color .2s, background .2s; }
+    .consultant:hover { transform: translateY(-3px); border-color: #aaa0ff; }
+    .consultant[aria-pressed="true"] { border-color: #b4aaff88; background: linear-gradient(145deg, #a296ff24, #ffffff08); box-shadow: inset 0 1px #ffffff22, 0 12px 30px #6757ee1f; }
+    .consultant-copy strong { color: white; }
+    .consultant-copy small, .consultant-note { color: var(--muted); }
+    .order-card { overflow: hidden; border-color: #ffffff2a; border-radius: 24px; background: linear-gradient(145deg, #ffffff13, #ffffff06); box-shadow: inset 0 1px #ffffff22, 0 28px 90px #0005; backdrop-filter: saturate(170%) blur(32px); }
+    .order-top { background: linear-gradient(145deg, #a296ff30, #ffffff03); }
+    .order-top small { color: #c0baff; }
+    .order-body { background: #ffffff02; }
+    .order-options { border-color: #ffffff17; }
+    .order-options li { color: #c3c6d3; }
+    .amount-row { color: #a0a5ba; }
+    .amount-row strong { color: white; }
+    .deposit { border: 1px solid #e1ffa055; border-radius: 15px; background: linear-gradient(135deg, #d4ff7222, #d4ff7208); color: #edffc2; box-shadow: inset 0 1px #ffffff22, 0 10px 28px #d4ff7209; backdrop-filter: blur(18px); }
+    .deposit small { color: #b9ca9c; }
+    .deposit-amount strong { color: white; }
+    .disclaimer { color: var(--muted); }
+    .appointment { border-color: #ffffff30; border-radius: 22px; background: linear-gradient(145deg, #1a1d2bf2, #101321f2); color: white; box-shadow: inset 0 1px #ffffff18, 0 28px 100px #0009; backdrop-filter: saturate(170%) blur(30px); }
+    .appointment::backdrop { background: #050610bd; backdrop-filter: blur(8px); }
+    .appointment-head { border-color: #ffffff16; }
+    .appointment-head small { color: #c0b8ff; }
+    .dialog-close, .month-nav { border-color: #ffffff20; border-radius: 10px; background: #ffffff08; color: white; }
+    .suggested-date { border-color: #b4aaff55; border-radius: 16px; background: linear-gradient(135deg, #a296ff25, #ffffff08); box-shadow: inset 0 1px #ffffff1d; }
+    .suggested-label { color: #bdb6ff; }
+    .suggested-date p { color: var(--muted); }
+    .date-action { border-color: #ffffff21; border-radius: 10px; background: #ffffff06; color: white; }
+    .date-action:hover { border-color: #8b7cff; }
+    .calendar-day.available { border-color: #ffffff20; border-radius: 8px; background: #191e30; color: white; }
+    .calendar-day.available:hover { border-color: #8b7cff; color: #d5ceff; }
+    .calendar-day.selected { border-color: #8b7cff; background: linear-gradient(145deg, #8879ff, #6757ee); color: white; }
+    .calendar-day:disabled { color: #64697a; }
+    .weekday, .availability-note { color: var(--muted); }
+    .time-slot { border-color: #ffffff20; border-radius: 9px; background: #191e30; color: white; }
+    .time-slot.selected { border-color: #8b7cff; background: #272342; color: #d5ceff; }
+    .appointment-confirmation { border-color: #c3e96455; border-radius: 12px; background: #28331e; color: #edffc2; }
+    .email-action { display: inline-flex; margin-top: 9px; color: #d1caff; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+    .payment-confirmation { border-color: #c3e96455; border-radius: 13px; background: #28331e; color: #edffc2; }
+    .payment-confirmation .email-action { display: flex; width: fit-content; }
+    .payment-confirmation, .appointment-confirmation { backdrop-filter: blur(18px); }
+    .authorization { border-color: #ffffff2a; background: linear-gradient(135deg, #ffffff10, #ffffff04); box-shadow: inset 0 1px #ffffff12; backdrop-filter: blur(18px); }
+    .authorization-copy p { color: #b2b7ca; }
+    .footer { border-color: #ffffff15; color: #9298ac; }
+    .toast { border-color: #ffffff20; border-radius: 12px; background: #181d2e; color: white; box-shadow: 0 16px 44px #0006; }
+    @media (max-width: 680px) { .intro { padding-top: 42px; } }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
+      .consultant, .pay-button, .date-action { transition: none; }
+      .authorization.pending .authorization-icon { animation: none; }
+      .authorization-track span { transition-duration: .01ms !important; }
+    }
   </style>
 </head>
 <body>
   <header class="topbar wrap">
     <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
     <a class="claim-link" href="szkoda.html">Zgłoś szkodę</a>
+    <a class="back-link" href="szkoda.html#claimsHeading">Moje zgłoszenia</a>
     <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
   </header>
 
@@ -214,49 +317,34 @@
     <div class="layout">
       <section class="form-column" aria-labelledby="payment-heading">
         <div class="section-head">
-          <h2 id="payment-heading">Podgląd karty</h2>
-          <small>Wpisz przykładowe dane, aby zobaczyć podgląd</small>
+          <h2 id="payment-heading">Twoja zaliczka</h2>
+          <small>Prosty, lokalny tryb demonstracyjny</small>
         </div>
-
-        <div class="card-preview" aria-label="Podgląd karty płatniczej">
-          <div class="card-top"><span class="card-logo">forma<span aria-hidden="true">®</span></span><span class="card-chip" aria-hidden="true"></span></div>
-          <div class="card-number" id="cardPreviewNumber">•••• •••• •••• ••••</div>
-          <div class="card-bottom">
-            <div><span class="card-data-label">Posiadacz karty</span><div class="card-holder" id="cardPreviewName">TWOJE IMIĘ I NAZWISKO</div></div>
-            <div><span class="card-data-label">Ważna do</span><div class="card-expiry" id="cardPreviewExpiry">MM/RR</div></div>
+        <div class="payment-panel">
+          <h2>Symulacja płatności zaliczki</h2>
+          <p>Kwota wynosi <strong id="paymentAmount">—</strong>. Potwierdź, aby zapisać demonstracyjny status płatności na tym urządzeniu.</p>
+          <div class="demo-payment">
+            <span class="demo-payment-mark" aria-hidden="true">20%</span>
+            <span class="demo-payment-copy"><strong>Płatność demonstracyjna</strong><small>Bez danych karty i bez połączenia z bankiem.</small></span>
           </div>
-        </div>
-
-        <div class="fields">
-          <div class="field full">
-            <label for="cardName">Imię i nazwisko na karcie</label>
-            <input id="cardName" type="text" maxlength="32" autocomplete="off" placeholder="np. Jan Kowalski">
+          <button class="pay-button" id="confirmPayment" type="button" style="margin-top:16px"><span>Potwierdź wpłatę zaliczki</span><span aria-hidden="true">↗</span></button>
+          <p class="payment-error" id="paymentError" role="alert"></p>
+          <div class="authorization" id="authorization" role="status" aria-live="polite" hidden>
+            <span class="authorization-icon" id="authorizationIcon" aria-hidden="true">···</span>
+            <span class="authorization-copy"><strong id="authorizationTitle">Autoryzowanie transakcji…</strong><p id="authorizationMessage">Sprawdzamy status płatności.</p></span>
+            <span class="authorization-track" aria-hidden="true"><span id="authorizationProgress"></span></span>
           </div>
-          <div class="field full">
-            <label for="cardNumber">Numer karty</label>
-            <input id="cardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="23" placeholder="0000 0000 0000 0000" aria-describedby="cardNumberHint">
-            <span class="field-hint" id="cardNumberHint">Wpisywane dane są wyłącznie lokalnym podglądem demonstracyjnym.</span>
+          <div class="payment-confirmation" id="paymentConfirmation" aria-live="polite" hidden>
+            <span id="paymentConfirmationText"></span>
+            <a class="email-action" id="paymentEmail" href="#">Przygotuj wiadomość e-mail</a>
           </div>
-          <div class="field">
-            <label for="cardExpiry">Data ważności</label>
-            <input id="cardExpiry" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="MM/RR">
-          </div>
-          <div class="field">
-            <label for="cardCvc">Kod CVC</label>
-            <input id="cardCvc" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="•••" aria-describedby="cvcHint">
-            <span class="field-hint" id="cvcHint">Kod CVC nie jest pokazywany na podglądzie.</span>
-          </div>
-        </div>
-
-        <div class="safe-note">
-          <span class="safe-icon" aria-hidden="true">ⓘ</span>
-          <span><strong>To tylko demonstracja.</strong> Ta strona nie pobiera płatności, nie kontaktuje się z konsultantami i nie wysyła ani nie zapisuje danych karty. Nie wpisuj prawdziwego numeru karty.</span>
+          <p class="local-note">Status wpłaty jest zapisywany lokalnie w tej przeglądarce. To nie jest rzeczywista transakcja bankowa.</p>
         </div>
 
         <section class="consultants" aria-labelledby="consultants-heading">
           <div class="section-head">
             <h2 id="consultants-heading">Wybierz konsultanta</h2>
-            <small>Wybór demonstracyjny</small>
+            <small>Wybierz do symulacji</small>
           </div>
           <div class="consultant-list" id="consultantList" role="group" aria-label="Wybierz konsultanta">
             <button class="consultant" type="button" data-consultant="Milo Henderson" aria-pressed="true">
@@ -272,7 +360,7 @@
               <span class="consultant-copy"><strong>Floyd Kaczmarek</strong><small>Dom i firma</small></span>
             </button>
           </div>
-          <p class="consultant-note">Osoby i dostępność są przykładowe — strona nie łączy z prawdziwym konsultantem.</p>
+          <p class="consultant-note">Terminy i status są zapisywane lokalnie, aby można było przetestować cały przepływ.</p>
         </section>
 
       </section>
@@ -291,9 +379,12 @@
             <div class="deposit-amount"><strong id="depositAmount">—</strong><span>zł</span></div>
             <small id="remainingAmount">Pozostała część: —</small>
           </div>
-          <button class="pay-button" id="payButton" type="button"><span>Wpłać zaliczkę</span><span aria-hidden="true">↗</span></button>
-          <p class="appointment-confirmation" id="appointmentConfirmation" aria-live="polite" hidden></p>
-          <p class="disclaimer">To przykładowa symulacja. Nie powstaje umowa ubezpieczenia ani rzeczywista płatność. Ostateczną ofertę i płatność może przedstawić wyłącznie ubezpieczyciel.</p>
+          <button class="date-action primary" id="payButton" type="button" style="width:100%;margin-top:17px"><span>Wybierz termin rozmowy</span><span aria-hidden="true">↗</span></button>
+          <p class="appointment-confirmation" id="appointmentConfirmation" aria-live="polite" hidden>
+            <span id="appointmentConfirmationText"></span>
+            <a class="email-action" id="appointmentEmail" href="#">Przygotuj wiadomość e-mail</a>
+          </p>
+          <p class="disclaimer">Podgląd składki i status płatności są demonstracyjne. Rzeczywiste zawarcie polisy wymaga potwierdzenia warunków przez ubezpieczyciela.</p>
         </div>
       </aside>
     </div>
@@ -324,6 +415,7 @@
         </div>
         <div class="calendar-grid" id="calendarGrid" role="group" aria-label="Dostępne terminy"></div>
         <p class="availability-note">Szare dni są niedostępne. Wybierz jeden z dostępnych terminów.</p>
+        <p class="payment-error" id="appointmentError" role="alert"></p>
         <div class="time-slots" id="timeSlots" role="group" aria-label="Wybierz godzinę"></div>
         <button class="date-action primary confirm-appointment" id="acceptChosenDate" type="button" disabled>Akceptuj wybrany termin</button>
       </section>
@@ -336,8 +428,9 @@
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <script src="forma-store.js"></script>
   <script>
-    (() => {
+    (async () => {
       const $ = (id) => document.getElementById(id);
       const formatMoney = (amount) => new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
       const toast = $("toast");
@@ -347,6 +440,7 @@
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const availableTimes = ["10:00", "13:30", "16:00"];
+      let appointments = [];
       let proposedDate;
       let proposedTime;
       let selectedDate;
@@ -366,6 +460,8 @@
         $("payButton").disabled = true;
         $("payButton").style.opacity = ".55";
         $("payButton").style.cursor = "not-allowed";
+        $("confirmPayment").disabled = true;
+        $("confirmPayment").style.opacity = ".55";
         $("monthlyAmount").textContent = "—";
         $("annualAmount").textContent = "—";
         $("depositAmount").textContent = "—";
@@ -389,6 +485,17 @@
         return;
       }
 
+      if (typeof summary.id !== "string" || !summary.id) {
+        summary.id = `order-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+        try {
+          sessionStorage.setItem("forma:checkout", JSON.stringify(summary));
+        } catch (error) {
+          console.error("Nie udało się zapisać identyfikatora zamówienia.", error);
+          showMissingSummary("Nie udało się zapisać podsumowania. Wróć do kalkulatora i spróbuj ponownie.");
+          return;
+        }
+      }
+
       const monthly = Math.round(summary.monthly);
       const annual = monthly * 12;
       const deposit = Math.round(annual * 0.2 * 100) / 100;
@@ -402,12 +509,50 @@
       $("monthlyAmount").textContent = `${formatMoney(monthly)} zł`;
       $("annualAmount").textContent = `${formatMoney(annual)} zł`;
       $("depositAmount").textContent = formatMoney(deposit);
+      $("paymentAmount").textContent = `${formatMoney(deposit)} zł`;
       $("remainingAmount").textContent = `Pozostała część szacunkowej składki rocznej: ${formatMoney(remaining)} zł`;
 
       function isAvailableDate(date) {
-        const day = date.getDay();
         const daysAhead = Math.round((date - today) / 86400000);
-        return daysAhead > 0 && daysAhead <= 60 && (day === 2 || day === 4 || (day === 6 && date.getDate() % 2 === 0));
+        if (daysAhead <= 0 || daysAhead > 60) return false;
+        const daySeed = seededNumber(`${dateKey(date)}|${selectedConsultant}|availability`);
+        const availabilityChance = date.getDay() === 0 || date.getDay() === 6 ? 0.13 : 0.43;
+        if (daySeed >= availabilityChance) return false;
+        return availableTimes.some((time) =>
+          seededNumber(`${dateKey(date)}|${selectedConsultant}|${time}|availability`) < 0.68 &&
+          isSlotAvailable(date, time)
+        );
+      }
+
+      function seededNumber(value) {
+        let hash = 2166136261;
+        for (let index = 0; index < value.length; index += 1) {
+          hash ^= value.charCodeAt(index);
+          hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0) / 4294967296;
+      }
+
+      function dateKey(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function isSlotAvailable(date, time) {
+        const key = `${dateKey(date)}|${time}|${selectedConsultant}`;
+        return !appointments.some((appointment) => appointment.id === key && appointment.orderId !== summary.id);
+      }
+
+      function findAvailableTime(date, preferredTime) {
+        const orderedTimes = preferredTime
+          ? [preferredTime, ...availableTimes.filter((time) => time !== preferredTime)]
+          : availableTimes;
+        return orderedTimes.find((time) =>
+          seededNumber(`${dateKey(date)}|${selectedConsultant}|${time}|availability`) < 0.68 &&
+          isSlotAvailable(date, time)
+        ) || null;
       }
 
       function findNextAvailableDate(startDate) {
@@ -450,7 +595,11 @@
         for (let day = 1; day <= daysInMonth; day += 1) {
           const date = new Date(year, month, day);
           const button = document.createElement("button");
-          const available = isAvailableDate(date);
+          const freeTimes = availableTimes.filter((time) =>
+            seededNumber(`${dateKey(date)}|${selectedConsultant}|${time}|availability`) < 0.68 &&
+            isSlotAvailable(date, time)
+          );
+          const available = freeTimes.length > 0 && isAvailableDate(date);
           button.type = "button";
           button.className = "calendar-day" + (available ? " available" : "") + (selectedDate && date.getTime() === selectedDate.getTime() ? " selected" : "");
           button.textContent = String(day);
@@ -459,10 +608,21 @@
           if (available) {
             button.addEventListener("click", () => {
               selectedDate = date;
-              selectedTime = availableTimes[0];
+              selectedTime = freeTimes[0];
               renderCalendar();
               renderTimes();
               $("acceptChosenDate").disabled = false;
+            });
+
+            window.addEventListener("storage", async (event) => {
+              if (event.key === null) return;
+              try {
+                await refreshAppointments();
+                if ($("calendarPanel").hidden === false) renderCalendar();
+              } catch (error) {
+                console.error("Nie udało się odświeżyć dostępności terminów.", error);
+                $("appointmentError").textContent = "Nie udało się odświeżyć dostępności terminów.";
+              }
             });
           }
           grid.append(button);
@@ -477,7 +637,13 @@
       }
 
       function renderTimes() {
-        $("timeSlots").innerHTML = availableTimes.map((time) => `
+        const freeTimes = selectedDate
+          ? availableTimes.filter((time) =>
+            seededNumber(`${dateKey(selectedDate)}|${selectedConsultant}|${time}|availability`) < 0.68 &&
+            isSlotAvailable(selectedDate, time)
+          )
+          : [];
+        $("timeSlots").innerHTML = freeTimes.map((time) => `
           <button class="time-slot${time === selectedTime ? " selected" : ""}" type="button" data-time="${time}" aria-pressed="${time === selectedTime}">${time}</button>
         `).join("");
       }
@@ -490,40 +656,119 @@
         $("suggestedPanel").hidden = false;
       }
 
-      function confirmAppointment(date, time) {
+      async function confirmAppointment(date, time) {
+        const dateValue = dateKey(date);
+        const slotId = `${dateValue}|${time}|${selectedConsultant}`;
+        const previousAppointment = appointments.find((appointment) => appointment.orderId === summary.id);
+        const randomlyAvailable = seededNumber(`${dateValue}|${selectedConsultant}|${time}|availability`) < 0.68;
+        if (!randomlyAvailable || !isSlotAvailable(date, time)) {
+          $("appointmentError").textContent = "Ten termin został właśnie zajęty. Wybierz inną datę lub godzinę.";
+          await refreshAppointments();
+          renderCalendar();
+          if (appointmentDialog.open) {
+            $("suggestedPanel").hidden = true;
+            $("calendarPanel").hidden = false;
+          }
+          return;
+        }
+        const sameExistingSlot = previousAppointment && previousAppointment.id === slotId;
+        $("acceptSuggested").disabled = true;
+        $("acceptChosenDate").disabled = true;
+        try {
+          if (!sameExistingSlot) {
+            const appointment = {
+              id: slotId,
+              orderId: summary.id,
+              product: summary.product,
+              consultant: selectedConsultant,
+              date: dateValue,
+              time,
+              createdAt: new Date().toISOString()
+            };
+            await window.FormaStore.add("appointments", appointment);
+            appointments.push(appointment);
+            if (previousAppointment) {
+              await window.FormaStore.delete("appointments", previousAppointment.id);
+              appointments = appointments.filter((item) => item.id !== previousAppointment.id);
+            }
+          }
+        } catch (error) {
+          console.error("Nie udało się zarezerwować lokalnego terminu.", error);
+          $("appointmentError").textContent = error.name === "ConstraintError"
+            ? "Ktoś właśnie zajął ten termin. Wybierz inną godzinę."
+            : "Nie udało się zapisać terminu w przeglądarce. Spróbuj ponownie.";
+          await refreshAppointments();
+          renderCalendar();
+          $("acceptSuggested").disabled = false;
+          $("acceptChosenDate").disabled = false;
+          return;
+        }
         showSelectedAppointment(date, time);
-        $("appointmentConfirmation").textContent = `Wybrany termin rozmowy: ${formatDate(proposedDate)} o ${proposedTime} · ${selectedConsultant}.`;
+        $("appointmentConfirmationText").textContent = `Termin zapisany lokalnie: ${formatDate(proposedDate)} o ${proposedTime} · ${selectedConsultant}. `;
+        $("appointmentEmail").href = window.FormaMail.href(
+          `Forma — termin rozmowy ${formatDate(proposedDate)}`,
+          `Proszę o potwierdzenie terminu rozmowy.\n\nKonsultant: ${selectedConsultant}\nTermin: ${formatDate(proposedDate)} o ${proposedTime}\nUbezpieczenie: ${summary.product}\nNumer konfiguracji: ${summary.id}`
+        );
         $("appointmentConfirmation").hidden = false;
+        $("appointmentError").textContent = "";
+        $("acceptSuggested").disabled = false;
+        $("acceptChosenDate").disabled = false;
         appointmentDialog.close();
-        showToast(`Termin rozmowy wybrany: ${formatDate(proposedDate)} o ${proposedTime}. Konsultant: ${selectedConsultant}.`);
+        showToast(`Termin zapisany: ${formatDate(proposedDate)} o ${proposedTime}.`);
       }
 
-      proposedDate = findNextAvailableDate(new Date(today.getTime() + 86400000));
-      proposedTime = availableTimes[1];
+      async function refreshAppointments() {
+        appointments = await window.FormaStore.getAll("appointments");
+      }
+
+      try {
+        await refreshAppointments();
+        const existingAppointment = appointments.find((appointment) => appointment.orderId === summary.id);
+        if (existingAppointment) {
+          selectedConsultant = existingAppointment.consultant;
+          $("consultantList").querySelectorAll("[data-consultant]").forEach((item) => {
+            item.setAttribute("aria-pressed", String(item.dataset.consultant === selectedConsultant));
+          });
+          proposedDate = new Date(`${existingAppointment.date}T00:00:00`);
+          proposedTime = existingAppointment.time;
+          $("appointmentConfirmationText").textContent = `Termin zapisany lokalnie: ${formatDate(proposedDate)} o ${proposedTime} · ${selectedConsultant}. `;
+          $("appointmentEmail").href = window.FormaMail.href(
+            `Forma — termin rozmowy ${formatDate(proposedDate)}`,
+            `Proszę o potwierdzenie terminu rozmowy.\n\nKonsultant: ${selectedConsultant}\nTermin: ${formatDate(proposedDate)} o ${proposedTime}\nUbezpieczenie: ${summary.product}\nNumer konfiguracji: ${summary.id}`
+          );
+          $("appointmentConfirmation").hidden = false;
+        } else {
+          proposedDate = findNextAvailableDate(new Date(today.getTime() + 86400000));
+          proposedTime = findAvailableTime(proposedDate, availableTimes[1]);
+        }
+      } catch (error) {
+        console.error("Nie udało się wczytać rezerwacji z lokalnej bazy.", error);
+        $("appointmentError").textContent = "Nie udało się wczytać dostępnych terminów. Odśwież stronę i spróbuj ponownie.";
+        $("payButton").disabled = true;
+        $("confirmPayment").disabled = true;
+        return;
+      }
       updateSuggestedDate();
 
-      $("cardName").addEventListener("input", (event) => {
-        const name = event.target.value.trim();
-        $("cardPreviewName").textContent = name ? name.toLocaleUpperCase("pl-PL") : "TWOJE IMIĘ I NAZWISKO";
-      });
+      try {
+        const existingPayment = await window.FormaStore.get("payments", summary.id);
+        if (existingPayment) renderPaymentConfirmation(existingPayment);
+      } catch (error) {
+        console.error("Nie udało się wczytać statusu płatności demonstracyjnej.", error);
+        $("paymentError").textContent = "Nie udało się wczytać statusu płatności. Odśwież stronę i spróbuj ponownie.";
+        $("confirmPayment").disabled = true;
+      }
 
-      $("cardNumber").addEventListener("input", (event) => {
-        const digits = event.target.value.replace(/\D/g, "").slice(0, 19);
-        event.target.value = digits.replace(/(.{4})/g, "$1 ").trim();
-        const groups = digits.match(/.{1,4}/g) || [];
-        while (groups.length < 4) groups.push("••••");
-        $("cardPreviewNumber").textContent = groups.join(" ");
-      });
-
-      $("cardExpiry").addEventListener("input", (event) => {
-        const digits = event.target.value.replace(/\D/g, "").slice(0, 4);
-        event.target.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
-        $("cardPreviewExpiry").textContent = event.target.value || "MM/RR";
-      });
-
-      $("cardCvc").addEventListener("input", (event) => {
-        event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
-      });
+      function renderPaymentConfirmation(payment) {
+        $("paymentConfirmationText").textContent = `Zaliczka ${formatMoney(payment.amount)} zł została oznaczona jako opłacona w tej demonstracji. Numer potwierdzenia: ${payment.reference}. `;
+        $("paymentEmail").href = window.FormaMail.href(
+          `Forma — potwierdzenie zaliczki ${payment.reference}`,
+          `Potwierdzenie demonstracyjnej wpłaty zaliczki.\n\nUbezpieczenie: ${payment.product}\nKwota: ${formatMoney(payment.amount)} zł\nNumer potwierdzenia: ${payment.reference}`
+        );
+        $("paymentConfirmation").hidden = false;
+        $("confirmPayment").disabled = true;
+        $("confirmPayment").querySelector("span").textContent = "Zaliczka już potwierdzona";
+      }
 
       $("consultantList").addEventListener("click", (event) => {
         const button = event.target.closest("[data-consultant]");
@@ -532,9 +777,17 @@
         $("consultantList").querySelectorAll("[data-consultant]").forEach((item) => {
           item.setAttribute("aria-pressed", String(item === button));
         });
+        try {
+          proposedDate = findNextAvailableDate(new Date(today.getTime() + 86400000));
+          proposedTime = findAvailableTime(proposedDate, availableTimes[1]);
+          updateSuggestedDate();
+        } catch (error) {
+          $("appointmentError").textContent = "Dla tego konsultanta nie ma dostępnych terminów w najbliższych 60 dniach.";
+        }
       });
 
       $("payButton").addEventListener("click", () => {
+        $("appointmentError").textContent = "";
         updateSuggestedDate();
         $("suggestedPanel").hidden = false;
         $("calendarPanel").hidden = true;
@@ -582,7 +835,79 @@
       $("acceptSuggested").addEventListener("click", () => {
         confirmAppointment(proposedDate, proposedTime);
       });
+
+      $("confirmPayment").addEventListener("click", async () => {
+        const button = $("confirmPayment");
+        const errorBox = $("paymentError");
+        const authorization = $("authorization");
+        const progress = $("authorizationProgress");
+        errorBox.textContent = "";
+        authorization.className = "authorization pending";
+        authorization.hidden = false;
+        $("authorizationIcon").textContent = "···";
+        $("authorizationTitle").textContent = "Autoryzowanie transakcji…";
+        $("authorizationMessage").textContent = "Sprawdzamy status płatności.";
+        progress.style.transition = "none";
+        progress.style.width = "0%";
+        void progress.offsetWidth;
+        requestAnimationFrame(() => {
+          progress.style.transition = "width 1.8s cubic-bezier(.2,.75,.25,1)";
+          progress.style.width = "100%";
+        });
+        button.disabled = true;
+        button.querySelector("span").textContent = "Autoryzowanie…";
+        await new Promise((resolve) => window.setTimeout(resolve, 1800));
+
+        if (Math.random() >= 0.9) {
+          authorization.className = "authorization rejected";
+          $("authorizationIcon").textContent = "×";
+          $("authorizationTitle").textContent = "Transakcja odrzucona";
+          $("authorizationMessage").textContent = "Nie udało się potwierdzić płatności. Możesz spróbować ponownie.";
+          button.disabled = false;
+          button.querySelector("span").textContent = "Spróbuj ponownie";
+          return;
+        }
+
+        try {
+          const payment = {
+            id: summary.id,
+            orderId: summary.id,
+            product: summary.product,
+            amount: deposit,
+            status: "Zaliczkę potwierdzono lokalnie",
+            method: "Symulacja",
+            paidAt: new Date().toISOString(),
+            reference: `DEMO-${Math.random().toString(36).slice(2, 9).toUpperCase()}`
+          };
+          await window.FormaStore.add("payments", payment);
+          authorization.className = "authorization approved";
+          $("authorizationIcon").textContent = "✓";
+          $("authorizationTitle").textContent = "Transakcja zaakceptowana";
+          $("authorizationMessage").textContent = "Autoryzacja zakończona pomyślnie.";
+          renderPaymentConfirmation(payment);
+        } catch (error) {
+          console.error("Nie udało się zapisać statusu płatności demonstracyjnej.", error);
+          try {
+            const existing = await window.FormaStore.get("payments", summary.id);
+            if (existing) {
+              renderPaymentConfirmation(existing);
+              return;
+            }
+          } catch (readError) {
+            console.error("Nie udało się sprawdzić istniejącego potwierdzenia.", readError);
+          }
+          authorization.className = "authorization rejected";
+          $("authorizationIcon").textContent = "!";
+          $("authorizationTitle").textContent = "Nie udało się zapisać statusu";
+          $("authorizationMessage").textContent = "Możesz bezpiecznie spróbować ponownie.";
+          errorBox.textContent = "Nie udało się zapisać statusu. Sprawdź miejsce w przeglądarce i spróbuj ponownie.";
+          button.disabled = false;
+          button.querySelector("span").textContent = "Spróbuj ponownie";
+        }
+      });
     })();
   </script>
+  <script src="forma-chat.js"></script>
+  <script src="forma-transition.js"></script>
 </body>
 </html>

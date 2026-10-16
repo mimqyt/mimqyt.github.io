@@ -200,6 +200,103 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
+    :root {
+      color-scheme: dark;
+      --paper: #090b12;
+      --ink: #f5f6ff;
+      --muted: #a0a5ba;
+      --line: #282d40;
+      --panel: #111522;
+      --blue: #8b7cff;
+      --blue-dark: #7364f3;
+      --lime: #d4ff72;
+      --orange: #ff9c7b;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 8% 2%, #5348a427, transparent 34rem),
+        radial-gradient(ellipse at 94% 30%, #38798018, transparent 34rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      isolation: isolate;
+    }
+    body::before, body::after {
+      position: fixed;
+      z-index: -1;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: .16;
+      pointer-events: none;
+      content: "";
+      animation: liquid-drift 18s ease-in-out infinite alternate;
+    }
+    body::before { top: 10%; left: -16rem; background: #7967ff; }
+    body::after { right: -15rem; bottom: 5%; background: #42d7ce; animation-delay: -8s; }
+    @keyframes liquid-drift {
+      from { transform: translate3d(0, -15px, 0) scale(.92); }
+      to { transform: translate3d(35px, 35px, 0) scale(1.12); }
+    }
+    .topbar { position: sticky; top: 0; z-index: 10; border-color: #ffffff12; background: #10132196; backdrop-filter: saturate(160%) blur(28px); }
+    .brand { color: #f8f8ff; }
+    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .top-links a { transition: color .2s, background .2s, border-color .2s; }
+    .top-links .help-link { border-color: #ffffff1b; color: var(--ink) !important; background: #ffffff06; }
+    .top-links .claim-link { border-color: transparent; background: linear-gradient(135deg, #8374ff, #6555ed); color: white !important; box-shadow: 0 8px 28px #7462ff38; }
+    .hero { padding-top: 78px; padding-bottom: 58px; }
+    h1 { font-size: clamp(50px, 8vw, 98px); letter-spacing: -.085em; }
+    h1 em { color: #b5aaff; }
+    .hero-aside { border-color: #ffffff16; color: var(--muted); }
+    .hero-aside strong { color: white; }
+    .eyebrow { color: #c0b8ff; }
+    .eyebrow::before { background: var(--lime); box-shadow: 0 0 16px #d4ff72a0; }
+    .stepbar { border-color: #ffffff17; color: #9299af; }
+    .step.active { color: white; }
+    .step-number { border-color: #ffffff22; color: #b2b7ca; }
+    .step.active .step-number { border-color: transparent; background: linear-gradient(145deg, #a69aff, #7061f2); box-shadow: 0 4px 16px #7667f055; }
+    .step-line { background: #ffffff20; }
+    .section-title p, .section-head p { color: var(--muted); }
+    .product { min-height: 132px; padding: 17px; border-color: #ffffff22; border-radius: 19px; background: linear-gradient(145deg, #ffffff12, #ffffff04); box-shadow: inset 0 1px #ffffff15, 0 18px 45px #0003; backdrop-filter: blur(18px) saturate(140%); }
+    .product:hover { border-color: #988aff; box-shadow: 0 14px 38px #7e6aff18; }
+    .product[aria-pressed="true"] { border-color: #a69aff; background: linear-gradient(145deg, #6d5de5, #5547c2); box-shadow: 0 12px 34px #7564f04a; }
+    .product-icon { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid #ffffff1a; border-radius: 12px; background: #ffffff0b; }
+    .product[aria-pressed="true"] .product-icon { border-color: #ffffff45; background: #ffffff18; }
+    .product-description { color: #c2c5d3; }
+    .options-section { margin-top: 48px; }
+    .option { border-color: #ffffff1e; border-radius: 16px; background: linear-gradient(145deg, #ffffff0d, #ffffff03); box-shadow: inset 0 1px #ffffff0c, 0 12px 30px #0002; backdrop-filter: blur(16px) saturate(130%); transition: transform .25s, border-color .25s, background .25s, box-shadow .25s; }
+    .option:hover { transform: translateY(-2px); border-color: #7567ec; }
+    .option:has(input:checked) { border-color: #a69aff88; background: linear-gradient(145deg, #a296ff24, #ffffff08); box-shadow: inset 0 1px #ffffff18, 0 12px 34px #6757ee20; }
+    .option input { accent-color: #9486ff; }
+    .option-copy small { color: #a0a5ba; }
+    .option-price { color: #c0b8ff; }
+    .field input { border-color: #ffffff18; border-radius: 11px; background: #111522; color: white; }
+    .field input:focus { border-color: #9284ff; box-shadow: 0 0 0 3px #8173ff24; }
+    .quote-card { border-color: #ffffff25; border-radius: 24px; background: linear-gradient(145deg, #ffffff13, #ffffff06); box-shadow: inset 0 1px #ffffff20, 0 28px 90px #0005; backdrop-filter: saturate(170%) blur(32px); }
+    .quote-top { background: linear-gradient(145deg, #a296ff32, #ffffff03); }
+    .quote-label { color: #c0baff; }
+    .quote-amount strong { color: white; }
+    .quote-footnote { color: #b3b8ce; }
+    .quote-product { border-color: #ffffff17; }
+    .summary-title, .quote-product small, .notice { color: var(--muted); }
+    .summary-list li span:last-child { color: #c5c0ff; }
+    .cta { border: 1px solid #ffffff45; border-radius: 13px; background: linear-gradient(135deg, #9e92ff, #7060ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #7462ff45; transition: transform .25s, filter .25s, box-shadow .25s; }
+    .cta:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    .panel { border-color: #ffffff1d; border-radius: 20px; background: #ffffff08; box-shadow: inset 0 1px #ffffff0b, 0 14px 42px #0002; backdrop-filter: blur(22px); }
+    .footer { border-color: #ffffff17; color: #9298ac; }
+    .footer a { color: #c3bcff; }
+    .toast { border-color: #ffffff20; border-radius: 12px; background: #181d2e; color: white; box-shadow: 0 16px 44px #0006; }
+    @media (max-width: 700px) {
+      .topbar { position: sticky; }
+      .hero { padding-top: 48px; }
+      .product { min-height: 112px; }
+      .sidebar { border-color: #ffffff18; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
+      .product, .option, .cta { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -209,7 +306,7 @@
       <a href="#rodzaje">Rodzaje ochrony</a>
       <a href="#jak-to-dziala">Jak to działa</a>
       <a class="claim-link" href="szkoda.html">Zgłoś szkodę ↗</a>
-      <a class="help-link" href="mailto:kontakt@forma.example">Masz pytanie? ↗</a>
+      <a class="help-link" href="szkoda.html#claimsHeading">Moje zgłoszenia ↗</a>
     </nav>
   </header>
 
@@ -478,6 +575,7 @@
 
       $("summaryButton").addEventListener("click", () => {
         const summary = {
+          id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
           product: state.product.name,
           monthly: calculatePrice(),
           options: state.product.options
@@ -486,7 +584,7 @@
         };
         try {
           sessionStorage.setItem("forma:checkout", JSON.stringify(summary));
-          window.location.assign("platnosc.html");
+          window.FormaTransition.navigate("platnosc.html");
         } catch (error) {
           showToast("Nie udało się przygotować podsumowania w tej przeglądarce. Spróbuj ponownie.");
           console.error("Nie udało się zapisać podsumowania ubezpieczenia.", error);
@@ -496,5 +594,7 @@
       renderOptions();
     })();
   </script>
+  <script src="forma-chat.js"></script>
+  <script src="forma-transition.js"></script>
 </body>
 </html>

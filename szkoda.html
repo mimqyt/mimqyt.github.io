@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f1eb">
+  <meta name="description" content="Formularz zgłoszenia szkody i prośby o odszkodowanie.">
+  <title>Zgłoś szkodę — forma</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3f1eb;
+      --ink: #171916;
+      --muted: #72766e;
+      --line: #d8d8cf;
+      --panel: #fbfaf6;
+      --blue: #344ce0;
+      --blue-dark: #2638b5;
+      --lime: #d8f45a;
+      --orange: #f0744c;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    button, input, select, textarea { font: inherit; }
+    .wrap { width: min(1040px, calc(100% - 64px)); margin-inline: auto; }
+    .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
+    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .back-link { color: var(--muted); text-decoration: none; font-size: 12px; }
+    .back-link:hover { color: var(--blue); }
+    .intro { max-width: 730px; padding: 52px 0 31px; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: 1.4px; text-transform: uppercase; }
+    .eyebrow::before { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); content: ""; }
+    h1 { margin: 0; font-size: clamp(44px, 7vw, 76px); line-height: .98; letter-spacing: -.075em; }
+    h1 em { color: var(--blue); font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    .intro p:last-child { max-width: 570px; margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 30px; align-items: start; padding: 0 0 70px; }
+    .form-card { padding: clamp(18px, 4vw, 30px); border: 1px solid var(--line); background: var(--panel); }
+    .form-title { margin-bottom: 22px; }
+    h2 { margin: 0; font-size: 21px; letter-spacing: -.7px; }
+    .form-title p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 13px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      outline: 0;
+      background: white;
+      color: var(--ink);
+    }
+    .field textarea { min-height: 116px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 2px #344ce01a; }
+    .field-hint { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .file-drop { padding: 15px; border: 1px dashed #a7aa9e; background: #f4f3ed; }
+    .file-drop input { min-height: auto; padding: 5px 0; border: 0; background: transparent; }
+    .file-list { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 11px; }
+    .file-list:empty { display: none; }
+    .form-error { margin: 13px 0 0; color: #a33225; font-size: 12px; }
+    .form-error:empty { display: none; }
+    .submit-button { width: 100%; min-height: 49px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; padding: 0 16px; border: 0; border-radius: 2px; background: var(--blue); color: white; font-size: 13px; font-weight: 700; }
+    .submit-button:hover { background: var(--blue-dark); }
+    .submit-button:focus-visible, .back-link:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+    .side-card { padding: 20px; border: 1px solid var(--ink); background: var(--ink); color: white; }
+    .side-card h2 { font-size: 17px; }
+    .side-card p { margin: 10px 0 0; color: #c1c3bc; font-size: 12px; }
+    .side-card ul { display: grid; gap: 11px; margin: 20px 0 0; padding: 0; list-style: none; }
+    .side-card li { display: flex; gap: 9px; color: #ecece7; font-size: 11px; }
+    .side-card li::before { color: var(--lime); content: "✓"; font-weight: 800; }
+    .status-card { padding: 21px; border: 1px solid #bdcf73; background: #f3f8d8; }
+    .status-card[hidden] { display: none; }
+    .status-card h2 { font-size: 19px; }
+    .status-card p { margin: 7px 0 0; color: #4e5832; font-size: 12px; }
+    .reference { display: inline-block; margin-top: 13px; padding: 7px 10px; background: var(--lime); font-size: 12px; font-weight: 800; letter-spacing: .6px; }
+    .status-back { display: inline-flex; margin-top: 17px; color: var(--blue); font-size: 12px; font-weight: 700; text-decoration: none; }
+    .local-note { margin: 0 0 17px; padding: 11px 13px; border-left: 3px solid var(--blue); background: #f0f1ff; color: #424a77; font-size: 11px; }
+    .claims-dashboard { padding-bottom: 68px; }
+    .claims-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 13px; }
+    .claims-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    .claim-list { display: grid; gap: 10px; }
+    .claim-item { padding: 16px; border: 1px solid var(--line); background: var(--panel); }
+    .claim-item-top { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .claim-item h3 { margin: 0; font-size: 14px; }
+    .claim-item-meta { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+    .claim-status { flex: 0 0 auto; padding: 5px 8px; background: #f0f1ff; color: var(--blue); font-size: 10px; font-weight: 750; }
+    .claim-details { margin-top: 12px; border-top: 1px solid var(--line); }
+    .claim-details summary { padding-top: 10px; color: var(--blue); cursor: pointer; font-size: 11px; font-weight: 700; }
+    .claim-details p { margin: 8px 0 0; color: var(--muted); font-size: 11px; white-space: pre-wrap; }
+    .claim-files { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+    .claim-file, .claim-action { min-height: 32px; display: inline-flex; align-items: center; padding: 0 10px; border: 1px solid var(--line); background: white; color: var(--ink); font-size: 10px; text-decoration: none; }
+    .claim-action { margin-top: 11px; cursor: pointer; }
+    .claim-action:hover, .claim-file:hover { border-color: var(--blue); color: var(--blue); }
+    .claims-empty { padding: 18px; border: 1px dashed var(--line); color: var(--muted); font-size: 12px; }
+    .claims-error { color: #a33225; font-size: 12px; }
+    .footer { display: flex; justify-content: space-between; gap: 20px; padding: 17px 0 25px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 36px, 600px); }
+      .intro { padding-top: 37px; }
+      .layout { grid-template-columns: 1fr; gap: 16px; }
+      .side-card { grid-row: 1; }
+    }
+    @media (max-width: 430px) {
+      .wrap { width: calc(100% - 28px); }
+      .fields { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .footer { flex-direction: column; gap: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    :root {
+      color-scheme: dark;
+      --paper: #090b12;
+      --ink: #f5f6ff;
+      --muted: #a0a5ba;
+      --line: #282d40;
+      --panel: #111522;
+      --blue: #8b7cff;
+      --blue-dark: #7364f3;
+      --lime: #d4ff72;
+      --orange: #ff9c7b;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 8% 0%, #5348a427, transparent 36rem),
+        radial-gradient(ellipse at 94% 50%, #38798018, transparent 34rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      isolation: isolate;
+    }
+    body::before, body::after {
+      position: fixed;
+      z-index: -1;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: .15;
+      pointer-events: none;
+      content: "";
+      animation: liquid-drift 18s ease-in-out infinite alternate;
+    }
+    body::before { top: 8%; left: -16rem; background: #7967ff; }
+    body::after { right: -15rem; bottom: 5%; background: #42d7ce; animation-delay: -8s; }
+    @keyframes liquid-drift {
+      from { transform: translate3d(0, -15px, 0) scale(.92); }
+      to { transform: translate3d(35px, 35px, 0) scale(1.12); }
+    }
+    .topbar { border-color: #ffffff12; background: #10132172; backdrop-filter: saturate(160%) blur(28px); }
+    .brand { color: white; }
+    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .back-link, .status-back { color: #c1baff; }
+    .intro { padding-top: 65px; }
+    .eyebrow { color: #c0b8ff; }
+    .intro::before { content: ""; display: block; width: 8px; height: 8px; margin-bottom: 12px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 16px #d4ff72a0; }
+    h1 { font-size: clamp(48px, 7vw, 84px); }
+    h1 em { color: #b5aaff; }
+    .intro p:last-child { color: var(--muted); }
+    .form-card, .claim-item { border-color: #ffffff22; border-radius: 22px; background: linear-gradient(145deg, #ffffff12, #ffffff04); box-shadow: inset 0 1px #ffffff16, 0 22px 70px #0004; backdrop-filter: blur(24px) saturate(140%); }
+    .form-title p, .claims-heading p { color: var(--muted); }
+    .local-note { border-color: #8173ff44; border-radius: 10px; background: #211f43; color: #cfcbff; }
+    .field input, .field select, .field textarea { border-color: #ffffff20; border-radius: 12px; background: #ffffff08; color: white; backdrop-filter: blur(16px); }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #b4aaff; box-shadow: 0 0 0 3px #8173ff24; }
+    .field-hint { color: var(--muted); }
+    .file-drop { border-color: #ffffff30; border-radius: 14px; background: #ffffff07; backdrop-filter: blur(16px); }
+    .file-drop input { color: #d9d9eb; }
+    .submit-button { border: 1px solid #ffffff45; border-radius: 13px; background: linear-gradient(135deg, #9e92ff, #7060ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #7462ff45; transition: transform .25s, filter .25s, box-shadow .25s; }
+    .submit-button:hover { transform: translateY(-2px); filter: brightness(1.1); background: linear-gradient(135deg, #a89eff, #8072fa); box-shadow: inset 0 1px #ffffffaa, 0 17px 40px #7462ff55; }
+    .side-card { border-color: #ffffff2a; border-radius: 20px; background: linear-gradient(145deg, #ffffff15, #ffffff05); box-shadow: inset 0 1px #ffffff19, 0 20px 55px #0004; backdrop-filter: blur(24px) saturate(150%); }
+    .side-card p { color: #b7bbce; }
+    .side-card li { color: #e5e7f0; }
+    .status-card { border-color: #c3e96455; border-radius: 15px; background: #28331e; color: #edffc2; }
+    .status-card p { color: #c6d5a8; }
+    .reference { border-radius: 7px; background: #d4ff72; color: #18210d; }
+    .claim-item { padding: 19px; transition: border-color .2s, transform .2s; }
+    .claim-item:hover { transform: translateY(-2px); border-color: #6259ac; }
+    .claim-item-meta, .claim-details p { color: var(--muted); }
+    .claim-status { border: 1px solid #8173ff44; border-radius: 99px; background: #211f43; color: #d0caff; }
+    .claim-details { border-color: #ffffff15; }
+    .claim-details summary { color: #c1baff; }
+    .claim-action, .claim-file { border-color: #ffffff20; border-radius: 8px; background: #171c2d; color: #e1e2ec; }
+    .claim-action:hover, .claim-file:hover { border-color: #8b7cff; color: #d1caff; }
+    .claims-empty { border-color: #ffffff25; border-radius: 12px; color: var(--muted); }
+    .claims-error, .form-error { color: #ff9d9d; }
+    .email-action { display: inline-flex; margin-top: 11px; color: #d1caff; font-size: 12px; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+    .status-back { text-underline-offset: 3px; }
+    .footer { border-color: #ffffff15; color: #9298ac; }
+    @media (max-width: 760px) { .intro { padding-top: 42px; } }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
+      .submit-button, .claim-item { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+    <a class="back-link" href="index.html">← Wróć do ubezpieczeń</a>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Jesteśmy przy Tobie</p>
+      <h1>Zgłoś szkodę.<br>Resztę <em>wyjaśnimy.</em></h1>
+      <p>Opisz zdarzenie i podaj dane kontaktowe. Dołącz dokumenty lub zdjęcia, które pomogą opisać szkodę.</p>
+    </section>
+
+    <div class="layout">
+      <section class="form-card" id="claimFormSection" aria-labelledby="claimHeading">
+        <div class="form-title">
+          <h2 id="claimHeading">Zgłoszenie szkody i prośba o odszkodowanie</h2>
+          <p>Pola oznaczone gwiazdką są wymagane.</p>
+        </div>
+        <p class="local-note">Zgłoszenie zapisuje się w tej przeglądarce na tym urządzeniu. Nie jest wysyłane do zewnętrznego ubezpieczyciela.</p>
+        <form id="claimForm">
+          <div class="fields">
+            <div class="field">
+              <label for="fullName">Imię i nazwisko *</label>
+              <input id="fullName" name="fullName" type="text" autocomplete="name" maxlength="100" required>
+            </div>
+            <div class="field">
+              <label for="policyNumber">Numer polisy *</label>
+              <input id="policyNumber" name="policyNumber" type="text" maxlength="40" required>
+            </div>
+            <div class="field">
+              <label for="email">Adres e-mail *</label>
+              <input id="email" name="email" type="email" autocomplete="email" maxlength="150" required>
+            </div>
+            <div class="field">
+              <label for="phone">Telefon kontaktowy *</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required>
+            </div>
+            <div class="field">
+              <label for="claimType">Rodzaj szkody *</label>
+              <select id="claimType" name="claimType" required>
+                <option value="">Wybierz rodzaj szkody</option>
+                <option>Samochód</option>
+                <option>Dom lub mieszkanie</option>
+                <option>Podróż</option>
+                <option>Zdrowie lub NNW</option>
+                <option>Życie</option>
+                <option>Firma</option>
+                <option>Zwierzę</option>
+                <option>Inna</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="eventDate">Data zdarzenia *</label>
+              <input id="eventDate" name="eventDate" type="date" required>
+            </div>
+            <div class="field full">
+              <label for="location">Miejsce zdarzenia *</label>
+              <input id="location" name="location" type="text" maxlength="180" placeholder="Miejscowość, ulica lub inne określenie miejsca" required>
+            </div>
+            <div class="field">
+              <label for="estimatedAmount">Szacowana wartość szkody (zł)</label>
+              <input id="estimatedAmount" name="estimatedAmount" type="number" min="0" max="100000000" step="0.01" inputmode="decimal" placeholder="Opcjonalnie">
+              <span class="field-hint">Wpisanie kwoty jest opcjonalne.</span>
+            </div>
+            <div class="field full">
+              <label for="description">Opis zdarzenia *</label>
+              <textarea id="description" name="description" minlength="20" maxlength="3000" placeholder="Opisz, co się stało, czego dotyczy szkoda i jakie są zauważone uszkodzenia." required></textarea>
+              <span class="field-hint">Co najmniej 20 znaków.</span>
+            </div>
+            <div class="field full">
+              <label for="attachments">Zdjęcia lub dokumenty</label>
+              <div class="file-drop">
+                <input id="attachments" name="attachments" type="file" accept="image/*,.pdf" multiple>
+                <span class="field-hint">Opcjonalnie, maksymalnie 5 plików po 10 MB każdy. Zdjęcia lub PDF.</span>
+                <ul class="file-list" id="fileList" aria-live="polite"></ul>
+              </div>
+            </div>
+          </div>
+          <p class="form-error" id="formError" role="alert"></p>
+          <button class="submit-button" type="submit"><span>Zgłoś prośbę o odszkodowanie</span><span aria-hidden="true">↗</span></button>
+        </form>
+        <section class="status-card" id="confirmation" aria-live="polite" hidden>
+          <h2>Zgłoszenie przygotowane</h2>
+          <p id="confirmationText"></p>
+          <span class="reference" id="reference"></span>
+          <p>Zgłoszenie zapisano lokalnie. Otwórz przygotowaną wiadomość w Gmailu, sprawdź jej treść i kliknij „Wyślij”, aby poprosić o zaakceptowanie zgłoszenia. Wysłanie e-maila nie zmienia automatycznie statusu zgłoszenia.</p>
+          <a class="email-action" id="claimEmailLink" href="#" target="_blank" rel="noopener noreferrer">Otwórz Gmaila z przygotowanym zgłoszeniem ↗</a>
+          <p>Załączniki nie są dodawane automatycznie. Jeśli chcesz je wysłać, dodaj je ręcznie w Gmailu przed wysłaniem.</p>
+          <a class="status-back" href="index.html">← Wróć do ubezpieczeń</a>
+        </section>
+      </section>
+
+      <aside class="side-card">
+        <h2>Co przygotować?</h2>
+        <p>Dokładny opis i dokumentacja ułatwią ocenę zgłoszenia.</p>
+        <ul>
+          <li>Numer polisy i aktualne dane kontaktowe.</li>
+          <li>Datę oraz miejsce zdarzenia.</li>
+          <li>Zdjęcia uszkodzeń i dostępne dokumenty.</li>
+          <li>Informacje o innych uczestnikach lub świadkach, jeśli dotyczy.</li>
+        </ul>
+      </aside>
+    </div>
+
+    <section class="claims-dashboard" aria-labelledby="claimsHeading">
+      <div class="claims-heading">
+        <div><h2 id="claimsHeading">Zgłoszenia na tym urządzeniu</h2><p>Historia lokalnych zgłoszeń demonstracyjnych i ich statusów.</p></div>
+      </div>
+      <div id="claimsError" class="claims-error" role="alert" hidden></div>
+      <div class="claim-list" id="claimList" aria-live="polite"><p class="claims-empty">Wczytywanie zgłoszeń…</p></div>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <span>© 2026 forma · Projekt demonstracyjny</span>
+    <a class="back-link" href="index.html">Wróć do strony głównej</a>
+  </footer>
+
+  <script src="forma-store.js"></script>
+  <script>
+    (() => {
+      const form = document.getElementById("claimForm");
+      const fileInput = document.getElementById("attachments");
+      const fileList = document.getElementById("fileList");
+      const errorMessage = document.getElementById("formError");
+      const eventDate = document.getElementById("eventDate");
+      const claimList = document.getElementById("claimList");
+      const claimsError = document.getElementById("claimsError");
+      const statuses = ["Nowe", "W trakcie weryfikacji", "Decyzja przygotowana"];
+      const maxDate = new Date();
+      eventDate.max = new Date(maxDate.getTime() - maxDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+      function showStorageError(error) {
+        claimsError.hidden = false;
+        claimsError.textContent = `Nie udało się zapisać lub odczytać zgłoszeń: ${error.message}`;
+      }
+
+      function formatDate(value) {
+        return new Intl.DateTimeFormat("pl-PL", { dateStyle: "medium" }).format(new Date(value));
+      }
+
+      function claimEmail(claim) {
+        const amount = claim.estimatedAmount === null
+          ? "Nie podano"
+          : `${new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(claim.estimatedAmount)} zł`;
+        const attachments = claim.attachments.length
+          ? claim.attachments.map((file) => `- ${file.name}`).join("\n")
+          : "Brak załączników.";
+        const body = [
+          "Proszę o zaakceptowanie zgłoszenia szkody i potwierdzenie jego przyjęcia do rozpatrzenia.",
+          "",
+          `Numer zgłoszenia: ${claim.reference}`,
+          `Imię i nazwisko: ${claim.fullName}`,
+          `Numer polisy: ${claim.policyNumber}`,
+          `E-mail kontaktowy: ${claim.email}`,
+          `Telefon: ${claim.phone}`,
+          `Rodzaj szkody: ${claim.type}`,
+          `Data zdarzenia: ${claim.eventDate}`,
+          `Miejsce: ${claim.location}`,
+          `Szacowana wartość szkody: ${amount}`,
+          "",
+          "Opis zdarzenia:",
+          claim.description,
+          "",
+          "Pliki do dołączenia ręcznie:",
+          attachments
+        ].join("\n");
+        return {
+          subject: `Zgłoszenie szkody ${claim.reference} — ${claim.type}`,
+          body
+        };
+      }
+
+      async function renderClaims() {
+        try {
+          const claims = await window.FormaStore.getAll("claims");
+          claimList.replaceChildren();
+          if (!claims.length) {
+            const empty = document.createElement("p");
+            empty.className = "claims-empty";
+            empty.textContent = "Nie ma jeszcze zapisanych zgłoszeń.";
+            claimList.append(empty);
+            return;
+          }
+          claims.sort((first, second) => second.createdAt.localeCompare(first.createdAt));
+          claims.forEach((claim) => {
+            const article = document.createElement("article");
+            article.className = "claim-item";
+            const top = document.createElement("div");
+            top.className = "claim-item-top";
+            const copy = document.createElement("div");
+            const title = document.createElement("h3");
+            title.textContent = `${claim.type} · ${claim.reference}`;
+            const meta = document.createElement("p");
+            meta.className = "claim-item-meta";
+            meta.textContent = `Zdarzenie: ${formatDate(claim.eventDate)} · Zapisano: ${formatDate(claim.createdAt)}`;
+            copy.append(title, meta);
+            const status = document.createElement("span");
+            status.className = "claim-status";
+            status.textContent = claim.status;
+            top.append(copy, status);
+            article.append(top);
+
+            const details = document.createElement("details");
+            details.className = "claim-details";
+            const summary = document.createElement("summary");
+            summary.textContent = "Szczegóły zgłoszenia";
+            details.append(summary);
+            const info = document.createElement("p");
+            info.textContent = `${claim.fullName} · polisa ${claim.policyNumber}\n${claim.location}\n${claim.description}`;
+            details.append(info);
+            if (claim.attachments.length) {
+              const files = document.createElement("div");
+              files.className = "claim-files";
+              claim.attachments.forEach((file, index) => {
+                const link = document.createElement("a");
+                link.className = "claim-file";
+                link.href = URL.createObjectURL(file.blob);
+                link.download = file.name;
+                link.textContent = `Pobierz: ${file.name}`;
+                link.addEventListener("click", () => setTimeout(() => URL.revokeObjectURL(link.href), 1000), { once: true });
+                files.append(link);
+              });
+              details.append(files);
+            }
+            article.append(details);
+
+            const email = claimEmail(claim);
+            const emailLink = document.createElement("a");
+            emailLink.className = "claim-file";
+            emailLink.href = window.FormaMail.gmailHref(email.subject, email.body);
+            emailLink.target = "_blank";
+            emailLink.rel = "noopener noreferrer";
+            emailLink.textContent = "Otwórz zgłoszenie w Gmailu";
+            article.append(emailLink);
+
+            const currentStatusIndex = statuses.indexOf(claim.status);
+            if (currentStatusIndex >= 0 && currentStatusIndex < statuses.length - 1) {
+              const advance = document.createElement("button");
+              advance.className = "claim-action";
+              advance.type = "button";
+              advance.textContent = "Symuluj kolejny etap";
+              advance.addEventListener("click", async () => {
+                advance.disabled = true;
+                try {
+                  claim.status = statuses[currentStatusIndex + 1];
+                  claim.updatedAt = new Date().toISOString();
+                  await window.FormaStore.put("claims", claim);
+                  await renderClaims();
+                } catch (error) {
+                  showStorageError(error);
+                  advance.disabled = false;
+                }
+              });
+              article.append(advance);
+            }
+
+            const remove = document.createElement("button");
+            remove.className = "claim-action";
+            remove.type = "button";
+            remove.textContent = "Usuń lokalne zgłoszenie";
+            remove.addEventListener("click", async () => {
+              remove.disabled = true;
+              try {
+                await window.FormaStore.delete("claims", claim.id);
+                await renderClaims();
+              } catch (error) {
+                showStorageError(error);
+                remove.disabled = false;
+              }
+            });
+            article.append(remove);
+            claimList.append(article);
+          });
+        } catch (error) {
+          showStorageError(error);
+          claimList.replaceChildren();
+        }
+      }
+
+      fileInput.addEventListener("change", () => {
+        const files = Array.from(fileInput.files || []);
+        errorMessage.textContent = "";
+        if (files.length > 5) {
+          fileInput.value = "";
+          fileList.replaceChildren();
+          errorMessage.textContent = "Możesz dołączyć maksymalnie 5 plików.";
+          return;
+        }
+        const oversized = files.find((file) => file.size > 10 * 1024 * 1024);
+        if (oversized) {
+          fileInput.value = "";
+          fileList.replaceChildren();
+          errorMessage.textContent = `Plik „${oversized.name}” przekracza limit 10 MB.`;
+          return;
+        }
+        const invalidType = files.find((file) => !file.type.startsWith("image/") && file.type !== "application/pdf");
+        if (invalidType) {
+          fileInput.value = "";
+          fileList.replaceChildren();
+          errorMessage.textContent = `Plik „${invalidType.name}” ma nieobsługiwany format. Wybierz zdjęcie lub PDF.`;
+          return;
+        }
+        fileList.replaceChildren(...files.map((file) => {
+          const item = document.createElement("li");
+          item.textContent = `${file.name} · ${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+          return item;
+        }));
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        errorMessage.textContent = "";
+        claimsError.hidden = true;
+        if (!form.reportValidity()) return;
+        const data = new FormData(form);
+        const description = String(data.get("description") || "").trim();
+        if (description.length < 20) {
+          errorMessage.textContent = "Opisz zdarzenie w co najmniej 20 znakach.";
+          document.getElementById("description").focus();
+          return;
+        }
+        const reference = `FORM-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+        const files = Array.from(fileInput.files || []);
+        const submitButton = form.querySelector('[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.querySelector("span").textContent = "Zapisywanie zgłoszenia…";
+        try {
+          const claim = {
+            id: reference,
+            reference,
+            fullName: String(data.get("fullName")).trim(),
+            policyNumber: String(data.get("policyNumber")).trim(),
+            email: String(data.get("email")).trim(),
+            phone: String(data.get("phone")).trim(),
+            type: String(data.get("claimType")),
+            eventDate: String(data.get("eventDate")),
+            location: String(data.get("location")).trim(),
+            estimatedAmount: data.get("estimatedAmount") ? Number(data.get("estimatedAmount")) : null,
+            description,
+            attachments: files.map((file) => ({ name: file.name, type: file.type, blob: file })),
+            status: statuses[0],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          await window.FormaStore.add("claims", claim);
+          document.getElementById("confirmationText").textContent =
+            `Zgłoszenie ${reference} zapisano lokalnie dla ${claim.fullName}. Możesz sprawdzić je i zmieniać jego demonstracyjny status w historii poniżej.`;
+          document.getElementById("reference").textContent = reference;
+          const email = claimEmail(claim);
+          document.getElementById("claimEmailLink").href = window.FormaMail.gmailHref(email.subject, email.body);
+          form.hidden = true;
+          document.getElementById("confirmation").hidden = false;
+          await renderClaims();
+          document.getElementById("confirmation").scrollIntoView({ behavior: "smooth", block: "center" });
+        } catch (error) {
+          showStorageError(error);
+          errorMessage.textContent = "Nie udało się zapisać zgłoszenia. Sprawdź dostępne miejsce w przeglądarce i spróbuj ponownie.";
+          console.error("Nie udało się zapisać zgłoszenia szkody w lokalnej bazie.", error);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.querySelector("span").textContent = "Zgłoś prośbę o odszkodowanie";
+        }
+      });
+
+      renderClaims();
+    })();
+  </script>
+  <script src="forma-chat.js"></script>
+  <script src="forma-transition.js"></script>
+</body>
+</html>
