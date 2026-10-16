@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="Sprawdź status polis i zapisanych konfiguracji forma.">
+  <title>Moje polisy — forma</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --paper: #090b12;
+      --ink: #f5f6ff;
+      --muted: #a0a5ba;
+      --line: #282d40;
+      --panel: #111522;
+      --blue: #8b7cff;
+      --lime: #d4ff72;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 8% 0%, #5348a427, transparent 36rem),
+        radial-gradient(ellipse at 94% 44%, #38798018, transparent 34rem),
+        var(--paper);
+      color: var(--ink);
+      font: 15px/1.55 Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      isolation: isolate;
+    }
+    body::before, body::after {
+      position: fixed;
+      z-index: -1;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: .15;
+      pointer-events: none;
+      content: "";
+      animation: liquid-drift 18s ease-in-out infinite alternate;
+    }
+    body::before { top: 8%; left: -16rem; background: #7967ff; }
+    body::after { right: -15rem; bottom: 5%; background: #42d7ce; animation-delay: -8s; }
+    @keyframes liquid-drift {
+      from { transform: translate3d(0, -15px, 0) scale(.92); }
+      to { transform: translate3d(35px, 35px, 0) scale(1.12); }
+    }
+    .wrap { width: min(1040px, calc(100% - 48px)); margin-inline: auto; }
+    .topbar { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #ffffff15; background: #10132172; backdrop-filter: saturate(160%) blur(28px); }
+    .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
+    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; color: white; font-size: 15px; }
+    .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
+    .back-link { color: #c1baff; text-decoration: none; font-size: 12px; }
+    .back-link:hover { color: white; }
+    main { padding-bottom: 72px; }
+    .intro { padding: 65px 0 30px; }
+    .eyebrow { margin: 0 0 12px; color: #c0b8ff; font-size: 11px; font-weight: 750; letter-spacing: 1.4px; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(42px, 7vw, 76px); line-height: .98; letter-spacing: -.075em; }
+    h1 em { color: #b5aaff; font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    .intro-copy { max-width: 600px; margin: 15px 0 0; color: var(--muted); }
+    .policy-section { margin-top: 24px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 13px; }
+    h2 { margin: 0; font-size: 20px; letter-spacing: -.6px; }
+    .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    .policy-list { display: grid; gap: 11px; }
+    .policy-card, .empty-state, .pending-card { border: 1px solid #ffffff20; border-radius: 17px; background: linear-gradient(145deg, #ffffff11, #ffffff05); box-shadow: inset 0 1px #ffffff12, 0 18px 45px #0003; backdrop-filter: blur(20px) saturate(140%); }
+    .policy-card, .pending-card { padding: 19px; }
+    .policy-card-top, .pending-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+    .policy-card h3, .pending-card h3 { margin: 0; font-size: 15px; }
+    .policy-meta { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .policy-status { flex: 0 0 auto; padding: 5px 10px; border: 1px solid #c3e96455; border-radius: 99px; background: #d4ff7212; color: #edffc2; font-size: 10px; font-weight: 750; }
+    .policy-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 18px; margin: 17px 0 0; padding-top: 14px; border-top: 1px solid #ffffff17; }
+    .policy-details div { min-width: 0; }
+    .policy-details dt { color: var(--muted); font-size: 10px; }
+    .policy-details dd { margin: 3px 0 0; font-size: 12px; font-weight: 650; overflow-wrap: anywhere; }
+    .empty-state { display: flex; align-items: flex-start; gap: 13px; padding: 21px; }
+    .empty-icon { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border: 1px solid #ffffff20; border-radius: 12px; background: #ffffff09; color: #d4ceff; font-size: 17px; }
+    .empty-state h3 { margin: 0; font-size: 14px; }
+    .empty-state p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .pending-list { display: grid; gap: 10px; }
+    .pending-status { color: #d6cfff; font-size: 10px; font-weight: 750; }
+    .error { margin-top: 18px; padding: 12px 14px; border: 1px solid #ff9c7b55; border-radius: 12px; color: #ffb39d; font-size: 12px; }
+    .error[hidden] { display: none; }
+    .footer { display: flex; justify-content: space-between; gap: 18px; padding: 17px 0 25px; border-top: 1px solid #ffffff15; color: #9298ac; font-size: 10px; }
+    .footer a { color: #c1baff; text-decoration: none; }
+    [hidden] { display: none !important; }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 32px, 520px); }
+      .topbar { min-height: 66px; flex-wrap: wrap; padding-block: 9px; }
+      .brand-group { gap: 7px; }
+      .demo-badge { padding: 5px 7px; font-size: 8px; }
+      .intro { padding-top: 42px; }
+      .policy-card, .pending-card { padding: 15px; }
+      .policy-details { grid-template-columns: 1fr; }
+      .footer { flex-direction: column; gap: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wrap">
+    <div class="brand-group">
+      <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+      <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
+    </div>
+    <a class="back-link" href="index.html">← Wróć do ubezpieczeń</a>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Twoja ochrona</p>
+      <h1>Moje <em>polisy.</em></h1>
+      <p class="intro-copy">Sprawdź status aktywnych polis oraz zapisane potwierdzenia zaliczek.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="activePoliciesHeading">
+      <div class="section-heading">
+        <div>
+          <h2 id="activePoliciesHeading">Aktywne polisy</h2>
+          <p>Umowy potwierdzone przez ubezpieczyciela.</p>
+        </div>
+      </div>
+      <div class="policy-list" id="activePolicies" aria-live="polite">
+        <p class="empty-state">Wczytywanie polis…</p>
+      </div>
+    </section>
+
+    <section class="policy-section" aria-labelledby="pendingPoliciesHeading">
+      <div class="section-heading">
+        <div>
+          <h2 id="pendingPoliciesHeading">Zaliczki i konfiguracje</h2>
+          <p>Potwierdzenia zapisane na tym urządzeniu.</p>
+        </div>
+      </div>
+      <div class="pending-list" id="pendingPolicies" aria-live="polite">
+        <p class="empty-state">Wczytywanie zapisanych potwierdzeń…</p>
+      </div>
+    </section>
+
+    <p class="error" id="policiesError" role="alert" hidden></p>
+  </main>
+
+  <footer class="footer wrap">
+    <span>© 2026 forma</span>
+    <a href="szkoda.html">Zgłoś szkodę</a>
+  </footer>
+
+  <script src="forma-store.js"></script>
+  <script>
+    (() => {
+      const activeList = document.getElementById("activePolicies");
+      const pendingList = document.getElementById("pendingPolicies");
+      const error = document.getElementById("policiesError");
+      const money = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      function formatDate(value) {
+        if (!value) return "—";
+        const date = new Date(value);
+        return Number.isNaN(date.getTime())
+          ? "—"
+          : new Intl.DateTimeFormat("pl-PL", { dateStyle: "medium" }).format(date);
+      }
+
+      function emptyState(title, message) {
+        const card = document.createElement("div");
+        card.className = "empty-state";
+        const icon = document.createElement("span");
+        icon.className = "empty-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = "✦";
+        const copy = document.createElement("div");
+        const heading = document.createElement("h3");
+        heading.textContent = title;
+        const description = document.createElement("p");
+        description.textContent = message;
+        copy.append(heading, description);
+        card.append(icon, copy);
+        return card;
+      }
+
+      function addDetail(list, label, value) {
+        const item = document.createElement("div");
+        const term = document.createElement("dt");
+        term.textContent = label;
+        const description = document.createElement("dd");
+        description.textContent = value || "—";
+        item.append(term, description);
+        list.append(item);
+      }
+
+      function renderActivePolicy(policy) {
+        const card = document.createElement("article");
+        card.className = "policy-card";
+        const top = document.createElement("div");
+        top.className = "policy-card-top";
+        const copy = document.createElement("div");
+        const title = document.createElement("h3");
+        title.textContent = policy.product || "Ubezpieczenie";
+        const number = document.createElement("p");
+        number.className = "policy-meta";
+        number.textContent = `Numer polisy: ${policy.policyNumber || policy.id}`;
+        copy.append(title, number);
+        const status = document.createElement("span");
+        status.className = "policy-status";
+        status.textContent = "Aktywna";
+        top.append(copy, status);
+
+        const details = document.createElement("dl");
+        details.className = "policy-details";
+        addDetail(details, "Początek ochrony", formatDate(policy.startDate));
+        addDetail(details, "Koniec ochrony", formatDate(policy.endDate));
+        addDetail(details, "Zakres", Array.isArray(policy.options) && policy.options.length ? policy.options.join(", ") : "—");
+        addDetail(details, "Składka", typeof policy.premium === "number" ? `${money.format(policy.premium)} zł` : "—");
+        card.append(top, details);
+        return card;
+      }
+
+      function renderPendingPayment(payment) {
+        const card = document.createElement("article");
+        card.className = "pending-card";
+        const top = document.createElement("div");
+        top.className = "pending-top";
+        const title = document.createElement("h3");
+        title.textContent = payment.product || "Ubezpieczenie";
+        const status = document.createElement("span");
+        status.className = "pending-status";
+        status.textContent = "Oczekuje na zawarcie umowy";
+        top.append(title, status);
+        const meta = document.createElement("p");
+        meta.className = "policy-meta";
+        const amount = typeof payment.amount === "number" ? `${money.format(payment.amount)} zł` : "—";
+        meta.textContent = `Potwierdzenie zaliczki: ${amount} · ${formatDate(payment.paidAt)}`;
+        card.append(top, meta);
+        return card;
+      }
+
+      async function renderPolicies() {
+        try {
+          const [policies, payments] = await Promise.all([
+            window.FormaStore.getAll("policies"),
+            window.FormaStore.getAll("payments")
+          ]);
+          const active = policies.filter((policy) => policy.status === "active");
+          activeList.replaceChildren();
+          if (active.length) {
+            active.sort((first, second) => String(second.startDate || "").localeCompare(String(first.startDate || "")));
+            active.forEach((policy) => activeList.append(renderActivePolicy(policy)));
+          } else {
+            activeList.append(emptyState(
+              "Brak aktywnych polis",
+              "Aktywna polisa pojawi się tutaj po potwierdzeniu zawarcia umowy przez ubezpieczyciela."
+            ));
+          }
+
+          const confirmedPayments = payments
+            .filter((payment) => payment.method === "Symulacja" && payment.status === "Symulacja zaliczki zaakceptowana")
+            .sort((first, second) => String(second.paidAt || "").localeCompare(String(first.paidAt || "")));
+          pendingList.replaceChildren();
+          if (confirmedPayments.length) {
+            confirmedPayments.forEach((payment) => pendingList.append(renderPendingPayment(payment)));
+          } else {
+            pendingList.append(emptyState(
+              "Brak zapisanych zaliczek",
+              "Potwierdzone zaliczki i powiązane konfiguracje będą widoczne w tym miejscu."
+            ));
+          }
+        } catch (loadError) {
+          console.error("Nie udało się wczytać listy polis.", loadError);
+          error.hidden = false;
+          error.textContent = `Nie udało się wczytać polis: ${loadError.message}`;
+          activeList.replaceChildren();
+          pendingList.replaceChildren();
+        }
+      }
+
+      renderPolicies();
+    })();
+  </script>
+  <script src="forma-chat.js"></script>
+  <script src="forma-transition.js"></script>
+</body>
+</html>
