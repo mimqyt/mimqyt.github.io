@@ -198,7 +198,7 @@
     <a class="back-link" href="index.html">← Wróć do ubezpieczeń</a>
   </header>
 
-  <main class="wrap" data-campaign-image="tarcza-masiuk-plywanie.webp">
+  <main class="wrap">
     <section class="intro">
       <p class="eyebrow">Twoja Tarcza. Twoje ustawienia.</p>
       <h1>Moje <em>polisy.</em></h1>
@@ -336,6 +336,9 @@
         addDetail(details, "Koniec ochrony", formatDate(policy.endDate));
         addDetail(details, "Zakres", Array.isArray(policy.options) && policy.options.length ? policy.options.join(", ") : "—");
         addDetail(details, "Składka roczna", typeof policy.premium === "number" ? `${money.format(policy.premium)} zł` : "—");
+        if (Number.isInteger(policy.discountPercent) && policy.discountPercent > 0) {
+          addDetail(details, "Rabat pracowniczy", `${policy.discountPercent}%`);
+        }
         card.append(top, details);
         if (policy.status === "active") {
           const actions = document.createElement("div");
@@ -377,9 +380,10 @@
 
       function updateTermsPrice() {
         if (!policyBeingEdited || !Array.isArray(policyBeingEdited.optionCatalog)) return;
-        const monthly = Math.round(policyBeingEdited.baseMonthly + policyBeingEdited.optionCatalog
+        const beforeDiscount = Math.round(policyBeingEdited.baseMonthly + policyBeingEdited.optionCatalog
           .filter((option) => editingOptionIds.has(option.id))
           .reduce((total, option) => total + option.monthlyPrice, 0));
+        const monthly = Math.round(beforeDiscount * (100 - (policyBeingEdited.discountPercent || 0)) / 100);
         termsPricePreview.textContent = `Nowa składka: ${money.format(monthly)} zł / mies. · ${money.format(monthly * 12)} zł / rok`;
       }
 
@@ -598,7 +602,9 @@
           latest.optionIds = selected.map((option) => option.id);
           latest.options = selected.map((option) => option.name);
           latest.baseMonthly = policyBeingEdited.baseMonthly;
-          latest.premium = Math.round(policyBeingEdited.baseMonthly + selected.reduce((total, option) => total + option.monthlyPrice, 0)) * 12;
+          latest.discountPercent = policyBeingEdited.discountPercent || 0;
+          const monthlyBeforeDiscount = policyBeingEdited.baseMonthly + selected.reduce((total, option) => total + option.monthlyPrice, 0);
+          latest.premium = Math.round(monthlyBeforeDiscount * (100 - latest.discountPercent) / 100) * 12;
           latest.termsChangedAt = new Date().toISOString();
           await window.FormaStore.put("policies", latest);
           termsDialog.close();
@@ -622,7 +628,7 @@
       renderPolicies();
     })();
   </script>
-  <script src="tarcza-campaign.js"></script>
+  <script src="tarcza-updates.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>

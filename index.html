@@ -132,6 +132,14 @@
     .quote-amount strong { font-size: 44px; line-height: 1; letter-spacing: -2.5px; }
     .quote-amount span { color: #d2d3cc; font-size: 13px; }
     .quote-footnote { margin: 8px 0 0; color: #b6b8b0; font-size: 10px; }
+    .employee-tools { display: grid; gap: 10px; margin-top: 16px; padding: 14px; border: 1px solid #65aaff55; border-radius: 13px; background: linear-gradient(125deg, #ff526f1a, #398fff1a); }
+    .employee-tools[hidden] { display: none; }
+    .employee-tools-label { color: #9fcaff; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .employee-tools-control { display: grid; grid-template-columns: minmax(0, 1fr) 86px; align-items: center; gap: 10px; font-size: 12px; }
+    .employee-tools-control input { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #ffffff25; border-radius: 9px; background: #08101d; color: white; }
+    .employee-tools-actions { display: flex; gap: 8px; }
+    .employee-tools-actions button { min-height: 38px; padding: 0 11px; border: 1px solid #ffffff24; border-radius: 9px; background: #ffffff0a; color: white; font-size: 11px; font-weight: 700; }
+    .employee-tools-actions button:first-child { flex: 1; border-color: #ffffff40; background: linear-gradient(115deg, #ff3f62, #3489ff); }
     .quote-body { padding: 18px 21px 20px; }
     .quote-product { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-bottom: 13px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 700; }
     .quote-product small { color: var(--muted); font-size: 11px; font-weight: 400; }
@@ -250,6 +258,7 @@
     .top-links a { transition: color .2s, background .2s, border-color .2s; }
     .top-links .help-link { border-color: #ffffff1b; color: var(--ink) !important; background: #ffffff06; }
     .top-links .claim-link { border-color: transparent; background: linear-gradient(135deg, #8374ff, #6555ed); color: white !important; box-shadow: 0 8px 28px #7462ff38; }
+    .top-links .help-link[href="employee.html"] { border-color: #65aaff55; color: #b8d8ff !important; }
     .hero { padding-top: 78px; padding-bottom: 58px; }
     h1 { font-size: clamp(50px, 8vw, 98px); letter-spacing: -.085em; }
     h1 em { color: #b5aaff; }
@@ -395,10 +404,11 @@
       <a class="help-link" href="polisy.html">Moje polisy ↗</a>
       <a class="claim-link" href="szkoda.html">Zgłoś szkodę ↗</a>
       <a class="help-link" href="szkoda.html#claimsHeading">Moje zgłoszenia ↗</a>
+      <a class="help-link" href="employee.html">Panel pracowniczy ↗</a>
     </nav>
   </header>
 
-  <main class="wrap" data-campaign-image="tarcza-masiuk.jpg">
+  <main class="wrap">
     <section class="hero" aria-labelledby="main-title">
       <div>
         <p class="eyebrow">Pewność na Twoich zasadach</p>
@@ -449,6 +459,17 @@
           <p class="quote-footnote" id="priceNote">Wybierz zakres, aby obliczyć szacunkową cenę.</p>
         </div>
         <div class="quote-body">
+          <section class="employee-tools" id="employeeTools" aria-label="Uprawnienia pracownicze" hidden>
+            <span class="employee-tools-label">Tryb pracowniczy</span>
+            <label class="employee-tools-control" for="employeeDiscount">
+              <span>Rabat procentowy</span>
+              <input id="employeeDiscount" type="number" min="0" max="100" step="1" value="0" inputmode="numeric">
+            </label>
+            <div class="employee-tools-actions">
+              <button id="saveEmployeeDiscount" type="button">Zastosuj rabat</button>
+              <button id="employeeLogout" type="button">Wyloguj</button>
+            </div>
+          </section>
           <div class="quote-product"><span id="summaryProduct">Ubezpieczenie</span><small id="summaryCount">0 opcji</small></div>
           <p class="summary-title">Wybrany zakres</p>
           <ul class="summary-list" id="summaryList" aria-live="polite"><li class="empty">Wybierz ochronę, aby zobaczyć podsumowanie.</li></ul>
@@ -465,7 +486,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script>
-    (() => {
+    (async () => {
       const products = [
         { id: "auto", icon: "↗", name: "Samochód", description: "OC, AC i dodatki", base: 42,
           options: [
@@ -545,7 +566,7 @@
       ];
 
       const $ = (id) => document.getElementById(id);
-      const state = { product: products[0], selected: new Set(["oc"]), toastTimer: null };
+      const state = { product: products[0], selected: new Set(["oc"]), toastTimer: null, employeeMode: false, discountPercent: 0 };
       const PRICE_MULTIPLIER = 3;
       const formatPrice = (value) => new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 }).format(value);
       const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -612,9 +633,12 @@
 
       function updateQuote() {
         const chosen = state.product.options.filter(([id]) => state.selected.has(id));
-        const price = calculatePrice();
+        const fullPrice = calculatePrice();
+        const price = state.employeeMode ? Math.round(fullPrice * (100 - state.discountPercent) / 100) : fullPrice;
         $("price").textContent = formatPrice(price);
-        $("priceNote").textContent = `Orientacyjna składka miesięczna · około ${formatPrice(price * 12)} zł rocznie`;
+        $("priceNote").textContent = state.employeeMode && state.discountPercent
+          ? `Po rabacie ${state.discountPercent}% · przed rabatem ${formatPrice(fullPrice)} zł/mies.`
+          : `Orientacyjna składka miesięczna · około ${formatPrice(price * 12)} zł rocznie`;
         $("summaryProduct").textContent = state.product.name;
         $("summaryCount").textContent = `${chosen.length} ${chosen.length === 1 ? "opcja" : chosen.length > 1 && chosen.length < 5 ? "opcje" : "opcji"}`;
         $("summaryList").innerHTML = chosen.length
@@ -661,12 +685,17 @@
       });
 
       $("summaryButton").addEventListener("click", () => {
+        const fullMonthly = calculatePrice();
+        const monthly = state.employeeMode ? Math.round(fullMonthly * (100 - state.discountPercent) / 100) : fullMonthly;
         const summary = {
           id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
           productId: state.product.id,
           product: state.product.name,
-          monthly: calculatePrice(),
-          baseMonthly: calculatePrice() - state.product.options
+          monthly,
+          monthlyBeforeDiscount: fullMonthly,
+          discountPercent: state.employeeMode ? state.discountPercent : 0,
+          employeeMode: state.employeeMode,
+          baseMonthly: fullMonthly - state.product.options
             .filter(([id]) => state.selected.has(id))
             .reduce((total, [, , , optionPrice]) => total + optionPrice * PRICE_MULTIPLIER, 0),
           optionIds: state.product.options
@@ -692,10 +721,75 @@
         }
       });
 
+      const employeeMode = new URLSearchParams(window.location.search).get("employee") === "1";
+      if (employeeMode) {
+        try {
+          const response = await fetch("/api/employee/session", { cache: "no-store" });
+          if (response.status === 401) {
+            window.location.replace("employee.html");
+            return;
+          }
+          if (!response.ok) throw new Error(`Serwer zwrócił status ${response.status}.`);
+          const employeeSession = await response.json();
+          state.employeeMode = true;
+          state.discountPercent = employeeSession.discount;
+          $("employeeTools").hidden = false;
+          $("employeeDiscount").value = String(state.discountPercent);
+          document.querySelector(".quote-label").textContent = "PANEL PRACOWNICZY · SKŁADKA";
+          $("employeeDiscount").addEventListener("input", () => {
+            $("employeeDiscount").setCustomValidity("");
+            const value = $("employeeDiscount").valueAsNumber;
+            if (!Number.isInteger(value) || value < 0 || value > 100) {
+              $("employeeDiscount").setCustomValidity("Wpisz rabat od 0 do 100 procent.");
+            }
+          });
+          $("saveEmployeeDiscount").addEventListener("click", async () => {
+            const input = $("employeeDiscount");
+            if (!input.reportValidity()) return;
+            const button = $("saveEmployeeDiscount");
+            button.disabled = true;
+            try {
+              const update = await fetch("/api/employee/discount", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ discount: input.value })
+              });
+              if (update.status === 401) {
+                window.location.replace("/employee.html");
+                return;
+              }
+              if (!update.ok) throw new Error(`Nie udało się zapisać rabatu (HTTP ${update.status}).`);
+              state.discountPercent = (await update.json()).discount;
+              updateQuote();
+              showToast(`Zastosowano rabat ${state.discountPercent}%.`);
+            } catch (error) {
+              showToast("Nie udało się zapisać rabatu. Sprawdź połączenie z serwerem.");
+              console.error("Nie udało się zapisać rabatu pracowniczego.", error);
+            } finally {
+              button.disabled = false;
+            }
+          });
+          $("employeeLogout").addEventListener("click", async () => {
+            try {
+              const logout = await fetch("/api/employee/logout", { method: "POST" });
+              if (!logout.ok) throw new Error(`Serwer zwrócił status ${logout.status}.`);
+              window.location.replace("/employee.html");
+            } catch (error) {
+              showToast("Nie udało się zakończyć sesji. Spróbuj ponownie.");
+              console.error("Nie udało się wylogować z panelu pracowniczego.", error);
+            }
+          });
+        } catch (error) {
+          showToast("Nie udało się zweryfikować dostępu pracowniczego.");
+          console.error("Nie udało się potwierdzić sesji pracowniczej.", error);
+          return;
+        }
+      }
+
       renderOptions();
     })();
   </script>
-  <script src="tarcza-campaign.js"></script>
+  <script src="tarcza-updates.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>

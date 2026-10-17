@@ -457,6 +457,7 @@
         </div>
         <div class="order-body">
           <ul class="order-options" id="orderOptions"></ul>
+          <div class="amount-row" id="discountRow" hidden><span>Składka przed rabatem</span><strong id="fullMonthlyAmount">—</strong></div>
           <div class="amount-row"><span>Orientacyjnie miesięcznie</span><strong id="monthlyAmount">—</strong></div>
           <div class="amount-row"><span>Orientacyjnie za rok</span><strong id="annualAmount">—</strong></div>
           <div class="deposit">
@@ -560,13 +561,39 @@
           return;
         }
         summary = JSON.parse(stored);
-        if (!summary || typeof summary.product !== "string" || !Number.isFinite(summary.monthly) || summary.monthly <= 0 || !Array.isArray(summary.options) || summary.options.some((option) => typeof option !== "string")) {
+        if (!summary || typeof summary.product !== "string" || !Number.isFinite(summary.monthly) || summary.monthly < 0 || !Array.isArray(summary.options) || summary.options.some((option) => typeof option !== "string")) {
           throw new Error("Nieprawidłowy format podsumowania.");
         }
       } catch (error) {
         console.error("Nie udało się odczytać podsumowania ubezpieczenia.", error);
         showMissingSummary("Nie udało się odczytać podsumowania. Wróć do kalkulatora i spróbuj ponownie.");
         return;
+      }
+
+      if (summary.employeeMode) {
+        try {
+          const employeeSession = await fetch("/api/employee/session", { cache: "no-store" });
+          if (!employeeSession.ok) {
+            showMissingSummary("Sesja pracownicza wygasła. Zaloguj się ponownie i przygotuj podsumowanie.");
+            return;
+          }
+          const { discount } = await employeeSession.json();
+          const expectedMonthly = Number.isFinite(summary.monthlyBeforeDiscount) &&
+            Number.isInteger(summary.discountPercent) &&
+            summary.discountPercent === discount &&
+            summary.discountPercent >= 0 &&
+            summary.discountPercent <= 100
+            ? Math.round(summary.monthlyBeforeDiscount * (100 - summary.discountPercent) / 100)
+            : null;
+          if (expectedMonthly === null || summary.monthly !== expectedMonthly) {
+            showMissingSummary("Rabat zmienił się lub podsumowanie jest nieaktualne. Wróć do panelu i przygotuj je ponownie.");
+            return;
+          }
+        } catch (error) {
+          console.error("Nie udało się zweryfikować sesji pracowniczej przy podsumowaniu.", error);
+          showMissingSummary("Nie udało się zweryfikować dostępu pracowniczego. Wróć do panelu i spróbuj ponownie.");
+          return;
+        }
       }
 
       async function ensurePolicyActivation(payment) {
@@ -587,6 +614,9 @@
           optionIds: Array.isArray(summary.optionIds) ? summary.optionIds : [],
           optionCatalog: Array.isArray(summary.optionCatalog) ? summary.optionCatalog : [],
           baseMonthly: Number.isFinite(summary.baseMonthly) ? summary.baseMonthly : summary.monthly,
+          discountPercent: summary.employeeMode && Number.isInteger(summary.discountPercent)
+            ? Math.min(100, Math.max(0, summary.discountPercent))
+            : 0,
           premium: summary.monthly * 12,
           deposit: payment.amount,
           status: "pending_activation",
@@ -616,6 +646,11 @@
       const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 
       $("orderProduct").textContent = summary.product;
+      if (summary.employeeMode && Number.isInteger(summary.discountPercent) && summary.discountPercent > 0) {
+        $("discountRow").hidden = false;
+        $("fullMonthlyAmount").textContent = `${formatMoney(summary.monthlyBeforeDiscount)} zł`;
+        $("discountRow").querySelector("span").textContent = `Składka przed rabatem (${summary.discountPercent}%)`;
+      }
       $("orderOptions").innerHTML = summary.options.length
         ? summary.options.map((option) => `<li>${escapeHtml(option)}</li>`).join("")
         : "<li>Nie wybrano dodatkowych opcji.</li>";
@@ -1024,7 +1059,7 @@
       });
     })();
   </script>
-  <script src="tarcza-campaign.js"></script>
+  <script src="tarcza-updates.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080c17">
+  <meta name="description" content="Logowanie do panelu pracowniczego Tarcza.">
+  <title>Panel pracowniczy — Tarcza</title>
+  <link rel="stylesheet" href="tarcza-theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; font: 15px/1.55 Inter, "Segoe UI", system-ui, sans-serif; }
+    .employee-wrap { width: min(480px, calc(100% - 36px)); margin: 10vh auto; }
+    .employee-brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); font-size: 20px; font-weight: 850; text-decoration: none; }
+    .employee-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; background: linear-gradient(145deg, var(--tarcza-red), var(--tarcza-blue)); }
+    .employee-card { margin-top: 28px; padding: clamp(22px, 6vw, 34px); border: 1px solid #ffffff25; border-radius: 22px; background: linear-gradient(145deg, #ffffff14, #ffffff06); box-shadow: inset 0 1px #ffffff15, 0 28px 90px #0005; backdrop-filter: blur(24px) saturate(145%); }
+    .employee-eyebrow { margin: 0 0 9px; color: #9fcaff; font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(32px, 8vw, 46px); letter-spacing: -.06em; }
+    .employee-intro { color: var(--muted); }
+    .employee-field { display: grid; gap: 7px; margin-top: 22px; font-size: 12px; font-weight: 700; }
+    .employee-field input { min-height: 48px; padding: 11px 13px; border: 1px solid #ffffff30; border-radius: 11px; outline: 0; background: #ffffff0b; color: var(--ink); }
+    .employee-field input:focus { border-color: #65aaff; box-shadow: 0 0 0 3px #398fff30; }
+    .employee-submit { width: 100%; min-height: 49px; margin-top: 18px; border: 1px solid #ffffff48; border-radius: 12px; background: linear-gradient(115deg, var(--tarcza-red), var(--tarcza-blue)); color: white; font: inherit; font-weight: 750; cursor: pointer; }
+    .employee-submit:disabled { opacity: .65; cursor: wait; }
+    .employee-error { min-height: 1.5em; margin: 12px 0 0; color: #ff9cac; font-size: 12px; }
+    .employee-back { display: inline-block; margin-top: 18px; color: #9fcaff; font-size: 12px; text-decoration: none; }
+    .employee-back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="employee-wrap">
+    <a class="employee-brand" href="index.html">
+      <span class="employee-mark" aria-hidden="true">◇</span>
+      Tarcza
+    </a>
+    <section class="employee-card" aria-labelledby="employeeTitle">
+      <p class="employee-eyebrow">Dostęp pracowniczy</p>
+      <h1 id="employeeTitle">Panel pracowniczy</h1>
+      <p class="employee-intro">Zaloguj się, aby przejść do konfiguratora z uprawnieniami pracowniczymi.</p>
+      <form id="employeeLogin">
+        <label class="employee-field" for="employeePassword">
+          Hasło
+          <input id="employeePassword" name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <p class="employee-error" id="employeeError" role="alert"></p>
+        <button class="employee-submit" id="employeeSubmit" type="submit">Zaloguj się</button>
+      </form>
+      <a class="employee-back" href="/">← Wróć do Tarczy</a>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const form = document.getElementById("employeeLogin");
+      const password = document.getElementById("employeePassword");
+      const error = document.getElementById("employeeError");
+      const submit = document.getElementById("employeeSubmit");
+      const destination = "index.html?employee=1";
+
+      async function checkSession() {
+        try {
+          const response = await fetch("/api/employee/session", { cache: "no-store" });
+          if (response.ok) window.location.replace(destination);
+        } catch (requestError) {
+          error.textContent = "Nie można połączyć się z serwerem panelu.";
+          console.error("Nie udało się sprawdzić sesji pracowniczej.", requestError);
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.textContent = "";
+        submit.disabled = true;
+        submit.textContent = "Sprawdzanie dostępu…";
+        try {
+          const response = await fetch("/api/employee/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: password.value })
+          });
+          password.value = "";
+          if (!response.ok) {
+            error.textContent = response.status === 429
+              ? "Zbyt wiele prób logowania. Spróbuj ponownie później."
+              : response.status === 503
+                ? "Panel pracowniczy jest chwilowo niedostępny."
+                : "Nieprawidłowe hasło.";
+            return;
+          }
+          window.location.assign(destination);
+        } catch (requestError) {
+          error.textContent = "Nie można połączyć się z serwerem panelu.";
+          console.error("Nie udało się zalogować do panelu pracowniczego.", requestError);
+        } finally {
+          submit.disabled = false;
+          submit.textContent = "Zaloguj się";
+        }
+      });
+
+      checkSession();
+    })();
+  </script>
+</body>
+</html>

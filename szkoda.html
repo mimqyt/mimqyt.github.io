@@ -286,7 +286,7 @@
     <a class="back-link" href="index.html">← Wróć do ubezpieczeń</a>
   </header>
 
-  <main class="wrap" data-campaign-image="tarcza-masiuk-zgloszenie.jpg">
+  <main class="wrap">
     <section class="intro">
       <p class="eyebrow">Gdy plany zmieniają się niespodziewanie</p>
       <h1>Zgłoś szkodę.<br>Resztę <em>wyjaśnimy.</em></h1>
@@ -362,12 +362,11 @@
           <button class="submit-button" type="submit"><span>Zgłoś prośbę o odszkodowanie</span><span aria-hidden="true">↗</span></button>
         </form>
         <section class="status-card" id="confirmation" aria-live="polite" hidden>
-          <h2>Zgłoszenie przygotowane</h2>
+          <h2>Zgłoszenie zapisane</h2>
           <p id="confirmationText"></p>
           <span class="reference" id="reference"></span>
-          <p>Otwórz wiadomość w Gmailu i kliknij „Wyślij”, aby przekazać zgłoszenie na adres milozdzienicki@gmail.com.</p>
-          <a class="email-action" id="claimEmailLink" href="#" target="_blank" rel="noopener noreferrer">Otwórz Gmaila z przygotowanym zgłoszeniem ↗</a>
-          <p>Załączniki nie są dodawane automatycznie. Jeśli chcesz je wysłać, dodaj je ręcznie w Gmailu przed wysłaniem.</p>
+          <a class="email-action" id="claimEmailLink" href="#" target="_blank" rel="noopener noreferrer">Otwórz wiadomość e-mail ↗</a>
+          <p>Jeśli dodano pliki, dołącz je do wiadomości przed wysłaniem.</p>
           <a class="status-back" href="index.html">← Wróć do ubezpieczeń</a>
         </section>
       </section>
@@ -386,7 +385,7 @@
 
     <section class="claims-dashboard" aria-labelledby="claimsHeading">
       <div class="claims-heading">
-        <div><h2 id="claimsHeading">Zgłoszenia na tym urządzeniu</h2><p>Historia zgłoszeń zapisanych w tej przeglądarce.</p></div>
+        <div><h2 id="claimsHeading">Moje zgłoszenia</h2><p>Sprawdź zapisane zgłoszenia i ich aktualny status.</p></div>
       </div>
       <div id="claimsError" class="claims-error" role="alert" hidden></div>
       <div class="claim-list" id="claimList" aria-live="polite"><p class="claims-empty">Wczytywanie zgłoszeń…</p></div>
@@ -539,18 +538,6 @@
             status.textContent = claim.status;
             top.append(copy, status);
             article.append(top);
-            const statusInfo = document.createElement("p");
-            statusInfo.className = "claim-item-meta";
-            const claimStatusIndex = statuses.indexOf(claim.status);
-            if (claimStatusIndex === 0) {
-              statusInfo.textContent = `Weryfikacja rozpocznie się automatycznie: ${new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(claim.verificationAt))}.`;
-            } else if (claimStatusIndex === 1) {
-              statusInfo.textContent = `Oczekiwanie na Twoją decyzję rozpocznie się: ${new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(claim.decisionAt))}.`;
-            } else if (claimStatusIndex === 2) {
-              statusInfo.textContent = "Sprawdź zgłoszenie z e-maila i wyślij własną decyzję ręcznie.";
-            }
-            if (statusInfo.textContent) article.append(statusInfo);
-
             const details = document.createElement("details");
             details.className = "claim-details";
             const summary = document.createElement("summary");
@@ -581,14 +568,14 @@
             emailLink.href = window.FormaMail.gmailHref(email.subject, email.body);
             emailLink.target = "_blank";
             emailLink.rel = "noopener noreferrer";
-            emailLink.textContent = "Otwórz zgłoszenie w Gmailu";
+            emailLink.textContent = "Przekaż zgłoszenie e-mailem";
             article.append(emailLink);
 
             const currentStatusIndex = statuses.indexOf(claim.status);
             const remove = document.createElement("button");
             remove.className = "claim-action";
             remove.type = "button";
-            remove.textContent = "Usuń lokalne zgłoszenie";
+            remove.textContent = "Usuń zgłoszenie";
             remove.addEventListener("click", async () => {
               remove.disabled = true;
               try {
@@ -679,7 +666,7 @@
           };
           await window.FormaStore.add("claims", claim);
           document.getElementById("confirmationText").textContent =
-            `Zgłoszenie ${reference} zapisano lokalnie. Po 25,67 s status zmieni się na „W trakcie weryfikacji”, a po kolejnych 15 s będzie oczekiwać na Twoją decyzję. Otwórz e-mail zgłoszeniowy poniżej i kliknij „Wyślij”, aby otrzymać go na adres milozdzienicki@gmail.com.`;
+            "Zgłoszenie zapisano na tym urządzeniu. Aby przekazać je do obsługi, otwórz wiadomość e-mail i wyślij ją.";
           document.getElementById("reference").textContent = reference;
           const email = claimEmail(claim);
           document.getElementById("claimEmailLink").href = window.FormaMail.gmailHref(email.subject, email.body);
@@ -700,7 +687,7 @@
       renderClaims();
     })();
   </script>
-  <script src="tarcza-campaign.js"></script>
+  <script src="tarcza-updates.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>
