@@ -117,7 +117,7 @@
     },
     {
       keywords: ["czesc", "hej", "witaj", "dzien dobry", "kim jestes"],
-      answer: "jestem asystentem forma. Pomogę Ci znaleźć informacje o ochronie, składce, konsultantach i zgłoszeniu szkody.",
+      answer: "jestem asystentem Tarcza. Pomogę Ci znaleźć informacje o ochronie, składce, konsultantach i zgłoszeniu szkody.",
       endings: ["Napisz, co chcesz sprawdzić.", "Możesz zapytać o składkę albo zaliczkę.", "Pomogę przygotować zgłoszenie szkody.", "Zapytaj o dostępne terminy konsultacji.", "Z przyjemnością odpowiem na pytania."]
     }
   ];
@@ -176,7 +176,7 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    .forma-chat-launcher { position: fixed; right: 22px; bottom: 22px; z-index: 1000; display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 19px; border: 1px solid #ffffff55; border-radius: 999px; background: linear-gradient(135deg, #a296ff, #6757ee); color: #fff; font: 700 13px/1.2 Inter, "Segoe UI", system-ui, sans-serif; box-shadow: 0 12px 36px #6554ee55, inset 0 1px #ffffff80; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+    .forma-chat-launcher { position: fixed; right: 22px; bottom: 22px; z-index: 1000; display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 19px; border: 1px solid #ffffff55; border-radius: 999px; background: linear-gradient(135deg, #ff6388, #a448ed); color: #fff; font: 700 13px/1.2 Inter, "Segoe UI", system-ui, sans-serif; box-shadow: 0 12px 36px #a741b655, inset 0 1px #ffffff80; cursor: pointer; transition: transform .2s, box-shadow .2s; }
     .forma-chat-launcher:hover { transform: translateY(-3px); box-shadow: 0 16px 42px #6554ee70, inset 0 1px #ffffff80; }
     .forma-chat-launcher:focus-visible, .forma-chat-close:focus-visible, .forma-chat-send:focus-visible, .forma-chat-input:focus-visible { outline: 3px solid #d4ff72; outline-offset: 3px; }
     .forma-chat-launcher-icon { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 50%; background: #ffffff25; font-size: 15px; }
@@ -184,7 +184,7 @@
     .forma-chat-panel[hidden] { display: none; }
     .forma-chat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 17px; border-bottom: 1px solid #ffffff17; background: linear-gradient(135deg, #a296ff1e, #ffffff04); }
     .forma-chat-brand { display: flex; align-items: center; gap: 11px; }
-    .forma-chat-avatar { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #a69aff, #6757ee); color: white; font-weight: 800; box-shadow: 0 7px 20px #7564f055; }
+    .forma-chat-avatar { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #ff6388, #a65cff); color: white; font-weight: 800; box-shadow: 0 7px 20px #be3b8d55; }
     .forma-chat-title { margin: 0; font-size: 14px; font-weight: 750; }
     .forma-chat-subtitle { margin: 3px 0 0; color: #b7bbce; font-size: 10px; }
     .forma-chat-close { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid #ffffff20; border-radius: 10px; background: #ffffff08; color: white; font-size: 20px; cursor: pointer; }
@@ -194,7 +194,7 @@
     .forma-chat-input-row { display: flex; align-items: center; gap: 8px; padding: 12px; border-top: 1px solid #ffffff17; background: #0e101a80; }
     .forma-chat-input { flex: 1; min-width: 0; min-height: 42px; padding: 0 13px; border: 1px solid #ffffff20; border-radius: 12px; background: #ffffff09; color: white; font: 12px Inter, "Segoe UI", system-ui, sans-serif; }
     .forma-chat-input::placeholder { color: #9298ac; }
-    .forma-chat-send { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border: 1px solid #ffffff40; border-radius: 12px; background: linear-gradient(135deg, #9e92ff, #7060ed); color: white; font-size: 17px; cursor: pointer; box-shadow: inset 0 1px #ffffff70; }
+    .forma-chat-send { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border: 1px solid #ffffff40; border-radius: 12px; background: linear-gradient(135deg, #ff6388, #a448ed); color: white; font-size: 17px; cursor: pointer; box-shadow: inset 0 1px #ffffff70; }
     .forma-chat-disclaimer { margin: 0; padding: 0 14px 11px; color: #9298ac; font-size: 9px; text-align: center; }
     @keyframes forma-chat-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 520px) {
@@ -217,15 +217,15 @@
   const panel = document.createElement("section");
   panel.className = "forma-chat-panel";
   panel.id = "formaChatPanel";
-  panel.setAttribute("aria-label", "Czat forma");
+  panel.setAttribute("aria-label", "Czat Tarcza");
   panel.hidden = true;
   panel.innerHTML = `
     <header class="forma-chat-head">
-      <div class="forma-chat-brand"><span class="forma-chat-avatar" aria-hidden="true">f</span><div><h2 class="forma-chat-title">Asystent forma</h2><p class="forma-chat-subtitle">Ponad 1000 wariantów odpowiedzi · pomoc na stronie</p></div></div>
+      <div class="forma-chat-brand"><span class="forma-chat-avatar" aria-hidden="true"><svg viewBox="0 0 48 52" width="26" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 3 43 10v13c0 12.5-7.8 21.1-19 26C12.8 44.1 5 35.5 5 23V10L24 3Z" fill="url(#chatTarczaFill)" stroke="white" stroke-opacity=".92" stroke-width="2.2"/><path d="m15 25 6 6 12-13" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="chatTarczaFill" x1="7" y1="5" x2="42" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#FF8298"/><stop offset=".52" stop-color="#D94FAF"/><stop offset="1" stop-color="#8247F5"/></linearGradient></defs></svg></span><div><h2 class="forma-chat-title">Asystent Tarcza</h2><p class="forma-chat-subtitle">Ponad 1000 wariantów odpowiedzi · pomoc na stronie</p></div></div>
       <button class="forma-chat-close" type="button" aria-label="Zamknij czat">×</button>
     </header>
     <div class="forma-chat-feed" id="formaChatFeed" role="log" aria-live="polite" aria-relevant="additions text"></div>
-    <p class="forma-chat-disclaimer">Asystent forma — nie zastępuje konsultanta.</p>
+    <p class="forma-chat-disclaimer">Asystent Tarcza — nie zastępuje konsultanta.</p>
     <form class="forma-chat-input-row" id="formaChatForm">
       <input class="forma-chat-input" id="formaChatInput" type="text" maxlength="400" autocomplete="off" placeholder="Napisz wiadomość…" aria-label="Wiadomość do asystenta" required>
       <button class="forma-chat-send" type="submit" aria-label="Wyślij wiadomość">↑</button>

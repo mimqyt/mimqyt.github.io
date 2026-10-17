@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f3f1eb">
+  <meta name="theme-color" content="#0b0713">
   <meta name="description" content="Wybierz zakres ubezpieczenia i sprawdź orientacyjną składkę.">
-  <title>forma — ubezpieczenia po Twojemu</title>
+  <title>Tarcza — ubezpieczenia po Twojemu</title>
   <style>
     :root {
       color-scheme: light;
@@ -39,7 +39,8 @@
       border-bottom: 1px solid var(--line);
     }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
-    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .brand-mark { display: grid; width: 40px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #ff6388, #a65cff); box-shadow: 0 7px 24px #be3b8d55, inset 0 1px #ffffff90; }
+    .brand-mark svg { width: 28px; height: 30px; filter: drop-shadow(0 2px 4px #55134c55); }
     .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
     .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
     .top-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 13px; }
@@ -53,7 +54,7 @@
     .eyebrow::before { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); content: ""; }
     h1 { max-width: 780px; margin: 0; font-size: clamp(44px, 7vw, 86px); line-height: .98; letter-spacing: -.075em; font-weight: 650; }
     h1 em { color: var(--blue); font-family: var(--serif); font-weight: 400; }
-    .hero-aside { padding: 2px 0 4px 20px; border-left: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    .hero-aside { grid-column: 1; max-width: min(600px, calc(100vw - clamp(250px, 38vw, 460px) - 100px)); padding: 2px 0 4px 20px; border-left: 1px solid var(--line); color: var(--muted); font-size: 14px; }
     .hero-aside strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 16px; }
     .hero-aside p { margin: 0; }
     .stepbar { display: flex; align-items: center; gap: 13px; padding: 15px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
@@ -245,7 +246,7 @@
     }
     .topbar { position: sticky; top: 0; z-index: 10; border-color: #ffffff12; background: #10132196; backdrop-filter: saturate(160%) blur(28px); }
     .brand { color: #f8f8ff; }
-    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .brand-mark { border-radius: 13px; }
     .top-links a { transition: color .2s, background .2s, border-color .2s; }
     .top-links .help-link { border-color: #ffffff1b; color: var(--ink) !important; background: #ffffff06; }
     .top-links .claim-link { border-color: transparent; background: linear-gradient(135deg, #8374ff, #6555ed); color: white !important; box-shadow: 0 8px 28px #7462ff38; }
@@ -301,12 +302,91 @@
       body::before, body::after { animation: none; }
       .product, .option, .cta { transition: none; }
     }
+    :root {
+      color-scheme: dark;
+      --paper: #0b0713;
+      --ink: #f8f4ff;
+      --muted: #b7aabd;
+      --line: #ffffff20;
+      --panel: #ffffff0a;
+      --blue: #b48aff;
+      --blue-dark: #9c5cff;
+      --lime: #ff8acb;
+      --orange: #ff637f;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 12% 3%, #b62c6530, transparent 35rem),
+        radial-gradient(ellipse at 88% 42%, #7839c52b, transparent 37rem),
+        linear-gradient(145deg, #0b0713, #10091c 55%, #0a0712);
+    }
+    body::before { background: #ff315f; opacity: .2; }
+    body::after { background: #8a42ff; opacity: .22; }
+    .topbar { border-color: #ffffff17; background: #100a1b8c; }
+    .brand-mark { background: linear-gradient(145deg, #ff6388, #a65cff); }
+    .demo-badge { background: #c62838; }
+    .top-links { color: #c7b9d2; }
+    .top-links a:hover, .back-link:hover { color: #ff9bb8; }
+    .help-link { border-color: #ffffff28; background: #ffffff08; color: #f6edff !important; }
+    .claim-link, .top-links .claim-link { border-color: transparent; background: linear-gradient(135deg, #ff5578, #a448ed); color: white !important; box-shadow: 0 8px 28px #a448ed38; }
+    .eyebrow { color: #e1baff; }
+    .eyebrow::before { background: #ff637f; box-shadow: 0 0 16px #ff637f9c; }
+    h1 em { color: #d5a6ff; }
+    .step.active .step-number { background: linear-gradient(145deg, #ff6888, #9949e8); }
+    .product[aria-pressed="true"] { border-color: #e0a4ff; background: linear-gradient(145deg, #e2497b, #7b3ce0); box-shadow: 0 12px 34px #b947a34a; }
+    .product:hover, .option:hover { border-color: #ed81bd; }
+    .option:has(input:checked) { border-color: #d58cff88; background: linear-gradient(145deg, #bf4c9026, #ffffff09); box-shadow: inset 0 1px #ffffff18, 0 12px 34px #9d42c420; }
+    .option input { accent-color: #db6dff; }
+    .option-price, .summary-list li span:last-child { color: #e1aaff; }
+    .field input { border-color: #ffffff22; border-radius: 11px; background: #ffffff09; color: white; backdrop-filter: blur(16px); }
+    .field input:focus { border-color: #d28aff; box-shadow: 0 0 0 3px #c353ff24; }
+    .quote-card { border-color: #ffffff2b; background: linear-gradient(145deg, #ffffff15, #ffffff06); box-shadow: inset 0 1px #ffffff20, 0 28px 90px #0006; backdrop-filter: saturate(170%) blur(32px); }
+    .quote-top { background: linear-gradient(145deg, #aa48a54a, #753ce33b 70%, #ffffff04); }
+    .cta { border-color: #ffffff45; background: linear-gradient(135deg, #ff6388, #a448ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #ae46a745; }
+    .cta:hover { filter: brightness(1.1); }
+    .panel { border-color: #ffffff22; background: linear-gradient(145deg, #ffffff12, #ffffff05); box-shadow: inset 0 1px #ffffff13, 0 14px 42px #0003; backdrop-filter: blur(22px) saturate(145%); }
+    .footer { border-color: #ffffff17; color: #aa9bb5; }
+    .footer a { color: #e1aaff; }
+    body::before, body::after { filter: blur(105px) saturate(190%); opacity: .3; }
+    body::before { background: radial-gradient(circle, #ff477b 0%, #ed3d8440 45%, transparent 72%); }
+    body::after { background: radial-gradient(circle, #963fff 0%, #7d42e850 48%, transparent 74%); }
+    .topbar {
+      border: 1px solid #ffffff28;
+      border-radius: 22px;
+      margin-top: 14px;
+      padding-inline: 18px;
+      background: linear-gradient(115deg, #ffffff16, #ffffff05 48%, #bd4f9e12);
+      box-shadow: inset 0 1px #ffffff35, 0 16px 46px #0003;
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+    }
+    .product, .option, .quote-card, .panel, .sidebar, .toast {
+      border-color: #ffffff30;
+      background-image:
+        radial-gradient(ellipse at 12% 0%, #ffffff20, transparent 55%),
+        linear-gradient(135deg, #ffffff16 0%, #ffffff07 45%, #c34c9d14 72%, #743bce12 100%);
+      box-shadow: inset 0 1px #ffffff38, inset 0 -1px #ffffff0c, 0 22px 60px #0004;
+      backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+    }
+    .quote-top { background: linear-gradient(115deg, #ff6a8b38, #bd58d532 54%, #7948e82b); }
+    .product[aria-pressed="true"] {
+      background-image: linear-gradient(125deg, #ff6087e8, #ba4fcded 55%, #793fe8ef);
+      box-shadow: inset 0 1px #ffffff70, 0 14px 42px #a741b955;
+    }
+    .option:has(input:checked) {
+      background-image: radial-gradient(ellipse at 10% 0%, #ffffff20, transparent 60%), linear-gradient(125deg, #bd4b8a30, #8444d52c);
+      box-shadow: inset 0 1px #ffffff35, 0 10px 34px #9e40c326;
+    }
+    .field input { background: #ffffff0b; box-shadow: inset 0 1px #ffffff14; backdrop-filter: blur(20px) saturate(165%); }
+    .cta { background: linear-gradient(120deg, #ff6688e8, #d14fafe8 52%, #9149ede8); box-shadow: inset 0 1px #ffffff75, 0 12px 34px #a741b64a; }
   </style>
+  <link rel="stylesheet" href="tarcza-theme.css">
 </head>
 <body>
   <header class="topbar wrap">
     <div class="brand-group">
-      <a class="brand" href="#" aria-label="forma — strona główna"><span class="brand-mark">f</span>forma</a>
+      <a class="brand" href="#" aria-label="Tarcza — strona główna"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 52" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 3 43 10v13c0 12.5-7.8 21.1-19 26C12.8 44.1 5 35.5 5 23V10L24 3Z" fill="url(#tarczaLogoFill)" stroke="white" stroke-opacity=".92" stroke-width="2.2"/><path d="m15 25 6 6 12-13" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="tarczaLogoFill" x1="7" y1="5" x2="42" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#FF8298"/><stop offset=".52" stop-color="#D94FAF"/><stop offset="1" stop-color="#8247F5"/></linearGradient></defs></svg></span>Tarcza</a>
       <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
     </div>
     <nav class="top-links" aria-label="Nawigacja">
@@ -318,15 +398,15 @@
     </nav>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" data-campaign-image="tarcza-masiuk.jpg">
     <section class="hero" aria-labelledby="main-title">
       <div>
-        <p class="eyebrow">Ubezpieczenia, bez komplikacji</p>
-        <h1 id="main-title">Spokój ma<br>swoją <em>formę.</em></h1>
+        <p class="eyebrow">Pewność na Twoich zasadach</p>
+        <h1 id="main-title">Twoje plany.<br><em>Twoja Tarcza.</em></h1>
       </div>
       <aside class="hero-aside">
-        <strong>Ochrona na Twoich zasadach.</strong>
-        <p>Wybierz to, czego potrzebujesz. Zobacz przejrzyste podsumowanie i orientacyjną składkę — bez zobowiązań.</p>
+        <strong>Ty wybierasz. Tarcza wspiera.</strong>
+        <p>Dopasuj zakres do swoich planów i sprawdź orientacyjną składkę w przejrzystym podsumowaniu.</p>
       </aside>
     </section>
 
@@ -379,7 +459,7 @@
   </main>
 
   <footer class="footer wrap">
-    <span>© 2026 forma</span>
+    <span>© 2026 Tarcza</span>
     <a href="szkoda.html">Zgłoś szkodę</a>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -615,6 +695,7 @@
       renderOptions();
     })();
   </script>
+  <script src="tarcza-campaign.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>

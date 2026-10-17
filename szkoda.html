@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f3f1eb">
+  <meta name="theme-color" content="#0b0713">
   <meta name="description" content="Formularz zgłoszenia szkody i prośby o odszkodowanie.">
-  <title>Zgłoś szkodę — forma</title>
+  <title>Zgłoś szkodę — Tarcza</title>
   <style>
     :root {
       color-scheme: light;
@@ -25,7 +25,8 @@
     .wrap { width: min(1040px, calc(100% - 64px)); margin-inline: auto; }
     .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
-    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .brand-mark { display: grid; width: 40px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #ff6388, #a65cff); box-shadow: 0 7px 24px #be3b8d55, inset 0 1px #ffffff90; }
+    .brand-mark svg { width: 28px; height: 30px; filter: drop-shadow(0 2px 4px #55134c55); }
     .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
     .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
     .back-link { color: var(--muted); text-decoration: none; font-size: 12px; }
@@ -155,7 +156,7 @@
     }
     .topbar { border-color: #ffffff12; background: #10132172; backdrop-filter: saturate(160%) blur(28px); }
     .brand { color: white; }
-    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .brand-mark { border-radius: 13px; }
     .back-link, .status-back { color: #c1baff; }
     .intro { padding-top: 65px; }
     .eyebrow { color: #c0b8ff; }
@@ -197,21 +198,97 @@
       body::before, body::after { animation: none; }
       .submit-button, .claim-item { transition: none; }
     }
+    :root {
+      color-scheme: dark;
+      --paper: #0b0713;
+      --ink: #f8f4ff;
+      --muted: #b7aabd;
+      --line: #ffffff20;
+      --panel: #ffffff0a;
+      --blue: #b48aff;
+      --blue-dark: #9c5cff;
+      --lime: #ff8acb;
+      --orange: #ff637f;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 12% 3%, #b62c6530, transparent 35rem),
+        radial-gradient(ellipse at 88% 42%, #7839c52b, transparent 37rem),
+        linear-gradient(145deg, #0b0713, #10091c 55%, #0a0712);
+    }
+    body::before { background: #ff315f; opacity: .2; }
+    body::after { background: #8a42ff; opacity: .22; }
+    .topbar { border-color: #ffffff17; background: #100a1b8c; }
+    .brand-mark { background: linear-gradient(145deg, #ff6388, #a65cff); }
+    .back-link:hover, .status-back { color: #f09aff; }
+    .eyebrow { color: #e1baff; }
+    .eyebrow::before { background: #ff637f; box-shadow: 0 0 16px #ff637f9c; }
+    h1 em { color: #d5a6ff; }
+    .form-card, .claim-item, .side-card { border-color: #ffffff24; background: linear-gradient(145deg, #ffffff14, #ffffff05); box-shadow: inset 0 1px #ffffff18, 0 22px 70px #0004; backdrop-filter: blur(24px) saturate(150%); }
+    .local-note { border-color: #d575ff55; background: linear-gradient(135deg, #a8398730, #7036c527); color: #efd8ff; }
+    .field input, .field select, .field textarea { border-color: #ffffff25; background: #ffffff09; color: white; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #db8cff; box-shadow: 0 0 0 3px #c353ff24; }
+    .field select option { background: #171020; color: white; }
+    .file-drop { border-color: #ffffff35; background: #ffffff08; }
+    .submit-button { background: linear-gradient(135deg, #ff6388, #a448ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #ae46a745; }
+    .submit-button:hover { background: linear-gradient(135deg, #ff7998, #b663f2); box-shadow: inset 0 1px #ffffffaa, 0 17px 40px #ae46a755; }
+    .side-card li::before { color: #ff8acb; }
+    .status-card { border-color: #df8aff55; background: linear-gradient(145deg, #853b7c38, #572c8d32); color: #f8eaff; backdrop-filter: blur(20px); }
+    .status-card p { color: #ddc7e8; }
+    .reference { background: linear-gradient(135deg, #ff6388, #a448ed); color: white; }
+    .claim-status { border-color: #d78cff55; background: #8b42a526; color: #e9c8ff; }
+    .claim-details summary, .email-action { color: #e2aaff; }
+    .claim-action, .claim-file { border-color: #ffffff24; background: #ffffff09; color: #f4eaff; }
+    .claim-action:hover, .claim-file:hover { border-color: #dc8cff; color: #f0bfff; }
+    .footer { border-color: #ffffff17; color: #aa9bb5; }
+    body::before, body::after { filter: blur(105px) saturate(190%); opacity: .3; }
+    body::before { background: radial-gradient(circle, #ff477b 0%, #ed3d8440 45%, transparent 72%); }
+    body::after { background: radial-gradient(circle, #963fff 0%, #7d42e850 48%, transparent 74%); }
+    .topbar {
+      border: 1px solid #ffffff28;
+      border-radius: 22px;
+      margin-top: 14px;
+      padding-inline: 18px;
+      background: linear-gradient(115deg, #ffffff16, #ffffff05 48%, #bd4f9e12);
+      box-shadow: inset 0 1px #ffffff35, 0 16px 46px #0003;
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+    }
+    .form-card, .claim-item, .side-card, .status-card, .claims-empty {
+      border-color: #ffffff30;
+      background-image:
+        radial-gradient(ellipse at 12% 0%, #ffffff20, transparent 55%),
+        linear-gradient(135deg, #ffffff16 0%, #ffffff07 45%, #c34c9d14 72%, #743bce12 100%);
+      box-shadow: inset 0 1px #ffffff38, inset 0 -1px #ffffff0c, 0 22px 60px #0004;
+      backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+    }
+    .field input, .field select, .field textarea, .file-drop, .claim-action, .claim-file {
+      background-color: #ffffff0b;
+      box-shadow: inset 0 1px #ffffff18;
+      backdrop-filter: blur(20px) saturate(170%);
+      -webkit-backdrop-filter: blur(20px) saturate(170%);
+    }
+    .local-note { background-image: linear-gradient(125deg, #bd4b8a2e, #8444d52a); box-shadow: inset 0 1px #ffffff24; }
+    .submit-button { background: linear-gradient(120deg, #ff6688e8, #d14fafe8 52%, #9149ede8); box-shadow: inset 0 1px #ffffff75, 0 12px 34px #a741b64a; }
+    .status-card { background-image: radial-gradient(ellipse at 10% 0%, #ffffff1d, transparent 65%), linear-gradient(125deg, #bd4b8a2e, #8444d52a); color: #f8eaff; }
+    .reference { border: 1px solid #ffffff45; box-shadow: inset 0 1px #ffffff70, 0 8px 26px #b342b45c; }
   </style>
+  <link rel="stylesheet" href="tarcza-theme.css">
 </head>
 <body>
   <header class="topbar wrap">
     <div class="brand-group">
-      <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+      <a class="brand" href="index.html" aria-label="Wróć do Tarcza"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 52" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 3 43 10v13c0 12.5-7.8 21.1-19 26C12.8 44.1 5 35.5 5 23V10L24 3Z" fill="url(#tarczaLogoFill)" stroke="white" stroke-opacity=".92" stroke-width="2.2"/><path d="m15 25 6 6 12-13" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="tarczaLogoFill" x1="7" y1="5" x2="42" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#FF8298"/><stop offset=".52" stop-color="#D94FAF"/><stop offset="1" stop-color="#8247F5"/></linearGradient></defs></svg></span>Tarcza</a>
       <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
     </div>
     <a class="back-link" href="polisy.html">Moje polisy</a>
     <a class="back-link" href="index.html">← Wróć do ubezpieczeń</a>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" data-campaign-image="tarcza-masiuk-zgloszenie.jpg">
     <section class="intro">
-      <p class="eyebrow">Jesteśmy przy Tobie</p>
+      <p class="eyebrow">Gdy plany zmieniają się niespodziewanie</p>
       <h1>Zgłoś szkodę.<br>Resztę <em>wyjaśnimy.</em></h1>
       <p>Opisz zdarzenie i podaj dane kontaktowe. Dołącz dokumenty lub zdjęcia, które pomogą opisać szkodę.</p>
     </section>
@@ -317,7 +394,7 @@
   </main>
 
   <footer class="footer wrap">
-    <span>© 2026 forma</span>
+    <span>© 2026 Tarcza</span>
     <a class="back-link" href="index.html">Wróć do strony głównej</a>
   </footer>
 
@@ -331,7 +408,10 @@
       const eventDate = document.getElementById("eventDate");
       const claimList = document.getElementById("claimList");
       const claimsError = document.getElementById("claimsError");
-      const statuses = ["Nowe", "W trakcie weryfikacji", "Decyzja przygotowana"];
+      const statuses = ["Nowe", "W trakcie weryfikacji", "Oczekuje na decyzję konsultanta"];
+      const verificationDelay = 25670;
+      const decisionDelay = 15000;
+      const claimTimers = new Map();
       const maxDate = new Date();
       eventDate.max = new Date(maxDate.getTime() - maxDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
@@ -376,8 +456,61 @@
         };
       }
 
+      async function progressClaim(claim) {
+        const statusIndex = statuses.indexOf(claim.status);
+        if (statusIndex < 0 || statusIndex >= statuses.length - 1) return false;
+        const now = Date.now();
+        let changed = false;
+        if (!claim.verificationAt || !claim.decisionAt) {
+          const createdAt = new Date(claim.createdAt).getTime();
+          if (!Number.isFinite(createdAt)) throw new Error(`Nieprawidłowa data zgłoszenia ${claim.reference}.`);
+          claim.verificationAt = new Date(createdAt + verificationDelay).toISOString();
+          claim.decisionAt = new Date(createdAt + verificationDelay + decisionDelay).toISOString();
+          changed = true;
+        }
+        const verificationAt = new Date(claim.verificationAt).getTime();
+        const decisionAt = new Date(claim.decisionAt).getTime();
+        if (!Number.isFinite(verificationAt) || !Number.isFinite(decisionAt)) {
+          throw new Error(`Nieprawidłowe daty przebiegu zgłoszenia ${claim.reference}.`);
+        }
+        if (statusIndex < 1 && now >= verificationAt) {
+          claim.status = statuses[1];
+          claim.updatedAt = new Date(verificationAt).toISOString();
+          changed = true;
+        }
+        if (statuses.indexOf(claim.status) < 2 && now >= decisionAt) {
+          claim.status = statuses[2];
+          claim.updatedAt = new Date(decisionAt).toISOString();
+          claim.decisionReadyAt = new Date(decisionAt).toISOString();
+          changed = true;
+        }
+        if (changed) await window.FormaStore.put("claims", claim);
+        return changed;
+      }
+
+      function scheduleClaimProgress(claim) {
+        const statusIndex = statuses.indexOf(claim.status);
+        if (statusIndex < 0 || statusIndex >= statuses.length - 1) return;
+        const nextAt = new Date(statusIndex === 0 ? claim.verificationAt : claim.decisionAt).getTime();
+        if (!Number.isFinite(nextAt)) return;
+        const timer = window.setTimeout(async () => {
+          claimTimers.delete(claim.id);
+          try {
+            const latest = await window.FormaStore.get("claims", claim.id);
+            if (!latest) return;
+            await progressClaim(latest);
+            await renderClaims();
+          } catch (error) {
+            showStorageError(error);
+          }
+        }, Math.max(0, Math.min(nextAt - Date.now(), 2147483647)));
+        claimTimers.set(claim.id, timer);
+      }
+
       async function renderClaims() {
         try {
+          for (const timer of claimTimers.values()) window.clearTimeout(timer);
+          claimTimers.clear();
           const claims = await window.FormaStore.getAll("claims");
           claimList.replaceChildren();
           if (!claims.length) {
@@ -388,7 +521,8 @@
             return;
           }
           claims.sort((first, second) => second.createdAt.localeCompare(first.createdAt));
-          claims.forEach((claim) => {
+          for (const claim of claims) {
+            await progressClaim(claim);
             const article = document.createElement("article");
             article.className = "claim-item";
             const top = document.createElement("div");
@@ -405,6 +539,17 @@
             status.textContent = claim.status;
             top.append(copy, status);
             article.append(top);
+            const statusInfo = document.createElement("p");
+            statusInfo.className = "claim-item-meta";
+            const claimStatusIndex = statuses.indexOf(claim.status);
+            if (claimStatusIndex === 0) {
+              statusInfo.textContent = `Weryfikacja rozpocznie się automatycznie: ${new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(claim.verificationAt))}.`;
+            } else if (claimStatusIndex === 1) {
+              statusInfo.textContent = `Oczekiwanie na Twoją decyzję rozpocznie się: ${new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(claim.decisionAt))}.`;
+            } else if (claimStatusIndex === 2) {
+              statusInfo.textContent = "Sprawdź zgłoszenie z e-maila i wyślij własną decyzję ręcznie.";
+            }
+            if (statusInfo.textContent) article.append(statusInfo);
 
             const details = document.createElement("details");
             details.className = "claim-details";
@@ -440,26 +585,6 @@
             article.append(emailLink);
 
             const currentStatusIndex = statuses.indexOf(claim.status);
-            if (currentStatusIndex >= 0 && currentStatusIndex < statuses.length - 1) {
-              const advance = document.createElement("button");
-              advance.className = "claim-action";
-              advance.type = "button";
-              advance.textContent = "Symuluj kolejny etap";
-              advance.addEventListener("click", async () => {
-                advance.disabled = true;
-                try {
-                  claim.status = statuses[currentStatusIndex + 1];
-                  claim.updatedAt = new Date().toISOString();
-                  await window.FormaStore.put("claims", claim);
-                  await renderClaims();
-                } catch (error) {
-                  showStorageError(error);
-                  advance.disabled = false;
-                }
-              });
-              article.append(advance);
-            }
-
             const remove = document.createElement("button");
             remove.className = "claim-action";
             remove.type = "button";
@@ -476,7 +601,8 @@
             });
             article.append(remove);
             claimList.append(article);
-          });
+            scheduleClaimProgress(claim);
+          }
         } catch (error) {
           showStorageError(error);
           claimList.replaceChildren();
@@ -527,6 +653,7 @@
         }
         const reference = `FORM-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
         const files = Array.from(fileInput.files || []);
+        const submittedAt = Date.now();
         const submitButton = form.querySelector('[type="submit"]');
         submitButton.disabled = true;
         submitButton.querySelector("span").textContent = "Zapisywanie zgłoszenia…";
@@ -545,12 +672,14 @@
             description,
             attachments: files.map((file) => ({ name: file.name, type: file.type, blob: file })),
             status: statuses[0],
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: new Date(submittedAt).toISOString(),
+            updatedAt: new Date(submittedAt).toISOString(),
+            verificationAt: new Date(submittedAt + verificationDelay).toISOString(),
+            decisionAt: new Date(submittedAt + verificationDelay + decisionDelay).toISOString()
           };
           await window.FormaStore.add("claims", claim);
           document.getElementById("confirmationText").textContent =
-            `Zgłoszenie ${reference} zapisano lokalnie dla ${claim.fullName}. Znajdziesz je w historii poniżej.`;
+            `Zgłoszenie ${reference} zapisano lokalnie. Po 25,67 s status zmieni się na „W trakcie weryfikacji”, a po kolejnych 15 s będzie oczekiwać na Twoją decyzję. Otwórz e-mail zgłoszeniowy poniżej i kliknij „Wyślij”, aby otrzymać go na adres milozdzienicki@gmail.com.`;
           document.getElementById("reference").textContent = reference;
           const email = claimEmail(claim);
           document.getElementById("claimEmailLink").href = window.FormaMail.gmailHref(email.subject, email.body);
@@ -571,6 +700,7 @@
       renderClaims();
     })();
   </script>
+  <script src="tarcza-campaign.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>

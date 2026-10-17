@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f3f1eb">
+  <meta name="theme-color" content="#0b0713">
   <meta name="description" content="Podsumuj wybrany zakres ubezpieczenia i sprawdź wysokość zaliczki.">
-  <title>Podsumowanie i zaliczka — forma</title>
+  <title>Podsumowanie i zaliczka — Tarcza</title>
   <style>
     :root {
       color-scheme: light;
@@ -27,7 +27,8 @@
     .wrap { width: min(1140px, calc(100% - 64px)); margin-inline: auto; }
     .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
     .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 850; letter-spacing: -1.2px; }
-    .brand-mark { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: 15px; }
+    .brand-mark { display: grid; width: 40px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #ff6388, #a65cff); box-shadow: 0 7px 24px #be3b8d55, inset 0 1px #ffffff90; }
+    .brand-mark svg { width: 28px; height: 30px; filter: drop-shadow(0 2px 4px #55134c55); }
     .brand-group { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 12px; }
     .demo-badge { display: inline-flex; align-items: center; padding: 6px 9px; border-radius: 5px; background: #c62838; color: #fff; font-size: 9px; font-weight: 850; letter-spacing: .7px; line-height: 1.2; white-space: nowrap; }
     .back-link { color: var(--muted); text-decoration: none; font-size: 12px; }
@@ -231,7 +232,7 @@
     }
     .topbar { border-color: #ffffff12; background: #10132172; backdrop-filter: saturate(160%) blur(28px); }
     .brand { color: white; }
-    .brand-mark { border-radius: 10px; background: linear-gradient(140deg, #bcb1ff, #7767ff); box-shadow: 0 5px 20px #8270ff55; }
+    .brand-mark { border-radius: 13px; }
     .back-link, .claim-link { color: #c1baff; }
     .intro { padding-top: 65px; }
     .eyebrow { color: #c0b8ff; }
@@ -303,12 +304,87 @@
       .authorization.pending .authorization-icon { animation: none; }
       .authorization-track span { transition-duration: .01ms !important; }
     }
+    :root {
+      color-scheme: dark;
+      --paper: #0b0713;
+      --ink: #f8f4ff;
+      --muted: #b7aabd;
+      --line: #ffffff20;
+      --panel: #ffffff0a;
+      --blue: #b48aff;
+      --blue-dark: #9c5cff;
+      --lime: #ff8acb;
+      --orange: #ff637f;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 12% 3%, #b62c6530, transparent 35rem),
+        radial-gradient(ellipse at 88% 42%, #7839c52b, transparent 37rem),
+        linear-gradient(145deg, #0b0713, #10091c 55%, #0a0712);
+    }
+    body::before { background: #ff315f; opacity: .2; }
+    body::after { background: #8a42ff; opacity: .22; }
+    .topbar { border-color: #ffffff17; background: #100a1b8c; }
+    .brand-mark { background: linear-gradient(145deg, #ff6388, #a65cff); }
+    .eyebrow, .order-top small, .appointment-head small { color: #e1baff; }
+    .intro::before { background: #ff637f; box-shadow: 0 0 16px #ff637f9c; }
+    h1 em { color: #d5a6ff; }
+    .payment-panel, .consultant { border-color: #ffffff24; background: linear-gradient(145deg, #ffffff14, #ffffff05); box-shadow: inset 0 1px #ffffff18, 0 18px 45px #0004; backdrop-filter: blur(22px) saturate(150%); }
+    .demo-payment { border-color: #e38bff45; background: linear-gradient(135deg, #ba3c8b2b, #7c43df21, #ffffff06); }
+    .demo-payment-mark { background: linear-gradient(145deg, #ff6388, #9148e8); box-shadow: 0 7px 20px #af42a855; }
+    .pay-button, .date-action.primary { background: linear-gradient(135deg, #ff6388, #a448ed); box-shadow: inset 0 1px #ffffff80, 0 12px 34px #ae46a745; }
+    .pay-button:hover, .date-action.primary:hover { background: linear-gradient(135deg, #ff7998, #b663f2); box-shadow: inset 0 1px #ffffffaa, 0 17px 40px #ae46a755; }
+    .consultant:hover { border-color: #e18bff; }
+    .consultant[aria-pressed="true"] { border-color: #df8affaa; background: linear-gradient(145deg, #bb4c8d2b, #7845db22, #ffffff08); }
+    .consultant-avatar, .consultant:nth-child(2) .consultant-avatar, .consultant:nth-child(3) .consultant-avatar { border: 1px solid #ffffff35; background: linear-gradient(145deg, #ff668c, #a24be9); color: white; }
+    .order-card { border-color: #ffffff2b; background: linear-gradient(145deg, #ffffff15, #ffffff06); box-shadow: inset 0 1px #ffffff22, 0 28px 90px #0006; }
+    .order-top { background: linear-gradient(145deg, #b2418d4a, #773edc38 72%, #ffffff04); }
+    .order-options li::before { color: #ed9cff; }
+    .deposit { border-color: #e28aff66; background: linear-gradient(135deg, #ba468e28, #8642dd1c, #ffffff05); color: #f3d4ff; box-shadow: inset 0 1px #ffffff22, 0 10px 28px #a64bdc15; }
+    .deposit small { color: #d6b8e5; }
+    .appointment { border-color: #e1a0ff45; background: linear-gradient(145deg, #211329f5, #120c20f5); }
+    .suggested-date { border-color: #df8aff66; background: linear-gradient(135deg, #b3418d32, #7842d831, #ffffff08); }
+    .date-action:hover, .dialog-close:hover, .month-nav:hover, .calendar-day.available:hover { border-color: #db8cff; }
+    .calendar-day.selected { border-color: #e69aff; background: linear-gradient(145deg, #ef5b8e, #8f44e7); }
+    .time-slot.selected { border-color: #d98cff; background: #3b214d; color: #efd4ff; }
+    .email-action, .footer .back-link { color: #e2aaff; }
+    .footer { border-color: #ffffff17; color: #aa9bb5; }
+    body::before, body::after { filter: blur(105px) saturate(190%); opacity: .3; }
+    body::before { background: radial-gradient(circle, #ff477b 0%, #ed3d8440 45%, transparent 72%); }
+    body::after { background: radial-gradient(circle, #963fff 0%, #7d42e850 48%, transparent 74%); }
+    .topbar {
+      border: 1px solid #ffffff28;
+      border-radius: 22px;
+      margin-top: 14px;
+      padding-inline: 18px;
+      background: linear-gradient(115deg, #ffffff16, #ffffff05 48%, #bd4f9e12);
+      box-shadow: inset 0 1px #ffffff35, 0 16px 46px #0003;
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+    }
+    .payment-panel, .consultant, .order-card, .demo-payment, .authorization, .appointment, .suggested-date, .toast {
+      border-color: #ffffff30;
+      background-image:
+        radial-gradient(ellipse at 12% 0%, #ffffff20, transparent 55%),
+        linear-gradient(135deg, #ffffff16 0%, #ffffff07 45%, #c34c9d14 72%, #743bce12 100%);
+      box-shadow: inset 0 1px #ffffff38, inset 0 -1px #ffffff0c, 0 22px 60px #0004;
+      backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(190%) brightness(1.08);
+    }
+    .order-top { background: linear-gradient(115deg, #ff6a8b38, #bd58d532 54%, #7948e82b); }
+    .demo-payment-mark { border: 1px solid #ffffff45; box-shadow: inset 0 1px #ffffff80, 0 8px 26px #b342b45c; }
+    .pay-button, .date-action.primary { background: linear-gradient(120deg, #ff6688e8, #d14fafe8 52%, #9149ede8); box-shadow: inset 0 1px #ffffff75, 0 12px 34px #a741b64a; }
+    .deposit { background-image: radial-gradient(ellipse at 10% 0%, #ffffff1d, transparent 65%), linear-gradient(125deg, #bd4b8a2e, #8444d52a); }
+    .appointment { background-color: #160c20e8; }
+    .calendar-day.available, .time-slot, .date-action, .dialog-close, .month-nav { background-color: #ffffff0b; backdrop-filter: blur(18px); }
+    .consultant[aria-pressed="true"] { background-image: linear-gradient(125deg, #ff60872e, #b94fce2e 55%, #793fe82b); box-shadow: inset 0 1px #ffffff38, 0 10px 30px #a741b62e; }
   </style>
+  <link rel="stylesheet" href="tarcza-theme.css">
 </head>
 <body>
   <header class="topbar wrap">
     <div class="brand-group">
-      <a class="brand" href="index.html" aria-label="Wróć do forma"><span class="brand-mark">f</span>forma</a>
+      <a class="brand" href="index.html" aria-label="Wróć do Tarcza"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 52" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 3 43 10v13c0 12.5-7.8 21.1-19 26C12.8 44.1 5 35.5 5 23V10L24 3Z" fill="url(#tarczaLogoFill)" stroke="white" stroke-opacity=".92" stroke-width="2.2"/><path d="m15 25 6 6 12-13" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="tarczaLogoFill" x1="7" y1="5" x2="42" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#FF8298"/><stop offset=".52" stop-color="#D94FAF"/><stop offset="1" stop-color="#8247F5"/></linearGradient></defs></svg></span>Tarcza</a>
       <span class="demo-badge">WERSJA DEMONSTRACYJNA</span>
     </div>
     <a class="back-link" href="polisy.html">Moje polisy</a>
@@ -319,9 +395,9 @@
 
   <main class="wrap">
     <section class="intro">
-      <p class="eyebrow">Ostatni krok · bez pośpiechu</p>
-      <h1>Wpłać zaliczkę 20%<br>i ustal szczegóły z <em>człowiekiem.</em></h1>
-      <p class="intro-copy">Dogadaj wszystko na żywo z którymś z naszych <strong>FANTASTYCZNYCH konsultantów :)</strong> Najpierw sprawdź podsumowanie i wskaż osobę, z którą chcesz porozmawiać.</p>
+      <p class="eyebrow">Ochrona dopasowana do Twoich planów</p>
+      <h1>Twoja Tarcza.<br><em>Twoje decyzje.</em></h1>
+      <p class="intro-copy">Sprawdź podsumowanie i wybierz konsultanta, z którym omówisz szczegóły wybranego zakresu.</p>
     </section>
 
     <div class="layout">
@@ -431,7 +507,7 @@
   </dialog>
 
   <footer class="footer wrap">
-    <span>© 2026 forma</span>
+    <span>© 2026 Tarcza</span>
     <a class="back-link" href="index.html">← Wróć do konfiguratora</a>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -504,7 +580,7 @@
         const policy = {
           id: payment.id,
           paymentId: payment.id,
-          policyNumber: `FORMA-${paidAt.getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+          policyNumber: `TARCZA-${paidAt.getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
           product: payment.product,
           productId: summary.productId,
           options: summary.options,
@@ -743,7 +819,7 @@
         showSelectedAppointment(date, time);
         $("appointmentConfirmationText").textContent = `Termin zapisany lokalnie: ${formatDate(proposedDate)} o ${proposedTime} · ${selectedConsultant}. `;
         $("appointmentEmail").href = window.FormaMail.href(
-          `Forma — termin rozmowy ${formatDate(proposedDate)}`,
+          `Tarcza — termin rozmowy ${formatDate(proposedDate)}`,
           `Proszę o potwierdzenie terminu rozmowy.\n\nKonsultant: ${selectedConsultant}\nTermin: ${formatDate(proposedDate)} o ${proposedTime}\nUbezpieczenie: ${summary.product}\nNumer konfiguracji: ${summary.id}`
         );
         $("appointmentConfirmation").hidden = false;
@@ -770,7 +846,7 @@
           proposedTime = existingAppointment.time;
           $("appointmentConfirmationText").textContent = `Termin zapisany lokalnie: ${formatDate(proposedDate)} o ${proposedTime} · ${selectedConsultant}. `;
           $("appointmentEmail").href = window.FormaMail.href(
-            `Forma — termin rozmowy ${formatDate(proposedDate)}`,
+            `Tarcza — termin rozmowy ${formatDate(proposedDate)}`,
             `Proszę o potwierdzenie terminu rozmowy.\n\nKonsultant: ${selectedConsultant}\nTermin: ${formatDate(proposedDate)} o ${proposedTime}\nUbezpieczenie: ${summary.product}\nNumer konfiguracji: ${summary.id}`
           );
           $("appointmentConfirmation").hidden = false;
@@ -802,7 +878,7 @@
       function renderPaymentConfirmation(payment) {
         $("paymentConfirmationText").textContent = `Potwierdzenie zaliczki ${formatMoney(payment.amount)} zł zapisano. Ochrona w statusie lokalnym pojawi się na stronie „Moje polisy” za 10 sekund. Żadne środki nie zostały pobrane. Numer: ${payment.reference}. `;
         $("paymentEmail").href = window.FormaMail.href(
-          `Forma — potwierdzenie zaliczki ${payment.reference}`,
+          `Tarcza — potwierdzenie zaliczki ${payment.reference}`,
           `Potwierdzenie symulowanej wpłaty zaliczki — środki nie zostały pobrane.\n\nUbezpieczenie: ${payment.product}\nKwota: ${formatMoney(payment.amount)} zł\nNumer potwierdzenia: ${payment.reference}`
         );
         $("paymentConfirmation").hidden = false;
@@ -948,6 +1024,7 @@
       });
     })();
   </script>
+  <script src="tarcza-campaign.js"></script>
   <script src="forma-chat.js"></script>
   <script src="forma-transition.js"></script>
 </body>
