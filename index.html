@@ -228,6 +228,10 @@
     .rule.negative-rule input { accent-color: var(--orange); }
     .rule b { display: inline-block; min-width: 30px; color: var(--text); }
     .rule em { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-style: normal; }
+    .idds-rule { padding-bottom: 8px; border-top: 1px solid #ffffff0d; }
+    .idds-rule .rule { border-top: 0; padding-bottom: 4px; }
+    .idds-control { display: flex; align-items: center; gap: 8px; padding-left: 27px; color: var(--muted); font-size: 10px; }
+    .idds-control input { width: 82px; min-height: 30px; padding: 0 7px; }
     .unpriced { color: var(--orange); }
     .match-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
     .result-box { margin-top: 16px; padding: 17px; border: 1px solid #c5f36b40; border-radius: 15px; background: #c5f36b09; }
@@ -269,6 +273,10 @@
     .team-row.qualified .team-rank { color: var(--lime); }
     .team-row.qualified { background: #c5f36b08; }
     .team-edit-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; border-bottom: 1px solid #ffffff0d; }
+    .team-edit-actions { display: flex; align-items: center; gap: 8px; }
+    .team-rule-setting { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: #d7ded6; font-size: 11px; cursor: pointer; }
+    .team-rule-setting input { accent-color: var(--lime); }
+    .team-disqualified { color: var(--orange); font-size: 11px; font-weight: 750; }
     .team-edit-row:last-child { border: 0; }
     .team-remove-button { flex: 0 0 auto; min-height: 34px; padding: 0 10px; }
     .team-edit-row summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; }
@@ -380,6 +388,8 @@
       .team-points, .team-record { grid-row: 2; text-align: left; }
       .team-points { grid-column: 2; }
       .team-record { grid-column: 2; margin-left: 78px; }
+      .team-edit-row { align-items: flex-start; flex-wrap: wrap; }
+      .team-edit-actions { width: 100%; justify-content: flex-end; }
       .leader-panel header { align-items: flex-start; flex-direction: column; gap: 4px; padding: 14px; }
       .leader-list { padding-inline: 13px; }
       .panel { border-radius: 16px; }
@@ -505,7 +515,7 @@
         </div>
         <div id="tournamentTeamsTab" class="tournament-tab" hidden>
           <div class="page-top" style="margin-bottom:14px">
-            <div><h2 style="margin:0;font-size:20px;letter-spacing:-.04em">Składy reprezentacji</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Zmień składy lub usuń dodane reprezentacje. Po zapisaniu wyników najpierw zresetuj turniej.</p></div>
+            <div><h2 style="margin:0;font-size:20px;letter-spacing:-.04em">Składy reprezentacji</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Zmień składy lub dyskwalifikuj reprezentacje. Po zapisaniu wyników nie można usuwać dodanych reprezentacji.</p></div>
             <button class="button primary" id="addTeamButton">＋ Dodaj reprezentację</button>
           </div>
           <div id="teamsEditor" class="panel"></div>
@@ -584,10 +594,14 @@
         { id: "D.2", label: "Przewaga całe spotkanie.", value: 0.5, positive: true },
         { id: "D.3", label: "Pomoc zawodnikowi lub trenerowi w potrzebie.", value: 1, positive: true },
         { id: "D.4", label: 'Prawidłowe żądanie "CHALLANGE".', value: 0, positive: true, configurable: true },
+        { id: "D.5", label: "Serwis oddany w punkt serwisowy.", value: 1.5, positive: true },
+        { id: "D.IDDS", label: "Inne do dyspozycji sędziego.", value: 0, positive: true, manual: true },
         { id: "U.1", label: "Niebezpieczna gra.", value: -1.5, positive: false },
         { id: "U.2", label: "Niestosowanie się do uwag sędziego.", value: -2, positive: false },
         { id: "U.3", label: "Zagranie DOWNem za linią wyznaczającą.", value: -1, positive: false },
-        { id: "U.4", label: "Obrażanie przeciwnika, trenera, sędziego lub kibica.", value: -1.5, positive: false }
+        { id: "U.4", label: "Obrażanie przeciwnika, trenera, sędziego lub kibica.", value: -1.5, positive: false },
+        { id: "U.5", label: "Nietrafiony serwis.", value: -1, positive: false },
+        { id: "U.IDDS", label: "Inne do dyspozycji sędziego.", value: 0, positive: false, manual: true }
       ];
 
       const makeTeams = () => countries.map((name, index) => {
@@ -595,6 +609,7 @@
         return {
           id,
           name,
+          preventConsecutivePlayer: true,
           players: createPlayers(id, name)
         };
       });
@@ -670,6 +685,7 @@
           phase: "qualifications",
           bracket: null,
           lastPlayerByTeam: {},
+          disqualifiedTeamIds: [],
           d4Value: 0,
           qualificationSchedule: createQualificationSchedule(teams),
           qualificationScheduleVersion: 2
@@ -688,6 +704,7 @@
           if (saved && Array.isArray(saved.teams) && saved.teams.length >= 2 && Array.isArray(saved.records)) {
             saved.d4Value = Number.isFinite(Number(saved.d4Value)) ? Number(saved.d4Value) : 0;
             saved.lastPlayerByTeam = saved.lastPlayerByTeam || {};
+            saved.disqualifiedTeamIds = Array.isArray(saved.disqualifiedTeamIds) ? saved.disqualifiedTeamIds : [];
             if (!Array.isArray(saved.qualificationSchedule) ||
                 (saved.qualificationScheduleVersion !== 2 &&
                   !saved.records.some(record => record.phase === "qualifications"))) {
@@ -695,6 +712,7 @@
             }
             saved.qualificationScheduleVersion = 2;
             saved.teams.forEach(team => {
+              team.preventConsecutivePlayer = team.preventConsecutivePlayer !== false;
               const names = countryNamePools[team.name];
               if (!names) return;
               if (team.id === polandTeamId) {
@@ -757,8 +775,15 @@
       const teamName = id => getTeam(id)?.name || "Nieznana reprezentacja";
       const playerName = id => getPlayer(id)?.name || "Nieznany zawodnik";
       const teamForPlayer = playerId => state.teams.find(team => team.players.some(player => player.id === playerId));
+      const isDisqualified = teamId => state.disqualifiedTeamIds.includes(teamId);
       const ruleValue = rule => rule.configurable ? Number(state.d4Value) || 0 : rule.value;
-      const selectedRuleValue = ids => rules.filter(rule => ids.includes(rule.id)).reduce((sum, rule) => sum + ruleValue(rule), 0);
+      const selectedRuleValue = (ids, iddsValues = {}) => rules.filter(rule => ids.includes(rule.id)).reduce((sum, rule) => {
+        if (rule.manual) {
+          const value = Number(iddsValues[rule.id]) || 0;
+          return sum + (rule.positive ? value : -value);
+        }
+        return sum + ruleValue(rule);
+      }, 0);
       const selectedRuleText = ids => ids.length ? ids.join(", ") : "brak";
 
       function showToast(message) {
@@ -790,7 +815,7 @@
             if (totals.has(id)) totals.get(id).played += 1;
           });
         });
-        return state.teams.map(team => ({ ...team, ...totals.get(team.id) }))
+        return state.teams.filter(team => !isDisqualified(team.id)).map(team => ({ ...team, ...totals.get(team.id) }))
           .sort((a, b) => b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name, "pl"));
       }
 
@@ -799,6 +824,7 @@
         state.records.forEach(record => {
           [record.playerAId, record.playerBId].forEach((id, index) => {
             if (!id) return;
+            if (isDisqualified(teamForPlayer(id)?.id)) return;
             const score = index === 0 ? record.finalA : record.finalB;
             const current = totals.get(id) || { points: 0, played: 0 };
             current.points += Number(score) || 0;
@@ -823,21 +849,18 @@
         });
         return (state.qualificationSchedule || []).filter(fixture =>
           !alreadyPlayed.has(fixture.id) &&
+          !isDisqualified(fixture.teamAId) &&
+          !isDisqualified(fixture.teamBId) &&
           (appearances.get(fixture.teamAId) || 0) < 3 &&
           (appearances.get(fixture.teamBId) || 0) < 3
         );
       }
 
       function qualificationsComplete() {
-        if (state.teams.length < 12 || state.teams.length % 2 !== 0 || !state.qualificationSchedule?.length) return false;
-        const appearances = new Map(state.teams.map(team => [team.id, 0]));
-        state.records
-         .filter(record => record.phase === "qualifications")
-         .forEach(record => {
-           appearances.set(record.teamAId, (appearances.get(record.teamAId) || 0) + 1);
-           appearances.set(record.teamBId, (appearances.get(record.teamBId) || 0) + 1);
-         });
-        return state.teams.every(team => (appearances.get(team.id) || 0) >= 3);
+        const activeTeams = state.teams.filter(team => !isDisqualified(team.id));
+        return activeTeams.length >= 12 &&
+          state.qualificationSchedule?.length > 0 &&
+          qualificationFixtures().length === 0;
       }
 
       function createBracket() {
@@ -889,6 +912,31 @@
         }
       }
 
+      function advanceDisqualifiedBracket() {
+        const stageMatches = {
+          playIn: bracket => bracket.playIn,
+          quarterfinals: bracket => bracket.quarterfinals,
+          semifinals: bracket => bracket.semifinals,
+          final: bracket => bracket.final ? [bracket.final] : []
+        };
+        while (state.bracket && stageMatches[state.phase]) {
+          const currentPhase = state.phase;
+          let resolvedMatch = false;
+          for (const match of stageMatches[currentPhase](state.bracket)) {
+            if (match.played) continue;
+            const teamAOut = !match.teamAId || isDisqualified(match.teamAId);
+            const teamBOut = !match.teamBId || isDisqualified(match.teamBId);
+            if (!teamAOut && !teamBOut) continue;
+            match.played = true;
+            match.disqualificationWalkover = true;
+            match.winnerTeamId = teamAOut === teamBOut ? null : teamAOut ? match.teamBId : match.teamAId;
+            resolvedMatch = true;
+          }
+          advanceBracket();
+          if (state.phase === currentPhase && !resolvedMatch) break;
+        }
+      }
+
       function nextFixture() {
         if (state.phase === "qualifications") {
           if (state.teams.length % 2 !== 0) return null;
@@ -918,9 +966,9 @@
 
       function phaseInfo() {
         const data = {
-          qualifications: ["Kwalifikacje", state.teams.length % 2
-            ? "Liczba reprezentacji musi być parzysta — dodaj jeszcze jedną w zakładce Reprezentacje"
-            : `${state.teams.length} reprezentacji · po 3 mecze z losowo dobranymi rywalami`],
+          qualifications: ["Kwalifikacje", !state.qualificationSchedule?.length
+            ? "Brak terminarza — dodaj parzystą liczbę reprezentacji w zakładce Reprezentacje"
+            : `${state.teams.filter(team => !isDisqualified(team.id)).length} aktywnych reprezentacji · maksymalnie 3 mecze z losowo dobranymi rywalami`],
           playIn: ["Runda play-in", "Miejsca 5–12 walczą o ćwierćfinał"],
           quarterfinals: ["Ćwierćfinały", "Do czterech zwycięzców play-in dołączają cztery najwyżej rozstawione drużyny"],
           semifinals: ["Półfinały", "Cztery reprezentacje, dwa miejsca w finale"],
@@ -933,7 +981,7 @@
       function optionsForTeam(teamId) {
         const team = getTeam(teamId);
         if (!team) return [];
-        const last = state.lastPlayerByTeam[teamId];
+        const last = team.preventConsecutivePlayer ? state.lastPlayerByTeam[teamId] : null;
         return team.players.filter(player => player.id !== last);
       }
 
@@ -956,7 +1004,7 @@
           markup: `<label class="field-label">Wybierz swojego zawodnika z Polski<select name="player${side}" aria-label="Wybór polskiego zawodnika" ${selected ? "required" : "disabled"}>
             ${selected ? "" : `<option value="">Najpierw wpisz nazwiska w zakładce Reprezentacje</option>`}
             ${team.players.map(player => {
-              const unavailable = player.id === state.lastPlayerByTeam[teamId];
+              const unavailable = team.preventConsecutivePlayer && player.id === state.lastPlayerByTeam[teamId];
               const isEmpty = !player.name.trim();
               const label = `${escapeHtml(isEmpty ? `Zawodnik ${team.players.indexOf(player) + 1} — wpisz nazwisko` : player.name)}${unavailable ? " ✦ · ostatni mecz" : ""}`;
               return `<option value="${escapeHtml(player.id)}" ${unavailable || isEmpty ? "disabled" : ""} ${player.id === playerId ? "selected" : ""}>${label}</option>`;
@@ -968,7 +1016,17 @@
       function tariffMarkup(sideLabel) {
         const positive = rules.filter(rule => rule.positive);
         const negative = rules.filter(rule => !rule.positive);
+        const iddsFieldName = rule => `idds${sideLabel}${rule.id.replace(/\W/g, "")}`;
         const makeRule = (rule, negativeClass = "") => {
+          if (rule.manual) {
+            return `<div class="idds-rule">
+              <label class="rule ${negativeClass}">
+                <input type="checkbox" name="rule${sideLabel}" value="${rule.id}">
+                <span><b>${rule.id}</b>${escapeHtml(rule.label)}</span>
+              </label>
+              <label class="idds-control">Punkty <input type="number" name="${iddsFieldName(rule)}" min="0" step="any" inputmode="decimal" aria-label="Punkty za paragraf ${rule.id}"></label>
+            </div>`;
+          }
           const value = ruleValue(rule);
           const valueText = rule.configurable && value === 0
             ? `<em class="unpriced" data-rule-value="${rule.id}">Wartość do ustalenia · obecnie 0 pkt</em>`
@@ -1026,19 +1084,24 @@
 
       let trainingNames = { a: "Zawodnik A", b: "Zawodnik B" };
 
-      function paragraphDescription(ids) {
+      function paragraphDescription(ids, iddsValues = {}) {
         if (!ids.length) return "brak";
-        return ids.join(", ");
+        return ids.map(id => {
+          const rule = rules.find(item => item.id === id);
+          if (!rule?.manual) return id;
+          const value = Number(iddsValues[id]) || 0;
+          return `${id} (${rule.positive ? "+" : "-"}${formatPoints(value)} pkt)`;
+        }).join(", ");
       }
 
       function generateMatchMessage(result, training) {
-        const { nameA, nameB, scoreA, scoreB, finalA, finalB, rulesA, rulesB, winnerSide, teamAId, teamBId, stage } = result;
+        const { nameA, nameB, scoreA, scoreB, finalA, finalB, rulesA, rulesB, iddsValuesA, iddsValuesB, winnerSide, teamAId, teamBId, stage } = result;
         const baseWinner = scoreA === scoreB ? null : scoreA > scoreB ? "A" : "B";
         const winnerName = winnerSide === "A" ? nameA : winnerSide === "B" ? nameB : "";
         const baseDescription = baseWinner
           ? `Na podstawie punktów meczowych wygrywa: ${baseWinner === "A" ? nameA : nameB}. Wynik: ${scoreA}:${scoreB}; przewaga punktowa: ${formatPoints(Math.abs(scoreA - scoreB))} ${pointsWord(Math.abs(scoreA - scoreB))}.`
           : `Na podstawie punktów meczowych mecz zakończył się remisem ${scoreA}:${scoreB}.`;
-        const adjustments = `W taryfikatorze zaznaczono: ${nameA} — ${paragraphDescription(rulesA)}; ${nameB} — ${paragraphDescription(rulesB)}.`;
+        const adjustments = `W taryfikatorze zaznaczono: ${nameA} — ${paragraphDescription(rulesA, iddsValuesA)}; ${nameB} — ${paragraphDescription(rulesB, iddsValuesB)}.`;
         let finalDescription;
         if (winnerSide) {
           const difference = Math.abs(finalA - finalB);
@@ -1100,10 +1163,26 @@
         }
         const rulesA = rules.filter(rule => data.getAll("ruleA").includes(rule.id)).map(rule => rule.id);
         const rulesB = rules.filter(rule => data.getAll("ruleB").includes(rule.id)).map(rule => rule.id);
-        const finalA = scoreA + selectedRuleValue(rulesA);
-        const finalB = scoreB + selectedRuleValue(rulesB);
+        const readIddsValues = side => {
+          const values = {};
+          for (const rule of rules.filter(item => item.manual)) {
+            const rawValue = String(data.get(`idds${side}${rule.id.replace(/\W/g, "")}`) ?? "").trim();
+            if ((side === "A" ? rulesA : rulesB).includes(rule.id) &&
+                (!rawValue || !Number.isFinite(Number(rawValue)) || Number(rawValue) < 0)) {
+              showToast(`Wpisz nieujemną liczbę punktów dla paragrafu ${rule.id}.`);
+              return null;
+            }
+            values[rule.id] = (side === "A" ? rulesA : rulesB).includes(rule.id) ? Number(rawValue) : 0;
+          }
+          return values;
+        };
+        const iddsValuesA = readIddsValues("A");
+        const iddsValuesB = readIddsValues("B");
+        if (!iddsValuesA || !iddsValuesB) return null;
+        const finalA = scoreA + selectedRuleValue(rulesA, iddsValuesA);
+        const finalB = scoreB + selectedRuleValue(rulesB, iddsValuesB);
         return {
-          scoreA, scoreB, finalA, finalB, rulesA, rulesB, playerAId, playerBId, nameA, nameB,
+          scoreA, scoreB, finalA, finalB, rulesA, rulesB, iddsValuesA, iddsValuesB, playerAId, playerBId, nameA, nameB,
           teamAId, teamBId, fixtureId: fixture?.id || "", phase: fixture?.phase || "",
           stage: fixture?.phase === "qualifications" ? "qualifications" : fixture?.phase || ""
         };
@@ -1137,6 +1216,7 @@
           }
         }
         advanceBracket();
+        advanceDisqualifiedBracket();
         record.message = generateMatchMessage(record, false);
         return record;
       }
@@ -1155,7 +1235,7 @@
 
       function renderLegend() {
         document.getElementById("tariffLegend").innerHTML = rules.map(rule =>
-          `<div class="legend-row"><span><b>${rule.id}</b> · ${escapeHtml(rule.label)}</span><span>${rule.configurable && ruleValue(rule) === 0 ? "do ustalenia" : `${ruleValue(rule) > 0 ? "+" : ""}${formatPoints(ruleValue(rule))} pkt`}</span></div>`
+          `<div class="legend-row"><span><b>${rule.id}</b> · ${escapeHtml(rule.label)}</span><span>${rule.manual ? "do dyspozycji sędziego" : rule.configurable && ruleValue(rule) === 0 ? "do ustalenia" : `${ruleValue(rule) > 0 ? "+" : ""}${formatPoints(ruleValue(rule))} pkt`}</span></div>`
         ).join("");
       }
 
@@ -1167,7 +1247,7 @@
       function renderPhaseBanner() {
         const [title, subtitle] = phaseInfo();
         const progress = state.phase === "qualifications"
-          ? `${state.records.filter(record => record.phase === "qualifications").length} / ${(state.qualificationSchedule || []).length} meczów`
+          ? `${state.records.filter(record => record.phase === "qualifications").length} rozegranych · ${qualificationFixtures().length} pozostałych`
           : state.phase === "complete" ? "Mistrz wyłoniony" : "Faza pucharowa";
         document.getElementById("tournamentPhaseBanner").innerHTML = `<div class="phase-banner"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(subtitle)}</span></div><div class="phase-number">${escapeHtml(progress)}</div></div>`;
       }
@@ -1183,7 +1263,10 @@
         if (!matches?.length) return "";
         return `<div class="bracket-stage">${title}</div>${matches.map(match => {
           const winnerMark = match.played && match.winnerTeamId ? " ✓" : "";
-          return `<div class="bracket-line"><span>${escapeHtml(teamName(match.teamAId))} <small>vs</small> ${escapeHtml(teamName(match.teamBId))}</span><small>${match.played ? escapeHtml(teamName(match.winnerTeamId)) + winnerMark : "oczekuje"}</small></div>`;
+          const result = match.disqualificationWalkover
+            ? match.winnerTeamId ? `${escapeHtml(teamName(match.winnerTeamId))} — awans (dyskwalifikacja)` : "obie reprezentacje zdyskwalifikowane"
+            : match.played ? escapeHtml(teamName(match.winnerTeamId)) + winnerMark : "oczekuje";
+          return `<div class="bracket-line"><span>${escapeHtml(teamName(match.teamAId))} <small>vs</small> ${escapeHtml(teamName(match.teamBId))}</span><small>${result}</small></div>`;
         }).join("")}`;
       }
 
@@ -1204,20 +1287,28 @@
         document.getElementById("individualList").innerHTML = players.length
           ? players.slice(0, 30).map((player, index) => `<li><span class="rank">${String(index + 1).padStart(2, "0")}</span><span class="leader-name">${escapeHtml(player.name)}<span class="leader-sub">${escapeHtml(player.teamName)} · ${player.played} meczów</span></span><span class="leader-score">${formatPoints(player.points)}</span></li>`).join("")
           : `<li class="empty-state">Klasyfikacja pojawi się po pierwszym meczu.</li>`;
-        document.getElementById("qualifierNotice").innerHTML = `<div class="notice">Do drabinki pucharowej awansuje 12 najlepszych reprezentacji. Aktualnie w strefie awansu: ${ordered.slice(0, 12).map(team => escapeHtml(team.name)).join(", ")}.</div>`;
+        document.getElementById("qualifierNotice").innerHTML = `<div class="notice">Do drabinki pucharowej awansuje 12 najlepszych niedyskwalifikowanych reprezentacji. Aktualnie w strefie awansu: ${ordered.slice(0, 12).map(team => escapeHtml(team.name)).join(", ")}.</div>`;
       }
 
       function renderTeams() {
-        document.getElementById("teamsEditor").innerHTML = state.teams.map((team, index) => `<div class="team-edit-row">
-          <span class="team-rank">${String(index + 1).padStart(2, "0")}</span>
-          <details class="team-details" style="flex:1">
-            <summary><span class="team-title">${escapeHtml(team.name)}</span><span class="team-meta">${team.players.length} zawodników</span></summary>
-            <label class="field-label">Nazwa reprezentacji<input type="text" data-team-name="${escapeHtml(team.id)}" value="${escapeHtml(team.name)}"></label>
-            ${isPolandTeam(team.id) ? `<div class="callout" style="margin-top:12px">Wpisz własne imię i nazwisko każdego zawodnika. Skład Polski nie jest losowany automatycznie.</div>` : ""}
-            <div class="roster-grid">${team.players.map((player, playerIndex) => `<label>${isPolandTeam(team.id) ? `Polski zawodnik ${playerIndex + 1}` : `Zawodnik ${playerIndex + 1}`}<input type="text" data-player-name="${escapeHtml(player.id)}" value="${escapeHtml(player.name)}" placeholder="${isPolandTeam(team.id) ? "Wpisz imię i nazwisko" : ""}" maxlength="60"></label>`).join("")}</div>
-          </details>
-          ${team.id.startsWith("team-custom-") ? `<button class="button danger team-remove-button" type="button" data-action="remove-team" data-team-id="${escapeHtml(team.id)}" aria-label="Usuń reprezentację ${escapeHtml(team.name)}" title="${state.records.length ? "Najpierw zresetuj turniej" : "Usuń dodaną reprezentację"}" ${state.phase !== "qualifications" || state.records.length ? "disabled" : ""}>Usuń</button>` : ""}
-        </div>`).join("");
+        const editor = document.getElementById("teamsEditor");
+        editor.innerHTML = state.teams.map((team, index) => {
+          const disqualified = isDisqualified(team.id);
+          return `<div class="team-edit-row">
+            <span class="team-rank">${String(index + 1).padStart(2, "0")}</span>
+            <details class="team-details" style="flex:1">
+              <summary><span class="team-title">${escapeHtml(team.name)}</span><span class="team-meta">${team.players.length} zawodników${disqualified ? " · zdyskwalifikowana" : ""}</span></summary>
+              <label class="field-label">Nazwa reprezentacji<input type="text" data-team-name="${escapeHtml(team.id)}" value="${escapeHtml(team.name)}"></label>
+              <label class="team-rule-setting"><input type="checkbox" data-team-consecutive-rule="${escapeHtml(team.id)}" ${team.preventConsecutivePlayer ? "checked" : ""}> Nie pozwalaj na grę w dwóch kolejnych meczach</label>
+              ${isPolandTeam(team.id) ? `<div class="callout" style="margin-top:12px">Wpisz własne imię i nazwisko każdego zawodnika. Skład Polski nie jest losowany automatycznie.</div>` : ""}
+              <div class="roster-grid">${team.players.map((player, playerIndex) => `<label>${isPolandTeam(team.id) ? `Polski zawodnik ${playerIndex + 1}` : `Zawodnik ${playerIndex + 1}`}<input type="text" data-player-name="${escapeHtml(player.id)}" value="${escapeHtml(player.name)}" placeholder="${isPolandTeam(team.id) ? "Wpisz imię i nazwisko" : ""}" maxlength="60"></label>`).join("")}</div>
+            </details>
+            <div class="team-edit-actions">
+              ${!disqualified ? `<button class="button danger" type="button" data-action="disqualify-team" data-team-id="${escapeHtml(team.id)}" ${state.phase === "complete" ? "disabled" : ""}>Dyskwalifikuj</button>` : `<span class="team-disqualified">Zdyskwalifikowana</span>`}
+              ${team.id.startsWith("team-custom-") ? `<button class="button danger team-remove-button" type="button" data-action="remove-team" data-team-id="${escapeHtml(team.id)}" aria-label="Usuń reprezentację ${escapeHtml(team.name)}" title="${state.records.length ? "Najpierw zresetuj turniej" : "Usuń dodaną reprezentację"}" ${state.phase !== "qualifications" || state.records.length ? "disabled" : ""}>Usuń</button>` : ""}
+            </div>
+          </div>`;
+        }).join("")}`;
       }
 
       function renderHistory() {
@@ -1259,7 +1350,7 @@
         const loserScore = Math.floor(Math.random() * winnerScore);
         const scoreA = winnerA ? winnerScore : loserScore;
         const scoreB = winnerA ? loserScore : winnerScore;
-        const randomRules = () => rules.filter(rule => Math.random() < (rule.configurable ? 0.06 : 0.08)).map(rule => rule.id);
+        const randomRules = () => rules.filter(rule => !rule.manual && Math.random() < (rule.configurable ? 0.06 : 0.08)).map(rule => rule.id);
         let rulesA = randomRules();
         let rulesB = randomRules();
         let finalA = scoreA + selectedRuleValue(rulesA);
@@ -1406,6 +1497,22 @@
           if (fixture) simulateMatch(fixture);
         } else if (actionButton?.dataset.action === "simulate-non-poland") {
           simulateAllWithoutPoland();
+        } else if (actionButton?.dataset.action === "disqualify-team") {
+          const team = getTeam(actionButton.dataset.teamId);
+          if (!team || state.phase === "complete" || isDisqualified(team.id)) return;
+          const consequence = state.phase === "qualifications"
+            ? "Reprezentacja zniknie z tabeli kwalifikacji, a jej nieodbyte mecze zostaną pominięte."
+            : "Jej nieodbyte mecze pucharowe zostaną rozstrzygnięte walkowerem na korzyść przeciwnika.";
+          if (!window.confirm(`Zdyskwalifikować reprezentację ${team.name}? ${consequence} Tej decyzji nie można cofnąć bez resetu turnieju.`)) return;
+          state.disqualifiedTeamIds.push(team.id);
+          if (state.phase === "qualifications") {
+            if (qualificationsComplete()) createBracket();
+          } else {
+            advanceDisqualifiedBracket();
+          }
+          saveState();
+          renderTournament();
+          showToast(`Reprezentacja ${team.name} została zdyskwalifikowana.`);
         } else if (actionButton?.dataset.action === "remove-team") {
           if (state.phase !== "qualifications" || state.records.length) {
             showToast("Zresetuj turniej przed usuwaniem reprezentacji.");
@@ -1420,7 +1527,7 @@
           }
           if (!window.confirm(`Usunąć reprezentację ${state.teams[teamIndex].name}?`)) return;
           const [team] = state.teams.splice(teamIndex, 1);
-          state.qualificationSchedule = createQualificationSchedule(state.teams);
+          state.qualificationSchedule = createQualificationSchedule(state.teams.filter(team => !isDisqualified(team.id)));
           state.qualificationScheduleVersion = 2;
           saveState();
           renderTournament();
@@ -1444,7 +1551,15 @@
 
       document.addEventListener("change", event => {
         const target = event.target;
-        if (target.matches("[data-d4-value]")) {
+        if (target.matches("[data-team-consecutive-rule]")) {
+          const team = getTeam(target.dataset.teamConsecutiveRule);
+          if (!team) return;
+          team.preventConsecutivePlayer = target.checked;
+          saveState();
+          showToast(target.checked
+            ? `Przywrócono zakaz kolejnego występu dla reprezentacji ${team.name}.`
+            : `Wyłączono zakaz kolejnego występu dla reprezentacji ${team.name}.`);
+        } else if (target.matches("[data-d4-value]")) {
           const value = Number(target.value);
           if (!Number.isFinite(value) || value < 0) {
             target.value = String(state.d4Value);
@@ -1489,9 +1604,10 @@
         const id = `team-custom-${Date.now()}`;
         state.teams.push({
           id, name: `Nowa reprezentacja ${number}`,
+          preventConsecutivePlayer: true,
           players: createPlayers(id, `Nowa reprezentacja ${number}`)
         });
-        state.qualificationSchedule = createQualificationSchedule(state.teams);
+        state.qualificationSchedule = createQualificationSchedule(state.teams.filter(team => !isDisqualified(team.id)));
         saveState();
         renderTournament();
         activeTab = "teams";
@@ -1506,6 +1622,7 @@
         state.phase = "qualifications";
         state.bracket = null;
         state.lastPlayerByTeam = {};
+        state.disqualifiedTeamIds = [];
         state.qualificationSchedule = createQualificationSchedule(state.teams);
         state.qualificationScheduleVersion = 2;
         saveState();
