@@ -270,6 +270,7 @@
     .team-row.qualified { background: #c5f36b08; }
     .team-edit-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; border-bottom: 1px solid #ffffff0d; }
     .team-edit-row:last-child { border: 0; }
+    .team-remove-button { flex: 0 0 auto; min-height: 34px; padding: 0 10px; }
     .team-edit-row summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; }
     .team-edit-row summary::-webkit-details-marker { display: none; }
     .team-details { width: 100%; }
@@ -504,7 +505,7 @@
         </div>
         <div id="tournamentTeamsTab" class="tournament-tab" hidden>
           <div class="page-top" style="margin-bottom:14px">
-            <div><h2 style="margin:0;font-size:20px;letter-spacing:-.04em">Składy reprezentacji</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Zmień nazwy drużyn i zawodników przed meczem.</p></div>
+            <div><h2 style="margin:0;font-size:20px;letter-spacing:-.04em">Składy reprezentacji</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Zmień składy lub usuń dodane reprezentacje. Po zapisaniu wyników najpierw zresetuj turniej.</p></div>
             <button class="button primary" id="addTeamButton">＋ Dodaj reprezentację</button>
           </div>
           <div id="teamsEditor" class="panel"></div>
@@ -827,6 +828,18 @@
         );
       }
 
+      function qualificationsComplete() {
+        if (state.teams.length < 12 || state.teams.length % 2 !== 0 || !state.qualificationSchedule?.length) return false;
+        const appearances = new Map(state.teams.map(team => [team.id, 0]));
+        state.records
+         .filter(record => record.phase === "qualifications")
+         .forEach(record => {
+           appearances.set(record.teamAId, (appearances.get(record.teamAId) || 0) + 1);
+           appearances.set(record.teamBId, (appearances.get(record.teamBId) || 0) + 1);
+         });
+        return state.teams.every(team => (appearances.get(team.id) || 0) >= 3);
+      }
+
       function createBracket() {
         const top = standings().slice(0, 12);
         if (top.length < 12) {
@@ -881,8 +894,11 @@
           if (state.teams.length % 2 !== 0) return null;
           const fixtures = qualificationFixtures();
           if (fixtures.length) return { ...fixtures[0], phase: "qualifications" };
-          createBracket();
-          saveState();
+          if (qualificationsComplete()) {
+            createBracket();
+            saveState();
+          }
+          return null;
         }
         const stageMap = {
           playIn: ["playIn", "play-in", "Play-in · 1/8 finału"],
@@ -1200,6 +1216,7 @@
             ${isPolandTeam(team.id) ? `<div class="callout" style="margin-top:12px">Wpisz własne imię i nazwisko każdego zawodnika. Skład Polski nie jest losowany automatycznie.</div>` : ""}
             <div class="roster-grid">${team.players.map((player, playerIndex) => `<label>${isPolandTeam(team.id) ? `Polski zawodnik ${playerIndex + 1}` : `Zawodnik ${playerIndex + 1}`}<input type="text" data-player-name="${escapeHtml(player.id)}" value="${escapeHtml(player.name)}" placeholder="${isPolandTeam(team.id) ? "Wpisz imię i nazwisko" : ""}" maxlength="60"></label>`).join("")}</div>
           </details>
+          ${team.id.startsWith("team-custom-") ? `<button class="button danger team-remove-button" type="button" data-action="remove-team" data-team-id="${escapeHtml(team.id)}" aria-label="Usuń reprezentację ${escapeHtml(team.name)}" title="${state.records.length ? "Najpierw zresetuj turniej" : "Usuń dodaną reprezentację"}" ${state.phase !== "qualifications" || state.records.length ? "disabled" : ""}>Usuń</button>` : ""}
         </div>`).join("");
       }
 
@@ -1214,7 +1231,7 @@
       }
 
       function renderTournament() {
-        if (state.phase === "qualifications" && qualificationFixtures().length === 0) createBracket();
+        if (state.phase === "qualifications" && qualificationsComplete()) createBracket();
         const fixture = nextFixture();
         renderPhaseBanner();
         document.getElementById("tournamentMatch").innerHTML = matchMarkup({ fixture });
@@ -1293,6 +1310,7 @@
           const fixtures = currentStageFixtures();
           if (!fixtures.length) {
             if (state.phase === "qualifications") {
+              if (!qualificationsComplete()) break;
               const previousPhase = state.phase;
               createBracket();
               if (state.phase === previousPhase) break;
@@ -1388,6 +1406,25 @@
           if (fixture) simulateMatch(fixture);
         } else if (actionButton?.dataset.action === "simulate-non-poland") {
           simulateAllWithoutPoland();
+        } else if (actionButton?.dataset.action === "remove-team") {
+          if (state.phase !== "qualifications" || state.records.length) {
+            showToast("Zresetuj turniej przed usuwaniem reprezentacji.");
+            return;
+          }
+          const teamIndex = state.teams.findIndex(team =>
+            team.id === actionButton.dataset.teamId && team.id.startsWith("team-custom-")
+          );
+          if (teamIndex < 0) {
+            showToast("Można usuwać tylko dodane reprezentacje.");
+            return;
+          }
+          if (!window.confirm(`Usunąć reprezentację ${state.teams[teamIndex].name}?`)) return;
+          const [team] = state.teams.splice(teamIndex, 1);
+          state.qualificationSchedule = createQualificationSchedule(state.teams);
+          state.qualificationScheduleVersion = 2;
+          saveState();
+          renderTournament();
+          showToast(`Usunięto reprezentację ${team.name}.`);
         } else if (actionButton?.dataset.action === "reset") {
           document.getElementById("resetModal").classList.add("open");
         }
