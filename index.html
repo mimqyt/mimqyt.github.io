@@ -488,10 +488,10 @@
           <button class="button subtle" data-go="home">← Wróć do wyboru trybu</button>
         </div>
         <div class="tab-row" role="tablist" aria-label="Sekcje turnieju">
-          <button class="nav-button active" data-tab="matches">Mecz</button>
-          <button class="nav-button" data-tab="standings">Tabela</button>
-          <button class="nav-button" data-tab="teams">Reprezentacje</button>
-          <button class="nav-button" data-tab="history">Historia</button>
+          <button class="nav-button active" type="button" data-tab="matches">Mecz</button>
+          <button class="nav-button" type="button" data-tab="standings">Tabela</button>
+          <button class="nav-button" type="button" data-tab="teams">Reprezentacje</button>
+          <button class="nav-button" type="button" data-tab="history">Historia</button>
         </div>
         <div id="tournamentMatchesTab" class="tournament-tab">
           <div id="tournamentPhaseBanner"></div>
@@ -1308,7 +1308,7 @@
               ${team.id.startsWith("team-custom-") ? `<button class="button danger team-remove-button" type="button" data-action="remove-team" data-team-id="${escapeHtml(team.id)}" aria-label="Usuń reprezentację ${escapeHtml(team.name)}" title="${state.records.length ? "Najpierw zresetuj turniej" : "Usuń dodaną reprezentację"}" ${state.phase !== "qualifications" || state.records.length ? "disabled" : ""}>Usuń</button>` : ""}
             </div>
           </div>`;
-        }).join("")}`;
+        }).join("");
       }
 
       function renderHistory() {
@@ -1480,8 +1480,12 @@
         }
         const tabButton = event.target.closest("[data-tab]");
         if (tabButton) {
+          event.preventDefault();
           activeTab = tabButton.dataset.tab;
-          renderTournament();
+          document.querySelectorAll(".tournament-tab").forEach(tab => {
+            tab.hidden = tab.id !== `tournament${activeTab[0].toUpperCase()}${activeTab.slice(1)}Tab`;
+          });
+          document.querySelectorAll("[data-tab]").forEach(button => button.classList.toggle("active", button.dataset.tab === activeTab));
           return;
         }
         const actionButton = event.target.closest("[data-action]");
